@@ -9,7 +9,6 @@ project = Xcodeproj::Project.new(project_path)
 target = project.new_target(:unit_test_bundle, 'MediaPipeSmokeTests', :ios, '17.0')
 target.build_configurations.each do |config|
   config.build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = 'com.vcamapp.mediapipe.smoketests'
-  config.build_settings['SWIFT_VERSION'] = '5.9'
   config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '17.0'
   config.build_settings['ARCHS'] = 'arm64'
   config.build_settings['FRAMEWORK_SEARCH_PATHS'] = [framework, '$(PLATFORM_DIR)/Developer/Library/Frameworks']

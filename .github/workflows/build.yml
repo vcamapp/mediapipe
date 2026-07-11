@@ -9,4 +9,7 @@ jobs:
         with:
           ruby-version: '3.3'
           bundler-cache: true
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '16.4'
       - run: make all
