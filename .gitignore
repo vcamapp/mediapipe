@@ -1,4 +1,5 @@
 .build-artifacts/
+.build/
 builder/Pods/
 builder/*.xcworkspace
 .DS_Store
