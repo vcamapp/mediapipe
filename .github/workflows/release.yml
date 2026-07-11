@@ -1,7 +1,7 @@
 name: Release
 on:
   workflow_dispatch:
-  create:
+  push:
 jobs:
   release:
     if: github.ref_type == 'tag'
