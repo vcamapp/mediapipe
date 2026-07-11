@@ -1,10 +1,10 @@
 name: Release
 on:
   workflow_dispatch:
-  push:
-    tags: ['1.0.0']
+  create:
 jobs:
   release:
+    if: github.ref_type == 'tag'
     runs-on: macos-15
     permissions:
       contents: write
