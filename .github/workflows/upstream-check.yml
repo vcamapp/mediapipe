@@ -1,0 +1,25 @@
+name: Upstream check
+on:
+  schedule:
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - run: gem install cocoapods -v 1.16.2
+      - id: check
+        continue-on-error: true
+        run: ./scripts/upstream-check.sh
+      - if: steps.check.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue create --title "MediaPipeTasksVision upstream update available" --body "The CocoaPods upstream version is newer than the bundled version. Run scripts/upstream-check.sh and update the pinned artifact after reviewing headers, symbols, and both architectures."

@@ -1,0 +1,10 @@
+source "https://cdn.cocoapods.org/"
+platform :ios, '17.0'
+
+install! 'cocoapods',
+  :integrate_targets => false,
+  :deterministic_uuids => true
+
+target 'MediaPipeTasksVisionDependencies' do
+  pod 'MediaPipeTasksVision', ENV.fetch('MEDIAPIPE_VERSION', '0.10.21')
+end

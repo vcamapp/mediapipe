@@ -1,0 +1,28 @@
+name: Release
+on:
+  push:
+    tags: ['[0-9]+.[0-9]+.[0-9]+']
+jobs:
+  release:
+    runs-on: macos-14
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - run: test "$(git describe --tags --exact-match)" = "$(sed -n 's/^PACKAGE_VERSION="\(.*\)"/\1/p' config/versions.env)"
+      - run: '! gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY"'
+      - run: make all
+      - run: test "$(sed -n 's/.*checksum: "\([0-9a-f]*\)".*/\1/p' Package.swift)" = "$(head -1 .build-artifacts/checksums.txt)"
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            .build-artifacts/MediaPipeTasksVision.xcframework.zip
+            .build-artifacts/MediaPipeTasksVision.dSYMs.zip
+            .build-artifacts/checksums.txt
+            .build-artifacts/metadata/build-metadata.json
+            .build-artifacts/THIRD_PARTY_NOTICES.txt
+          fail_on_unmatched_files: true
