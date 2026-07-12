@@ -15,11 +15,20 @@ jobs:
         with:
           ruby-version: '3.3'
           bundler-cache: true
-      - run: gem install cocoapods -v 1.16.2
       - id: check
         continue-on-error: true
-        run: ./scripts/upstream-check.sh
-      - if: steps.check.outcome == 'failure'
+        run: |
+          set +e
+          ./scripts/upstream-check.sh
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+      - if: steps.check.outputs.exit_code == '10'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh issue create --title "MediaPipeTasksVision upstream update available" --body "The CocoaPods upstream version is newer than the bundled version. Run scripts/upstream-check.sh and update the pinned artifact after reviewing headers, symbols, and both architectures."
+        run: |
+          if [ "$(gh issue list --state open --search 'in:title MediaPipeTasksVision upstream update available' --json number --jq 'length')" -eq 0 ]; then
+            gh issue create --title "MediaPipeTasksVision upstream update available" --body "The CocoaPods upstream version is newer than the bundled version. Run scripts/upstream-check.sh and update the pinned artifact after reviewing headers, symbols, and both architectures."
+          fi
+      - if: steps.check.outputs.exit_code != '0' && steps.check.outputs.exit_code != '10'
+        run: exit 1

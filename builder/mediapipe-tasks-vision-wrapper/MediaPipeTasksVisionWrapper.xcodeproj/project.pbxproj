@@ -7,350 +7,350 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		02017AC4C5C9A8D9ABE97BE3 /* MPPImageSegmenterOptions.h in Headers */ = {isa = PBXBuildFile; fileRef = E2586F3A22EFD6E1FD76948D /* MPPImageSegmenterOptions.h */; };
-		0775A1A1BC81547E353336A7 /* MPPHolisticLandmarkerResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EAA8350FD58D186415D85CA /* MPPHolisticLandmarkerResult.h */; };
-		0A46039C34B4258187988B49 /* MPPFaceStylizer.h in Headers */ = {isa = PBXBuildFile; fileRef = 54850683096B0C4076FFF3C0 /* MPPFaceStylizer.h */; };
-		115F1708459E2889CE49EEEC /* MPPInteractiveSegmenterResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 1D63EDA90BB0F65EB2882E4E /* MPPInteractiveSegmenterResult.h */; };
-		11C10C9E37BDD029063D2C7D /* MPPTaskResult.h in Headers */ = {isa = PBXBuildFile; fileRef = B7E401307495816E6D0280E6 /* MPPTaskResult.h */; };
-		1262172D649D5191FB70D319 /* MPPHandLandmarkerResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F2B30BB12FC81B2E5C3573E /* MPPHandLandmarkerResult.h */; };
-		12A7FB1FE1C42EAAD5B4E3A1 /* MPPEmbeddingResult.h in Headers */ = {isa = PBXBuildFile; fileRef = C2A9F76202368BB1FAD1E7AA /* MPPEmbeddingResult.h */; };
-		14CD5133B844B31572735D5B /* MPPFaceLandmarker.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C620BC71E7F9F3D64519B1 /* MPPFaceLandmarker.h */; };
-		15A3077655B02113826EE42A /* MPPLandmark.h in Headers */ = {isa = PBXBuildFile; fileRef = F041400F6D6731F38182CF9F /* MPPLandmark.h */; };
-		15C11E9BDCBEF90F16EE0FFD /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FA2EF3EE4D6312CA462E3E3 /* Foundation.framework */; };
-		17A9BFFFD65966C236210022 /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B4D781E1A52F2AD91246E1F8 /* MetalKit.framework */; };
-		193638A5A1380865B83D68A3 /* MPPFaceStylizerOptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 4FF9496C61C9911A277A7751 /* MPPFaceStylizerOptions.h */; };
-		1A127026770592F0586385A9 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6B5E572B1E16FBE703F782B0 /* CoreVideo.framework */; };
-		1C284D3B9FF18FD97F6AD658 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A3D544EC6F46D01D45EF0CC7 /* Metal.framework */; };
-		1E4628188D82FBFDE7343096 /* MPPGestureRecognizerResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 474402D5F82EBA97CC48E721 /* MPPGestureRecognizerResult.h */; };
-		242D1D192B5C03C27E8CDB1F /* MPPClassifierOptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 42BB87BD49874E95C53EB778 /* MPPClassifierOptions.h */; };
-		26844B1FC68D367C1F15070A /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1AD4F46553E461ECACDE695 /* CoreImage.framework */; };
-		27369C1EC59A7A41B0D5DE88 /* MPPObjectDetectorOptions.h in Headers */ = {isa = PBXBuildFile; fileRef = FD02172B8B404F76A39C89DB /* MPPObjectDetectorOptions.h */; };
-		2CB6660DE259AA976AC922D4 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EBE17E13AA1069C15E43D0C /* ImageIO.framework */; };
-		320D45284A4531CD68B4DD3F /* MPPHolisticLandmarkerOptions.h in Headers */ = {isa = PBXBuildFile; fileRef = A1D5697D4AF41FA5906B4414 /* MPPHolisticLandmarkerOptions.h */; };
-		37A92DF6B381C28AF032A1BF /* MPPForceLink.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF1255545619493AF98D6B91 /* MPPForceLink.mm */; };
-		411E0D8366EC62777CAE69D5 /* MPPFaceStylizerResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 59F0B14787856F223C0C6E40 /* MPPFaceStylizerResult.h */; };
-		431AFFC35D7C10187CBBD732 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CE15268E5CF9539CD291B56 /* CoreGraphics.framework */; };
-		48114528E0B7CC3ED3055F58 /* MPPCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = 1304D0679269B1C728CF22BD /* MPPCategory.h */; };
-		484917D85AF38FBC49ED12BC /* MPPImageSegmenterResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 1941025656BEEA2E98A68CBD /* MPPImageSegmenterResult.h */; };
-		52813676DB35E5E770F29C2F /* MPPMask.h in Headers */ = {isa = PBXBuildFile; fileRef = 2087E5CA07AA748C5BB86FD8 /* MPPMask.h */; };
-		578077B2BFB5C6AF21AC1F19 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F208DF44A600CFA60E19331 /* Foundation.framework */; };
-		599F9CD3BF2FAF74497AFF9C /* MPPHolisticLandmarker.h in Headers */ = {isa = PBXBuildFile; fileRef = B676A603C92CD3C83D4017CF /* MPPHolisticLandmarker.h */; };
-		5C2ED4E865C5E3F34F7C58AC /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDE9D2AC5E690686FD86FCCF /* AVFoundation.framework */; };
-		5FB57DFF6D72B36F416D08C3 /* MPPObjectDetectorResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 53E22F6006DF9A3E58151957 /* MPPObjectDetectorResult.h */; };
-		60EF0378FCCF37F0EC749E2F /* MPPEmbedding.h in Headers */ = {isa = PBXBuildFile; fileRef = D8A7503C616D2D62CDF82F6D /* MPPEmbedding.h */; };
-		6216F825D4443222FE1C39AD /* MPPGestureRecognizer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C65B10D434B1801E44D4DD2 /* MPPGestureRecognizer.h */; };
-		6513DFEDE8D5E376074353BE /* MPPCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = BB9D8FE4816D51155E2E9428 /* MPPCommon.h */; };
-		653BC50F4E2C66009202210F /* MediaPipeTasksVision.h in Headers */ = {isa = PBXBuildFile; fileRef = F17B7576BC1B57C191E1E180 /* MediaPipeTasksVision.h */; };
-		662EA9632DEAAA5C35A39355 /* MPPHandLandmarkerOptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1073FF492F094007E0F5B297 /* MPPHandLandmarkerOptions.h */; };
-		667B3F32ECB463BB4AF3A070 /* MPPConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 5208A975BA6FE0F1EF74920F /* MPPConnection.h */; };
-		6A5B1347864F63AFB53F75F6 /* MPPGestureRecognizerOptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 2F64D508D35B11C6DB934625 /* MPPGestureRecognizerOptions.h */; };
-		6A6A30326139E4ABF488F887 /* MPPRunningMode.h in Headers */ = {isa = PBXBuildFile; fileRef = BB05E52904C8EADDBCBDBBA5 /* MPPRunningMode.h */; };
-		6DAD3CC46DEB83D7B1799C77 /* MPPFaceDetectorOptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 13492B22C662983C673776E6 /* MPPFaceDetectorOptions.h */; };
-		6DBA61157C7625BC6EC3A116 /* MPPImageEmbedderResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 11CCCFDEC9B41165312D513E /* MPPImageEmbedderResult.h */; };
-		6FD019C3465D00353CE051DE /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 64D3D6C600F408501B4ED671 /* QuartzCore.framework */; };
-		71DBE597FBD6E4B000A408D0 /* MPPRegionOfInterest.h in Headers */ = {isa = PBXBuildFile; fileRef = ED072D0CDB0E0D530E3728DE /* MPPRegionOfInterest.h */; };
-		7574DA287DAFAA031216D73A /* MPPImageClassifier.h in Headers */ = {isa = PBXBuildFile; fileRef = 498820FDAD9F588DCC8D8483 /* MPPImageClassifier.h */; };
-		871322CAB3EFCAD0881F381F /* MPPHandLandmarker.h in Headers */ = {isa = PBXBuildFile; fileRef = 58E607A3B8A6D52111F93ED4 /* MPPHandLandmarker.h */; };
-		872E2250553B6FEF397400F9 /* MPPTaskOptions.h in Headers */ = {isa = PBXBuildFile; fileRef = FE8FEA6574A6FEEC4FABAD22 /* MPPTaskOptions.h */; };
-		89DA8AA583ECAF829C011D60 /* MPPImageEmbedderOptions.h in Headers */ = {isa = PBXBuildFile; fileRef = D3D46A2A5A35793A49D560B4 /* MPPImageEmbedderOptions.h */; };
-		90174556926FA38926E11549 /* MPPFaceDetector.h in Headers */ = {isa = PBXBuildFile; fileRef = A2D22D285C4794B51EF32362 /* MPPFaceDetector.h */; };
-		902E124496EAC2DCA3678927 /* MPPInteractiveSegmenter.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D952B3C24E665EA157707D3 /* MPPInteractiveSegmenter.h */; };
-		98E5CFF98CAF5F01B8A3B1AA /* MPPImageSegmenter.h in Headers */ = {isa = PBXBuildFile; fileRef = 64F5A38193C9661BBDFCF64A /* MPPImageSegmenter.h */; };
-		9F820376E17D9CC00C7C96C8 /* MPPBaseOptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 0CD05835DD26A5E528A72178 /* MPPBaseOptions.h */; };
-		A211D54FF56D16ADE42D4333 /* MPPImageClassifierOptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 22055E309FD5963A831731B7 /* MPPImageClassifierOptions.h */; };
-		A2DC2B60CD35E87C17D6365C /* MPPPoseLandmarkerOptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 8220BBABDC83567631A4EDCE /* MPPPoseLandmarkerOptions.h */; };
-		A696F9FD5D20CFC7D0BD6F49 /* MPPPoseLandmarkerResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 85F7009B37EAC7CD603128B3 /* MPPPoseLandmarkerResult.h */; };
-		A97BB9A8AACC3E8AA4DA7AED /* MPPClassificationResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 4ECEAB5774DA6045D795BDC9 /* MPPClassificationResult.h */; };
-		AC7E462E4A2FC53346836EB6 /* MPPImage.h in Headers */ = {isa = PBXBuildFile; fileRef = E4ADCDDA63F4119CEB7F70E0 /* MPPImage.h */; };
-		BA97BCC184B64EDDE7D006FE /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 022F1DB3FE8A563FDC34B1DE /* CoreMedia.framework */; };
-		BBD67F096B300361CC44386F /* MediaPipeTasksVision.h in Headers */ = {isa = PBXBuildFile; fileRef = 996132E59BBC3C02EDCFBCD7 /* MediaPipeTasksVision.h */; };
-		BEC6813707F39D3FFF9BBB93 /* MPPFaceDetectorResult.h in Headers */ = {isa = PBXBuildFile; fileRef = C26CFEBE9969D737B7D51091 /* MPPFaceDetectorResult.h */; };
-		C011B5E8A3043D124260F15F /* MPPObjectDetector.h in Headers */ = {isa = PBXBuildFile; fileRef = 7F03A89FA010B855DF23F42B /* MPPObjectDetector.h */; };
-		C25FAA122059BBD9AA1B7F89 /* MPPImageClassifierResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 24820CF785928CF675F8CD9A /* MPPImageClassifierResult.h */; };
-		C2B086087200835E27673240 /* MPPFaceLandmarkerResult.h in Headers */ = {isa = PBXBuildFile; fileRef = FE48A326F16BAE1873B99C28 /* MPPFaceLandmarkerResult.h */; };
-		CC54D01C162D75A8B7A9BA68 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90CFE8B06B88CDF3C61F1B68 /* Accelerate.framework */; };
-		CE159FED05B8F175AA5394B9 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E224A05FD3AA461D0773C82B /* UIKit.framework */; };
-		D54C2FA35B0769EE09134D0A /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 793D8C3E74DB44620BD33089 /* OpenGLES.framework */; };
-		DD7778945BF05B0704B01CB0 /* MPPFaceLandmarkerOptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A8679A903CEB7D55C3FF411 /* MPPFaceLandmarkerOptions.h */; };
-		E137AC031A02FD5C11493FDB /* MPPImageEmbedder.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B7A6CD6DC9906BF93436368 /* MPPImageEmbedder.h */; };
-		E2D5402DC1FDB14FC3A345CE /* MPPInteractiveSegmenterOptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 50E1EA74A1216231F929D874 /* MPPInteractiveSegmenterOptions.h */; };
-		E3D2ADD2A500B76D418F71B2 /* MPPPoseLandmarker.h in Headers */ = {isa = PBXBuildFile; fileRef = C1C45CC0243767DFDD2F98C9 /* MPPPoseLandmarker.h */; };
-		F01FDCEEFA4BB0BD76813BCC /* MPPDetection.h in Headers */ = {isa = PBXBuildFile; fileRef = 026C74615650A4D6D62B96A2 /* MPPDetection.h */; };
+		036A618C5EF2D06F1CE3BB6C /* MPPLandmark.h in Headers */ = {isa = PBXBuildFile; fileRef = 787708E4D1DD118CCF61A4E0 /* MPPLandmark.h */; };
+		04B68815B140119835325708 /* MPPTaskResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 36D2D28A3C74D656D2AFB1F6 /* MPPTaskResult.h */; };
+		0B5B88B555A0BB78C66671F6 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB3ACB19ACEDA37193961C31 /* AVFoundation.framework */; };
+		0BF24BD97E5FE52A905E22A7 /* MPPImageSegmenterOptions.h in Headers */ = {isa = PBXBuildFile; fileRef = B78C2196FDCFBEA945417D5E /* MPPImageSegmenterOptions.h */; };
+		0DAD9017D7ABAC21EC44A459 /* MPPHolisticLandmarker.h in Headers */ = {isa = PBXBuildFile; fileRef = 7BF4FFDA7FFC5D7998A5CACA /* MPPHolisticLandmarker.h */; };
+		0F3A1CBF11C989A050034A30 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B62A14334A6903881C8FA55F /* ImageIO.framework */; };
+		1255AEF86539CEDB63C23679 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 057F55552B22FBFB048C69D3 /* OpenGLES.framework */; };
+		1A373379966B99D038F23468 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A168E0C79EBA960136A31735 /* CoreVideo.framework */; };
+		1A3AE2E07C83914DEA0132A3 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2597DDBA206D5264F81C283B /* CoreMedia.framework */; };
+		1A3D9D31DD4484B070919E92 /* MPPMask.h in Headers */ = {isa = PBXBuildFile; fileRef = 86E84714CFD1116560D8B7C7 /* MPPMask.h */; };
+		1EB75C0C4830F8C95C108EC7 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B779B7D405F13B64A905CB2 /* CoreGraphics.framework */; };
+		2232E9B07B3756B3A16B1C5A /* MPPGestureRecognizerResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 8FDFBA5F528A5F5DAB59DCDF /* MPPGestureRecognizerResult.h */; };
+		252624D41975FC089281316D /* MPPPoseLandmarkerResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 17FE2EAAFE15E4FA1CD790F4 /* MPPPoseLandmarkerResult.h */; };
+		27EADE6E53821D09F55FFC2A /* MPPImageSegmenter.h in Headers */ = {isa = PBXBuildFile; fileRef = 6C30DD0B86E4D21BF5EC3115 /* MPPImageSegmenter.h */; };
+		2A01165915C40F9C925B7084 /* MPPHandLandmarkerResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 46658469916D360D55E7FE74 /* MPPHandLandmarkerResult.h */; };
+		2B1DF07B8F2DA58EF07D6BA7 /* MPPHolisticLandmarkerResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E745998FFE16014D486C4E9 /* MPPHolisticLandmarkerResult.h */; };
+		2BECB972D65DB864AD5C9F33 /* MPPPoseLandmarkerOptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 3746061A30F50C42C275C7C9 /* MPPPoseLandmarkerOptions.h */; };
+		35868B05EC21778E5DFA474D /* MPPImageClassifierResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 08041025D61E2D6074DCBC04 /* MPPImageClassifierResult.h */; };
+		4037755688EFC2A2B5905B70 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF0A8741517B739C08BD87E3 /* Foundation.framework */; };
+		45439CB3AA105EA55EC369C4 /* MPPFaceDetectorResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 14EA61ADFDF02FA040CA6AF7 /* MPPFaceDetectorResult.h */; };
+		46EB2537EE3A7FE1C2A8AE67 /* MPPBaseOptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FB74C889DF2BA566C1D8702 /* MPPBaseOptions.h */; };
+		4E2BC50D11EF4A569D12CC9E /* MPPFaceDetector.h in Headers */ = {isa = PBXBuildFile; fileRef = 5F81452B2756181C9C397343 /* MPPFaceDetector.h */; };
+		54C8792281921180C75795EB /* MPPEmbedding.h in Headers */ = {isa = PBXBuildFile; fileRef = F1C838224229B26EAF690175 /* MPPEmbedding.h */; };
+		5588D8A51AA209CE889200FE /* MPPGestureRecognizerOptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1ED0402DC9B4B644D65063D8 /* MPPGestureRecognizerOptions.h */; };
+		55DB367861DC6A79F393684B /* MPPImageSegmenterResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 41EE3432D2669E857CE82720 /* MPPImageSegmenterResult.h */; };
+		582A9F7DFEB2FA926B677938 /* MPPInteractiveSegmenter.h in Headers */ = {isa = PBXBuildFile; fileRef = EBB256C6BCF0E193D0F42CF4 /* MPPInteractiveSegmenter.h */; };
+		5B08CE084B8B1EFDB4620D13 /* MPPInteractiveSegmenterOptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 3C18A1192C148238924827E0 /* MPPInteractiveSegmenterOptions.h */; };
+		5CF6E13320BCC7813C5D15D6 /* MPPObjectDetector.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F37DAEE9E62362C6F53784F /* MPPObjectDetector.h */; };
+		626307737F26506E273ADF2C /* MPPImageClassifierOptions.h in Headers */ = {isa = PBXBuildFile; fileRef = CAAD3038D248533C999BB353 /* MPPImageClassifierOptions.h */; };
+		66FF0392A338B258A33B05C4 /* MPPClassificationResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 9C70AE03054DB9DFB0079D86 /* MPPClassificationResult.h */; };
+		6D0AD638A43C2DCD096E131B /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 955AF00156317EF3F4A16255 /* Metal.framework */; };
+		73C31A2204819DC68FC67073 /* MPPRegionOfInterest.h in Headers */ = {isa = PBXBuildFile; fileRef = B593A31DD58BC567A5551A53 /* MPPRegionOfInterest.h */; };
+		74FCE6C13D32397F9A040765 /* MPPDetection.h in Headers */ = {isa = PBXBuildFile; fileRef = 61A84CE752217E7A2910DA78 /* MPPDetection.h */; };
+		7D1E112FB21790353316C678 /* MPPGestureRecognizer.h in Headers */ = {isa = PBXBuildFile; fileRef = 12C14E606259BC6172E349CC /* MPPGestureRecognizer.h */; };
+		7D6698394B4B85D08FBFEEDB /* MPPCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = C00671DAA4B16CCFBDB156A6 /* MPPCategory.h */; };
+		7FAD6B9E960C358EBE050ADC /* MPPFaceLandmarkerOptions.h in Headers */ = {isa = PBXBuildFile; fileRef = B57765EB8829B2DE00F2A4F8 /* MPPFaceLandmarkerOptions.h */; };
+		839A92CC3B44BBE99A44513F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0553C14A845E6E7B74A0F5D /* Foundation.framework */; };
+		85196111D4E092D791F0A36A /* MPPClassifierOptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5ECB46784F31FB68B8A130DB /* MPPClassifierOptions.h */; };
+		89E03DC4197C776041BAEA65 /* MPPFaceDetectorOptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 233DB5A3A487909A60B43425 /* MPPFaceDetectorOptions.h */; };
+		91C1F7845ADF6BBFD3BF3A0D /* MPPImageEmbedder.h in Headers */ = {isa = PBXBuildFile; fileRef = FE9487D0D9C1B5AB2D91E13F /* MPPImageEmbedder.h */; };
+		92E8957D17EAACC07023B39C /* MPPFaceStylizerOptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 67D13FA82181229D5A8F153A /* MPPFaceStylizerOptions.h */; };
+		92FA51D16D76FA441CDD01F1 /* MPPHolisticLandmarkerOptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 27A322BDBB29EEB60FEA7DDE /* MPPHolisticLandmarkerOptions.h */; };
+		93C5093A406183FC006F896E /* MPPEmbeddingResult.h in Headers */ = {isa = PBXBuildFile; fileRef = CB574A783CAA1C1DBDD2525B /* MPPEmbeddingResult.h */; };
+		9409178F0F57347514E7FA17 /* MPPHandLandmarkerOptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 042847404E04445E0FE49984 /* MPPHandLandmarkerOptions.h */; };
+		9BCB16DE7F94D1EFD6012BB6 /* MPPObjectDetectorOptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 0AA0B65A1D99D6FE76E41BD7 /* MPPObjectDetectorOptions.h */; };
+		9E75FD1934F500501C5178E3 /* MPPImageEmbedderOptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 65E8FF45DB5DD52CFFD3A7EE /* MPPImageEmbedderOptions.h */; };
+		A2588E5FDAFBB4AE904C0D60 /* MPPHandLandmarker.h in Headers */ = {isa = PBXBuildFile; fileRef = 4AA3EEA0EEE380E96472002C /* MPPHandLandmarker.h */; };
+		A55D581B473C8B6420E4DB1A /* MPPTaskOptions.h in Headers */ = {isa = PBXBuildFile; fileRef = EB94CE921C9CC092731D196C /* MPPTaskOptions.h */; };
+		AAC2B81553120E39D3E45D24 /* MPPFaceStylizer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BD115C68EB32F0BADF03199 /* MPPFaceStylizer.h */; };
+		AB20047FF431D75676CAF38D /* MPPCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = 1997856652A3042AE175FA7B /* MPPCommon.h */; };
+		AFF62B3401805DC749ED40E5 /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 909E3449FE26E879499F234B /* CoreImage.framework */; };
+		B08B334CE4B127FE5EE0E9D3 /* MPPInteractiveSegmenterResult.h in Headers */ = {isa = PBXBuildFile; fileRef = A2A98638AAF6DBA3DD045089 /* MPPInteractiveSegmenterResult.h */; };
+		B15FB21B56186378AA92AAEA /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E12E71E3BDCE0F0B1570F9A /* Accelerate.framework */; };
+		B27BBCBC3EDA22833F1AD537 /* MediaPipeTasksVision.h in Headers */ = {isa = PBXBuildFile; fileRef = 591271D14D14491671ED4D33 /* MediaPipeTasksVision.h */; };
+		B4CFFA1EEA705F11BCFAC428 /* MPPImageClassifier.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1CA9E9C149F0EC1FEDBDDD /* MPPImageClassifier.h */; };
+		B4ECB2BBD7860DCA70DD9E9A /* MPPObjectDetectorResult.h in Headers */ = {isa = PBXBuildFile; fileRef = D782FBC340E6AACF99E3D7BB /* MPPObjectDetectorResult.h */; };
+		B90BECC025B1BAB0CDA7D34B /* MPPFaceLandmarkerResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 8F17E0380B2730F4C0E74433 /* MPPFaceLandmarkerResult.h */; };
+		CDEB7045E861BBB6A9FECDD5 /* MPPPoseLandmarker.h in Headers */ = {isa = PBXBuildFile; fileRef = 79BDD341FE95D085AFEA15F7 /* MPPPoseLandmarker.h */; };
+		CEB51896290907813A585DCA /* MPPImage.h in Headers */ = {isa = PBXBuildFile; fileRef = 11A2849AD645BC0A5BAF688E /* MPPImage.h */; };
+		D24D206462DAE19089ECA318 /* MPPFaceLandmarker.h in Headers */ = {isa = PBXBuildFile; fileRef = 623DCD2AECCA2E6CDF16D146 /* MPPFaceLandmarker.h */; };
+		D27180D7556F65773D332D57 /* MPPFaceStylizerResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F07843B28F0690DD9F7AB9A /* MPPFaceStylizerResult.h */; };
+		D8A6AB5FDF2C2F51ED10540D /* MediaPipeTasksVision.h in Headers */ = {isa = PBXBuildFile; fileRef = 3C16CB8CF977E73C61673E08 /* MediaPipeTasksVision.h */; };
+		DD21DF9AC49F8A13063F82CC /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F57B0AE260DE9FCF2EEB9E1 /* UIKit.framework */; };
+		EBAFF17342B7F62A40269DEC /* MPPForceLink.mm in Sources */ = {isa = PBXBuildFile; fileRef = D756EFD67F9A36B6EDF82C37 /* MPPForceLink.mm */; };
+		EC5AB3C186458144FE4DACAE /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C8C42393B6F3FB0A5D07B0F /* QuartzCore.framework */; };
+		EC5FA1F808BC1DF57CBE1885 /* MPPConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = F866E42261235D1C074CC5ED /* MPPConnection.h */; };
+		F1CDBC3DFD579EE7FCA52E6C /* MPPImageEmbedderResult.h in Headers */ = {isa = PBXBuildFile; fileRef = BA03FC3160C0D6427D7C41FC /* MPPImageEmbedderResult.h */; };
+		F5A886C1773319FA218C5459 /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEB41C47B59251F74F642F50 /* MetalKit.framework */; };
+		F5B609096EDE3721687C4FAF /* MPPRunningMode.h in Headers */ = {isa = PBXBuildFile; fileRef = EC27F2B057CCA58AC597D22F /* MPPRunningMode.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		022F1DB3FE8A563FDC34B1DE /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = "<group>"; };
-		026C74615650A4D6D62B96A2 /* MPPDetection.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPDetection.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPDetection.h"; sourceTree = "<group>"; };
-		0CD05835DD26A5E528A72178 /* MPPBaseOptions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPBaseOptions.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPBaseOptions.h"; sourceTree = "<group>"; };
-		1073FF492F094007E0F5B297 /* MPPHandLandmarkerOptions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPHandLandmarkerOptions.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPHandLandmarkerOptions.h"; sourceTree = "<group>"; };
-		11CCCFDEC9B41165312D513E /* MPPImageEmbedderResult.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPImageEmbedderResult.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPImageEmbedderResult.h"; sourceTree = "<group>"; };
-		1304D0679269B1C728CF22BD /* MPPCategory.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPCategory.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPCategory.h"; sourceTree = "<group>"; };
-		13492B22C662983C673776E6 /* MPPFaceDetectorOptions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPFaceDetectorOptions.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPFaceDetectorOptions.h"; sourceTree = "<group>"; };
-		1941025656BEEA2E98A68CBD /* MPPImageSegmenterResult.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPImageSegmenterResult.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPImageSegmenterResult.h"; sourceTree = "<group>"; };
-		1A8679A903CEB7D55C3FF411 /* MPPFaceLandmarkerOptions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPFaceLandmarkerOptions.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPFaceLandmarkerOptions.h"; sourceTree = "<group>"; };
-		1D63EDA90BB0F65EB2882E4E /* MPPInteractiveSegmenterResult.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPInteractiveSegmenterResult.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPInteractiveSegmenterResult.h"; sourceTree = "<group>"; };
-		1F2B30BB12FC81B2E5C3573E /* MPPHandLandmarkerResult.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPHandLandmarkerResult.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPHandLandmarkerResult.h"; sourceTree = "<group>"; };
-		2087E5CA07AA748C5BB86FD8 /* MPPMask.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPMask.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPMask.h"; sourceTree = "<group>"; };
-		22055E309FD5963A831731B7 /* MPPImageClassifierOptions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPImageClassifierOptions.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPImageClassifierOptions.h"; sourceTree = "<group>"; };
-		24820CF785928CF675F8CD9A /* MPPImageClassifierResult.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPImageClassifierResult.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPImageClassifierResult.h"; sourceTree = "<group>"; };
-		2F64D508D35B11C6DB934625 /* MPPGestureRecognizerOptions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPGestureRecognizerOptions.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPGestureRecognizerOptions.h"; sourceTree = "<group>"; };
-		34C620BC71E7F9F3D64519B1 /* MPPFaceLandmarker.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPFaceLandmarker.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPFaceLandmarker.h"; sourceTree = "<group>"; };
-		3CE15268E5CF9539CD291B56 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = "<group>"; };
-		3EBE17E13AA1069C15E43D0C /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = "<group>"; };
-		42BB87BD49874E95C53EB778 /* MPPClassifierOptions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPClassifierOptions.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPClassifierOptions.h"; sourceTree = "<group>"; };
-		474402D5F82EBA97CC48E721 /* MPPGestureRecognizerResult.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPGestureRecognizerResult.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPGestureRecognizerResult.h"; sourceTree = "<group>"; };
-		498820FDAD9F588DCC8D8483 /* MPPImageClassifier.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPImageClassifier.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPImageClassifier.h"; sourceTree = "<group>"; };
-		4ECEAB5774DA6045D795BDC9 /* MPPClassificationResult.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPClassificationResult.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPClassificationResult.h"; sourceTree = "<group>"; };
-		4FF9496C61C9911A277A7751 /* MPPFaceStylizerOptions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPFaceStylizerOptions.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPFaceStylizerOptions.h"; sourceTree = "<group>"; };
-		50E1EA74A1216231F929D874 /* MPPInteractiveSegmenterOptions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPInteractiveSegmenterOptions.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPInteractiveSegmenterOptions.h"; sourceTree = "<group>"; };
-		5208A975BA6FE0F1EF74920F /* MPPConnection.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPConnection.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPConnection.h"; sourceTree = "<group>"; };
-		53E22F6006DF9A3E58151957 /* MPPObjectDetectorResult.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPObjectDetectorResult.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPObjectDetectorResult.h"; sourceTree = "<group>"; };
-		54850683096B0C4076FFF3C0 /* MPPFaceStylizer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPFaceStylizer.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPFaceStylizer.h"; sourceTree = "<group>"; };
-		58E607A3B8A6D52111F93ED4 /* MPPHandLandmarker.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPHandLandmarker.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPHandLandmarker.h"; sourceTree = "<group>"; };
-		59F0B14787856F223C0C6E40 /* MPPFaceStylizerResult.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPFaceStylizerResult.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPFaceStylizerResult.h"; sourceTree = "<group>"; };
-		64D3D6C600F408501B4ED671 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = "<group>"; };
-		64F5A38193C9661BBDFCF64A /* MPPImageSegmenter.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPImageSegmenter.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPImageSegmenter.h"; sourceTree = "<group>"; };
-		6B5E572B1E16FBE703F782B0 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = "<group>"; };
-		793D8C3E74DB44620BD33089 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = "<group>"; };
-		7C65B10D434B1801E44D4DD2 /* MPPGestureRecognizer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPGestureRecognizer.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPGestureRecognizer.h"; sourceTree = "<group>"; };
-		7D952B3C24E665EA157707D3 /* MPPInteractiveSegmenter.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPInteractiveSegmenter.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPInteractiveSegmenter.h"; sourceTree = "<group>"; };
-		7EAA8350FD58D186415D85CA /* MPPHolisticLandmarkerResult.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPHolisticLandmarkerResult.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPHolisticLandmarkerResult.h"; sourceTree = "<group>"; };
-		7F03A89FA010B855DF23F42B /* MPPObjectDetector.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPObjectDetector.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPObjectDetector.h"; sourceTree = "<group>"; };
-		7F208DF44A600CFA60E19331 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = "<group>"; };
-		7FA2EF3EE4D6312CA462E3E3 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
-		8220BBABDC83567631A4EDCE /* MPPPoseLandmarkerOptions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPPoseLandmarkerOptions.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPPoseLandmarkerOptions.h"; sourceTree = "<group>"; };
-		85F7009B37EAC7CD603128B3 /* MPPPoseLandmarkerResult.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPPoseLandmarkerResult.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPPoseLandmarkerResult.h"; sourceTree = "<group>"; };
-		90CFE8B06B88CDF3C61F1B68 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = "<group>"; };
-		996132E59BBC3C02EDCFBCD7 /* MediaPipeTasksVision.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MediaPipeTasksVision.h; path = MediaPipeTasksVision/MediaPipeTasksVision.h; sourceTree = "<group>"; };
-		9B7A6CD6DC9906BF93436368 /* MPPImageEmbedder.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPImageEmbedder.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPImageEmbedder.h"; sourceTree = "<group>"; };
-		9F40E2D34FC0C7C33BC79FE5 /* MediaPipeTasksVision.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MediaPipeTasksVision.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		A1D5697D4AF41FA5906B4414 /* MPPHolisticLandmarkerOptions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPHolisticLandmarkerOptions.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPHolisticLandmarkerOptions.h"; sourceTree = "<group>"; };
-		A2D22D285C4794B51EF32362 /* MPPFaceDetector.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPFaceDetector.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPFaceDetector.h"; sourceTree = "<group>"; };
-		A3D544EC6F46D01D45EF0CC7 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = "<group>"; };
-		B4D781E1A52F2AD91246E1F8 /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = "<group>"; };
-		B676A603C92CD3C83D4017CF /* MPPHolisticLandmarker.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPHolisticLandmarker.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPHolisticLandmarker.h"; sourceTree = "<group>"; };
-		B7E401307495816E6D0280E6 /* MPPTaskResult.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPTaskResult.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPTaskResult.h"; sourceTree = "<group>"; };
-		BB05E52904C8EADDBCBDBBA5 /* MPPRunningMode.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPRunningMode.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPRunningMode.h"; sourceTree = "<group>"; };
-		BB9D8FE4816D51155E2E9428 /* MPPCommon.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPCommon.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPCommon.h"; sourceTree = "<group>"; };
-		BF1255545619493AF98D6B91 /* MPPForceLink.mm */ = {isa = PBXFileReference; includeInIndex = 1; name = MPPForceLink.mm; path = MediaPipeTasksVision/MPPForceLink.mm; sourceTree = "<group>"; };
-		C1C45CC0243767DFDD2F98C9 /* MPPPoseLandmarker.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPPoseLandmarker.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPPoseLandmarker.h"; sourceTree = "<group>"; };
-		C26CFEBE9969D737B7D51091 /* MPPFaceDetectorResult.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPFaceDetectorResult.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPFaceDetectorResult.h"; sourceTree = "<group>"; };
-		C2A9F76202368BB1FAD1E7AA /* MPPEmbeddingResult.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPEmbeddingResult.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPEmbeddingResult.h"; sourceTree = "<group>"; };
-		CDE9D2AC5E690686FD86FCCF /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = "<group>"; };
-		D3D46A2A5A35793A49D560B4 /* MPPImageEmbedderOptions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPImageEmbedderOptions.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPImageEmbedderOptions.h"; sourceTree = "<group>"; };
-		D8A7503C616D2D62CDF82F6D /* MPPEmbedding.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPEmbedding.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPEmbedding.h"; sourceTree = "<group>"; };
-		E1AD4F46553E461ECACDE695 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = "<group>"; };
-		E224A05FD3AA461D0773C82B /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = "<group>"; };
-		E2586F3A22EFD6E1FD76948D /* MPPImageSegmenterOptions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPImageSegmenterOptions.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPImageSegmenterOptions.h"; sourceTree = "<group>"; };
-		E4ADCDDA63F4119CEB7F70E0 /* MPPImage.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPImage.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPImage.h"; sourceTree = "<group>"; };
-		ED072D0CDB0E0D530E3728DE /* MPPRegionOfInterest.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPRegionOfInterest.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPRegionOfInterest.h"; sourceTree = "<group>"; };
-		F041400F6D6731F38182CF9F /* MPPLandmark.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPLandmark.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPLandmark.h"; sourceTree = "<group>"; };
-		F17B7576BC1B57C191E1E180 /* MediaPipeTasksVision.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MediaPipeTasksVision.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MediaPipeTasksVision.h"; sourceTree = "<group>"; };
-		FD02172B8B404F76A39C89DB /* MPPObjectDetectorOptions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPObjectDetectorOptions.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPObjectDetectorOptions.h"; sourceTree = "<group>"; };
-		FE48A326F16BAE1873B99C28 /* MPPFaceLandmarkerResult.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPFaceLandmarkerResult.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPFaceLandmarkerResult.h"; sourceTree = "<group>"; };
-		FE8FEA6574A6FEEC4FABAD22 /* MPPTaskOptions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPTaskOptions.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPTaskOptions.h"; sourceTree = "<group>"; };
+		042847404E04445E0FE49984 /* MPPHandLandmarkerOptions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPHandLandmarkerOptions.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPHandLandmarkerOptions.h"; sourceTree = "<group>"; };
+		057F55552B22FBFB048C69D3 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = "<group>"; };
+		08041025D61E2D6074DCBC04 /* MPPImageClassifierResult.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPImageClassifierResult.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPImageClassifierResult.h"; sourceTree = "<group>"; };
+		0AA0B65A1D99D6FE76E41BD7 /* MPPObjectDetectorOptions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPObjectDetectorOptions.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPObjectDetectorOptions.h"; sourceTree = "<group>"; };
+		11A2849AD645BC0A5BAF688E /* MPPImage.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPImage.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPImage.h"; sourceTree = "<group>"; };
+		12C14E606259BC6172E349CC /* MPPGestureRecognizer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPGestureRecognizer.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPGestureRecognizer.h"; sourceTree = "<group>"; };
+		14EA61ADFDF02FA040CA6AF7 /* MPPFaceDetectorResult.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPFaceDetectorResult.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPFaceDetectorResult.h"; sourceTree = "<group>"; };
+		17FE2EAAFE15E4FA1CD790F4 /* MPPPoseLandmarkerResult.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPPoseLandmarkerResult.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPPoseLandmarkerResult.h"; sourceTree = "<group>"; };
+		1997856652A3042AE175FA7B /* MPPCommon.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPCommon.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPCommon.h"; sourceTree = "<group>"; };
+		1BD115C68EB32F0BADF03199 /* MPPFaceStylizer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPFaceStylizer.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPFaceStylizer.h"; sourceTree = "<group>"; };
+		1ED0402DC9B4B644D65063D8 /* MPPGestureRecognizerOptions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPGestureRecognizerOptions.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPGestureRecognizerOptions.h"; sourceTree = "<group>"; };
+		1F07843B28F0690DD9F7AB9A /* MPPFaceStylizerResult.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPFaceStylizerResult.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPFaceStylizerResult.h"; sourceTree = "<group>"; };
+		1F37DAEE9E62362C6F53784F /* MPPObjectDetector.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPObjectDetector.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPObjectDetector.h"; sourceTree = "<group>"; };
+		233DB5A3A487909A60B43425 /* MPPFaceDetectorOptions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPFaceDetectorOptions.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPFaceDetectorOptions.h"; sourceTree = "<group>"; };
+		2597DDBA206D5264F81C283B /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = "<group>"; };
+		27A322BDBB29EEB60FEA7DDE /* MPPHolisticLandmarkerOptions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPHolisticLandmarkerOptions.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPHolisticLandmarkerOptions.h"; sourceTree = "<group>"; };
+		2E12E71E3BDCE0F0B1570F9A /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = "<group>"; };
+		36D2D28A3C74D656D2AFB1F6 /* MPPTaskResult.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPTaskResult.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPTaskResult.h"; sourceTree = "<group>"; };
+		3746061A30F50C42C275C7C9 /* MPPPoseLandmarkerOptions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPPoseLandmarkerOptions.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPPoseLandmarkerOptions.h"; sourceTree = "<group>"; };
+		3C16CB8CF977E73C61673E08 /* MediaPipeTasksVision.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MediaPipeTasksVision.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MediaPipeTasksVision.h"; sourceTree = "<group>"; };
+		3C18A1192C148238924827E0 /* MPPInteractiveSegmenterOptions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPInteractiveSegmenterOptions.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPInteractiveSegmenterOptions.h"; sourceTree = "<group>"; };
+		41EE3432D2669E857CE82720 /* MPPImageSegmenterResult.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPImageSegmenterResult.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPImageSegmenterResult.h"; sourceTree = "<group>"; };
+		46658469916D360D55E7FE74 /* MPPHandLandmarkerResult.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPHandLandmarkerResult.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPHandLandmarkerResult.h"; sourceTree = "<group>"; };
+		4AA3EEA0EEE380E96472002C /* MPPHandLandmarker.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPHandLandmarker.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPHandLandmarker.h"; sourceTree = "<group>"; };
+		4B779B7D405F13B64A905CB2 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = "<group>"; };
+		4F1CA9E9C149F0EC1FEDBDDD /* MPPImageClassifier.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPImageClassifier.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPImageClassifier.h"; sourceTree = "<group>"; };
+		4F57B0AE260DE9FCF2EEB9E1 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = "<group>"; };
+		591271D14D14491671ED4D33 /* MediaPipeTasksVision.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MediaPipeTasksVision.h; path = MediaPipeTasksVision/MediaPipeTasksVision.h; sourceTree = "<group>"; };
+		5ECB46784F31FB68B8A130DB /* MPPClassifierOptions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPClassifierOptions.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPClassifierOptions.h"; sourceTree = "<group>"; };
+		5F81452B2756181C9C397343 /* MPPFaceDetector.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPFaceDetector.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPFaceDetector.h"; sourceTree = "<group>"; };
+		61A84CE752217E7A2910DA78 /* MPPDetection.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPDetection.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPDetection.h"; sourceTree = "<group>"; };
+		623DCD2AECCA2E6CDF16D146 /* MPPFaceLandmarker.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPFaceLandmarker.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPFaceLandmarker.h"; sourceTree = "<group>"; };
+		65E8FF45DB5DD52CFFD3A7EE /* MPPImageEmbedderOptions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPImageEmbedderOptions.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPImageEmbedderOptions.h"; sourceTree = "<group>"; };
+		67D13FA82181229D5A8F153A /* MPPFaceStylizerOptions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPFaceStylizerOptions.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPFaceStylizerOptions.h"; sourceTree = "<group>"; };
+		6C30DD0B86E4D21BF5EC3115 /* MPPImageSegmenter.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPImageSegmenter.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPImageSegmenter.h"; sourceTree = "<group>"; };
+		6FB74C889DF2BA566C1D8702 /* MPPBaseOptions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPBaseOptions.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPBaseOptions.h"; sourceTree = "<group>"; };
+		787708E4D1DD118CCF61A4E0 /* MPPLandmark.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPLandmark.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPLandmark.h"; sourceTree = "<group>"; };
+		79BDD341FE95D085AFEA15F7 /* MPPPoseLandmarker.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPPoseLandmarker.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPPoseLandmarker.h"; sourceTree = "<group>"; };
+		7BF4FFDA7FFC5D7998A5CACA /* MPPHolisticLandmarker.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPHolisticLandmarker.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPHolisticLandmarker.h"; sourceTree = "<group>"; };
+		7E745998FFE16014D486C4E9 /* MPPHolisticLandmarkerResult.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPHolisticLandmarkerResult.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPHolisticLandmarkerResult.h"; sourceTree = "<group>"; };
+		86E84714CFD1116560D8B7C7 /* MPPMask.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPMask.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPMask.h"; sourceTree = "<group>"; };
+		8C8C42393B6F3FB0A5D07B0F /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = "<group>"; };
+		8F17E0380B2730F4C0E74433 /* MPPFaceLandmarkerResult.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPFaceLandmarkerResult.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPFaceLandmarkerResult.h"; sourceTree = "<group>"; };
+		8FDFBA5F528A5F5DAB59DCDF /* MPPGestureRecognizerResult.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPGestureRecognizerResult.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPGestureRecognizerResult.h"; sourceTree = "<group>"; };
+		909E3449FE26E879499F234B /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = "<group>"; };
+		955AF00156317EF3F4A16255 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = "<group>"; };
+		9C70AE03054DB9DFB0079D86 /* MPPClassificationResult.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPClassificationResult.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPClassificationResult.h"; sourceTree = "<group>"; };
+		A168E0C79EBA960136A31735 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = "<group>"; };
+		A2A98638AAF6DBA3DD045089 /* MPPInteractiveSegmenterResult.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPInteractiveSegmenterResult.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPInteractiveSegmenterResult.h"; sourceTree = "<group>"; };
+		B57765EB8829B2DE00F2A4F8 /* MPPFaceLandmarkerOptions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPFaceLandmarkerOptions.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPFaceLandmarkerOptions.h"; sourceTree = "<group>"; };
+		B593A31DD58BC567A5551A53 /* MPPRegionOfInterest.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPRegionOfInterest.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPRegionOfInterest.h"; sourceTree = "<group>"; };
+		B62A14334A6903881C8FA55F /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = "<group>"; };
+		B78C2196FDCFBEA945417D5E /* MPPImageSegmenterOptions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPImageSegmenterOptions.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPImageSegmenterOptions.h"; sourceTree = "<group>"; };
+		BA03FC3160C0D6427D7C41FC /* MPPImageEmbedderResult.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPImageEmbedderResult.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPImageEmbedderResult.h"; sourceTree = "<group>"; };
+		BEB41C47B59251F74F642F50 /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = "<group>"; };
+		C00671DAA4B16CCFBDB156A6 /* MPPCategory.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPCategory.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPCategory.h"; sourceTree = "<group>"; };
+		CAAD3038D248533C999BB353 /* MPPImageClassifierOptions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPImageClassifierOptions.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPImageClassifierOptions.h"; sourceTree = "<group>"; };
+		CB574A783CAA1C1DBDD2525B /* MPPEmbeddingResult.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPEmbeddingResult.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPEmbeddingResult.h"; sourceTree = "<group>"; };
+		D0553C14A845E6E7B74A0F5D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		D756EFD67F9A36B6EDF82C37 /* MPPForceLink.mm */ = {isa = PBXFileReference; includeInIndex = 1; name = MPPForceLink.mm; path = MediaPipeTasksVision/MPPForceLink.mm; sourceTree = "<group>"; };
+		D782FBC340E6AACF99E3D7BB /* MPPObjectDetectorResult.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPObjectDetectorResult.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPObjectDetectorResult.h"; sourceTree = "<group>"; };
+		DB3ACB19ACEDA37193961C31 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = "<group>"; };
+		E7DC20378ABB3B822CE35D4A /* MediaPipeTasksVision.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MediaPipeTasksVision.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		EB94CE921C9CC092731D196C /* MPPTaskOptions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPTaskOptions.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPTaskOptions.h"; sourceTree = "<group>"; };
+		EBB256C6BCF0E193D0F42CF4 /* MPPInteractiveSegmenter.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPInteractiveSegmenter.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPInteractiveSegmenter.h"; sourceTree = "<group>"; };
+		EC27F2B057CCA58AC597D22F /* MPPRunningMode.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPRunningMode.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPRunningMode.h"; sourceTree = "<group>"; };
+		EF0A8741517B739C08BD87E3 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = "<group>"; };
+		F1C838224229B26EAF690175 /* MPPEmbedding.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPEmbedding.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPEmbedding.h"; sourceTree = "<group>"; };
+		F866E42261235D1C074CC5ED /* MPPConnection.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPConnection.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPConnection.h"; sourceTree = "<group>"; };
+		FE9487D0D9C1B5AB2D91E13F /* MPPImageEmbedder.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MPPImageEmbedder.h; path = "../Pods/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers/MPPImageEmbedder.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		EBE5702BCE821B11181FC1B9 /* Frameworks */ = {
+		ABB55F1BEA917EA6139F4284 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				15C11E9BDCBEF90F16EE0FFD /* Foundation.framework in Frameworks */,
-				5C2ED4E865C5E3F34F7C58AC /* AVFoundation.framework in Frameworks */,
-				CC54D01C162D75A8B7A9BA68 /* Accelerate.framework in Frameworks */,
-				431AFFC35D7C10187CBBD732 /* CoreGraphics.framework in Frameworks */,
-				26844B1FC68D367C1F15070A /* CoreImage.framework in Frameworks */,
-				BA97BCC184B64EDDE7D006FE /* CoreMedia.framework in Frameworks */,
-				1A127026770592F0586385A9 /* CoreVideo.framework in Frameworks */,
-				578077B2BFB5C6AF21AC1F19 /* Foundation.framework in Frameworks */,
-				2CB6660DE259AA976AC922D4 /* ImageIO.framework in Frameworks */,
-				1C284D3B9FF18FD97F6AD658 /* Metal.framework in Frameworks */,
-				17A9BFFFD65966C236210022 /* MetalKit.framework in Frameworks */,
-				D54C2FA35B0769EE09134D0A /* OpenGLES.framework in Frameworks */,
-				6FD019C3465D00353CE051DE /* QuartzCore.framework in Frameworks */,
-				CE159FED05B8F175AA5394B9 /* UIKit.framework in Frameworks */,
+				839A92CC3B44BBE99A44513F /* Foundation.framework in Frameworks */,
+				0B5B88B555A0BB78C66671F6 /* AVFoundation.framework in Frameworks */,
+				B15FB21B56186378AA92AAEA /* Accelerate.framework in Frameworks */,
+				1EB75C0C4830F8C95C108EC7 /* CoreGraphics.framework in Frameworks */,
+				AFF62B3401805DC749ED40E5 /* CoreImage.framework in Frameworks */,
+				1A3AE2E07C83914DEA0132A3 /* CoreMedia.framework in Frameworks */,
+				1A373379966B99D038F23468 /* CoreVideo.framework in Frameworks */,
+				4037755688EFC2A2B5905B70 /* Foundation.framework in Frameworks */,
+				0F3A1CBF11C989A050034A30 /* ImageIO.framework in Frameworks */,
+				6D0AD638A43C2DCD096E131B /* Metal.framework in Frameworks */,
+				F5A886C1773319FA218C5459 /* MetalKit.framework in Frameworks */,
+				1255AEF86539CEDB63C23679 /* OpenGLES.framework in Frameworks */,
+				EC5AB3C186458144FE4DACAE /* QuartzCore.framework in Frameworks */,
+				DD21DF9AC49F8A13063F82CC /* UIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		4E46BD62F128910B7E1CF251 /* Products */ = {
+		49C101A262542739EB1C3E62 /* iOS */ = {
 			isa = PBXGroup;
 			children = (
-				9F40E2D34FC0C7C33BC79FE5 /* MediaPipeTasksVision.framework */,
+				D0553C14A845E6E7B74A0F5D /* Foundation.framework */,
 			);
-			name = Products;
+			name = iOS;
 			sourceTree = "<group>";
 		};
-		672A7F8C10E0756B2D64CCD4 /* Frameworks */ = {
+		4A96680DD73AEAF84A91E875 = {
 			isa = PBXGroup;
 			children = (
-				F7F0BEC4DE180146F638351A /* iOS */,
-				CDE9D2AC5E690686FD86FCCF /* AVFoundation.framework */,
-				90CFE8B06B88CDF3C61F1B68 /* Accelerate.framework */,
-				3CE15268E5CF9539CD291B56 /* CoreGraphics.framework */,
-				E1AD4F46553E461ECACDE695 /* CoreImage.framework */,
-				022F1DB3FE8A563FDC34B1DE /* CoreMedia.framework */,
-				6B5E572B1E16FBE703F782B0 /* CoreVideo.framework */,
-				7F208DF44A600CFA60E19331 /* Foundation.framework */,
-				3EBE17E13AA1069C15E43D0C /* ImageIO.framework */,
-				A3D544EC6F46D01D45EF0CC7 /* Metal.framework */,
-				B4D781E1A52F2AD91246E1F8 /* MetalKit.framework */,
-				793D8C3E74DB44620BD33089 /* OpenGLES.framework */,
-				64D3D6C600F408501B4ED671 /* QuartzCore.framework */,
-				E224A05FD3AA461D0773C82B /* UIKit.framework */,
+				E77E0800FE8126B317FD685E /* Products */,
+				78459484C03E126A9BB95638 /* Frameworks */,
+				D756EFD67F9A36B6EDF82C37 /* MPPForceLink.mm */,
+				591271D14D14491671ED4D33 /* MediaPipeTasksVision.h */,
+				6FB74C889DF2BA566C1D8702 /* MPPBaseOptions.h */,
+				C00671DAA4B16CCFBDB156A6 /* MPPCategory.h */,
+				9C70AE03054DB9DFB0079D86 /* MPPClassificationResult.h */,
+				5ECB46784F31FB68B8A130DB /* MPPClassifierOptions.h */,
+				1997856652A3042AE175FA7B /* MPPCommon.h */,
+				F866E42261235D1C074CC5ED /* MPPConnection.h */,
+				61A84CE752217E7A2910DA78 /* MPPDetection.h */,
+				F1C838224229B26EAF690175 /* MPPEmbedding.h */,
+				CB574A783CAA1C1DBDD2525B /* MPPEmbeddingResult.h */,
+				5F81452B2756181C9C397343 /* MPPFaceDetector.h */,
+				233DB5A3A487909A60B43425 /* MPPFaceDetectorOptions.h */,
+				14EA61ADFDF02FA040CA6AF7 /* MPPFaceDetectorResult.h */,
+				623DCD2AECCA2E6CDF16D146 /* MPPFaceLandmarker.h */,
+				B57765EB8829B2DE00F2A4F8 /* MPPFaceLandmarkerOptions.h */,
+				8F17E0380B2730F4C0E74433 /* MPPFaceLandmarkerResult.h */,
+				1BD115C68EB32F0BADF03199 /* MPPFaceStylizer.h */,
+				67D13FA82181229D5A8F153A /* MPPFaceStylizerOptions.h */,
+				1F07843B28F0690DD9F7AB9A /* MPPFaceStylizerResult.h */,
+				12C14E606259BC6172E349CC /* MPPGestureRecognizer.h */,
+				1ED0402DC9B4B644D65063D8 /* MPPGestureRecognizerOptions.h */,
+				8FDFBA5F528A5F5DAB59DCDF /* MPPGestureRecognizerResult.h */,
+				4AA3EEA0EEE380E96472002C /* MPPHandLandmarker.h */,
+				042847404E04445E0FE49984 /* MPPHandLandmarkerOptions.h */,
+				46658469916D360D55E7FE74 /* MPPHandLandmarkerResult.h */,
+				7BF4FFDA7FFC5D7998A5CACA /* MPPHolisticLandmarker.h */,
+				27A322BDBB29EEB60FEA7DDE /* MPPHolisticLandmarkerOptions.h */,
+				7E745998FFE16014D486C4E9 /* MPPHolisticLandmarkerResult.h */,
+				11A2849AD645BC0A5BAF688E /* MPPImage.h */,
+				4F1CA9E9C149F0EC1FEDBDDD /* MPPImageClassifier.h */,
+				CAAD3038D248533C999BB353 /* MPPImageClassifierOptions.h */,
+				08041025D61E2D6074DCBC04 /* MPPImageClassifierResult.h */,
+				FE9487D0D9C1B5AB2D91E13F /* MPPImageEmbedder.h */,
+				65E8FF45DB5DD52CFFD3A7EE /* MPPImageEmbedderOptions.h */,
+				BA03FC3160C0D6427D7C41FC /* MPPImageEmbedderResult.h */,
+				6C30DD0B86E4D21BF5EC3115 /* MPPImageSegmenter.h */,
+				B78C2196FDCFBEA945417D5E /* MPPImageSegmenterOptions.h */,
+				41EE3432D2669E857CE82720 /* MPPImageSegmenterResult.h */,
+				EBB256C6BCF0E193D0F42CF4 /* MPPInteractiveSegmenter.h */,
+				3C18A1192C148238924827E0 /* MPPInteractiveSegmenterOptions.h */,
+				A2A98638AAF6DBA3DD045089 /* MPPInteractiveSegmenterResult.h */,
+				787708E4D1DD118CCF61A4E0 /* MPPLandmark.h */,
+				86E84714CFD1116560D8B7C7 /* MPPMask.h */,
+				1F37DAEE9E62362C6F53784F /* MPPObjectDetector.h */,
+				0AA0B65A1D99D6FE76E41BD7 /* MPPObjectDetectorOptions.h */,
+				D782FBC340E6AACF99E3D7BB /* MPPObjectDetectorResult.h */,
+				79BDD341FE95D085AFEA15F7 /* MPPPoseLandmarker.h */,
+				3746061A30F50C42C275C7C9 /* MPPPoseLandmarkerOptions.h */,
+				17FE2EAAFE15E4FA1CD790F4 /* MPPPoseLandmarkerResult.h */,
+				B593A31DD58BC567A5551A53 /* MPPRegionOfInterest.h */,
+				EC27F2B057CCA58AC597D22F /* MPPRunningMode.h */,
+				EB94CE921C9CC092731D196C /* MPPTaskOptions.h */,
+				36D2D28A3C74D656D2AFB1F6 /* MPPTaskResult.h */,
+				3C16CB8CF977E73C61673E08 /* MediaPipeTasksVision.h */,
+			);
+			sourceTree = "<group>";
+		};
+		78459484C03E126A9BB95638 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				49C101A262542739EB1C3E62 /* iOS */,
+				DB3ACB19ACEDA37193961C31 /* AVFoundation.framework */,
+				2E12E71E3BDCE0F0B1570F9A /* Accelerate.framework */,
+				4B779B7D405F13B64A905CB2 /* CoreGraphics.framework */,
+				909E3449FE26E879499F234B /* CoreImage.framework */,
+				2597DDBA206D5264F81C283B /* CoreMedia.framework */,
+				A168E0C79EBA960136A31735 /* CoreVideo.framework */,
+				EF0A8741517B739C08BD87E3 /* Foundation.framework */,
+				B62A14334A6903881C8FA55F /* ImageIO.framework */,
+				955AF00156317EF3F4A16255 /* Metal.framework */,
+				BEB41C47B59251F74F642F50 /* MetalKit.framework */,
+				057F55552B22FBFB048C69D3 /* OpenGLES.framework */,
+				8C8C42393B6F3FB0A5D07B0F /* QuartzCore.framework */,
+				4F57B0AE260DE9FCF2EEB9E1 /* UIKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		95539CC21EFDD45C9358A659 = {
+		E77E0800FE8126B317FD685E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				4E46BD62F128910B7E1CF251 /* Products */,
-				672A7F8C10E0756B2D64CCD4 /* Frameworks */,
-				BF1255545619493AF98D6B91 /* MPPForceLink.mm */,
-				996132E59BBC3C02EDCFBCD7 /* MediaPipeTasksVision.h */,
-				0CD05835DD26A5E528A72178 /* MPPBaseOptions.h */,
-				1304D0679269B1C728CF22BD /* MPPCategory.h */,
-				4ECEAB5774DA6045D795BDC9 /* MPPClassificationResult.h */,
-				42BB87BD49874E95C53EB778 /* MPPClassifierOptions.h */,
-				BB9D8FE4816D51155E2E9428 /* MPPCommon.h */,
-				5208A975BA6FE0F1EF74920F /* MPPConnection.h */,
-				026C74615650A4D6D62B96A2 /* MPPDetection.h */,
-				D8A7503C616D2D62CDF82F6D /* MPPEmbedding.h */,
-				C2A9F76202368BB1FAD1E7AA /* MPPEmbeddingResult.h */,
-				A2D22D285C4794B51EF32362 /* MPPFaceDetector.h */,
-				13492B22C662983C673776E6 /* MPPFaceDetectorOptions.h */,
-				C26CFEBE9969D737B7D51091 /* MPPFaceDetectorResult.h */,
-				34C620BC71E7F9F3D64519B1 /* MPPFaceLandmarker.h */,
-				1A8679A903CEB7D55C3FF411 /* MPPFaceLandmarkerOptions.h */,
-				FE48A326F16BAE1873B99C28 /* MPPFaceLandmarkerResult.h */,
-				54850683096B0C4076FFF3C0 /* MPPFaceStylizer.h */,
-				4FF9496C61C9911A277A7751 /* MPPFaceStylizerOptions.h */,
-				59F0B14787856F223C0C6E40 /* MPPFaceStylizerResult.h */,
-				7C65B10D434B1801E44D4DD2 /* MPPGestureRecognizer.h */,
-				2F64D508D35B11C6DB934625 /* MPPGestureRecognizerOptions.h */,
-				474402D5F82EBA97CC48E721 /* MPPGestureRecognizerResult.h */,
-				58E607A3B8A6D52111F93ED4 /* MPPHandLandmarker.h */,
-				1073FF492F094007E0F5B297 /* MPPHandLandmarkerOptions.h */,
-				1F2B30BB12FC81B2E5C3573E /* MPPHandLandmarkerResult.h */,
-				B676A603C92CD3C83D4017CF /* MPPHolisticLandmarker.h */,
-				A1D5697D4AF41FA5906B4414 /* MPPHolisticLandmarkerOptions.h */,
-				7EAA8350FD58D186415D85CA /* MPPHolisticLandmarkerResult.h */,
-				E4ADCDDA63F4119CEB7F70E0 /* MPPImage.h */,
-				498820FDAD9F588DCC8D8483 /* MPPImageClassifier.h */,
-				22055E309FD5963A831731B7 /* MPPImageClassifierOptions.h */,
-				24820CF785928CF675F8CD9A /* MPPImageClassifierResult.h */,
-				9B7A6CD6DC9906BF93436368 /* MPPImageEmbedder.h */,
-				D3D46A2A5A35793A49D560B4 /* MPPImageEmbedderOptions.h */,
-				11CCCFDEC9B41165312D513E /* MPPImageEmbedderResult.h */,
-				64F5A38193C9661BBDFCF64A /* MPPImageSegmenter.h */,
-				E2586F3A22EFD6E1FD76948D /* MPPImageSegmenterOptions.h */,
-				1941025656BEEA2E98A68CBD /* MPPImageSegmenterResult.h */,
-				7D952B3C24E665EA157707D3 /* MPPInteractiveSegmenter.h */,
-				50E1EA74A1216231F929D874 /* MPPInteractiveSegmenterOptions.h */,
-				1D63EDA90BB0F65EB2882E4E /* MPPInteractiveSegmenterResult.h */,
-				F041400F6D6731F38182CF9F /* MPPLandmark.h */,
-				2087E5CA07AA748C5BB86FD8 /* MPPMask.h */,
-				7F03A89FA010B855DF23F42B /* MPPObjectDetector.h */,
-				FD02172B8B404F76A39C89DB /* MPPObjectDetectorOptions.h */,
-				53E22F6006DF9A3E58151957 /* MPPObjectDetectorResult.h */,
-				C1C45CC0243767DFDD2F98C9 /* MPPPoseLandmarker.h */,
-				8220BBABDC83567631A4EDCE /* MPPPoseLandmarkerOptions.h */,
-				85F7009B37EAC7CD603128B3 /* MPPPoseLandmarkerResult.h */,
-				ED072D0CDB0E0D530E3728DE /* MPPRegionOfInterest.h */,
-				BB05E52904C8EADDBCBDBBA5 /* MPPRunningMode.h */,
-				FE8FEA6574A6FEEC4FABAD22 /* MPPTaskOptions.h */,
-				B7E401307495816E6D0280E6 /* MPPTaskResult.h */,
-				F17B7576BC1B57C191E1E180 /* MediaPipeTasksVision.h */,
+				E7DC20378ABB3B822CE35D4A /* MediaPipeTasksVision.framework */,
 			);
-			sourceTree = "<group>";
-		};
-		F7F0BEC4DE180146F638351A /* iOS */ = {
-			isa = PBXGroup;
-			children = (
-				7FA2EF3EE4D6312CA462E3E3 /* Foundation.framework */,
-			);
-			name = iOS;
+			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		FAD43A63D89A9D9706762CE0 /* Headers */ = {
+		00FCB8A7F8B67F09469B982D /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BBD67F096B300361CC44386F /* MediaPipeTasksVision.h in Headers */,
-				9F820376E17D9CC00C7C96C8 /* MPPBaseOptions.h in Headers */,
-				48114528E0B7CC3ED3055F58 /* MPPCategory.h in Headers */,
-				A97BB9A8AACC3E8AA4DA7AED /* MPPClassificationResult.h in Headers */,
-				242D1D192B5C03C27E8CDB1F /* MPPClassifierOptions.h in Headers */,
-				6513DFEDE8D5E376074353BE /* MPPCommon.h in Headers */,
-				667B3F32ECB463BB4AF3A070 /* MPPConnection.h in Headers */,
-				F01FDCEEFA4BB0BD76813BCC /* MPPDetection.h in Headers */,
-				60EF0378FCCF37F0EC749E2F /* MPPEmbedding.h in Headers */,
-				12A7FB1FE1C42EAAD5B4E3A1 /* MPPEmbeddingResult.h in Headers */,
-				90174556926FA38926E11549 /* MPPFaceDetector.h in Headers */,
-				6DAD3CC46DEB83D7B1799C77 /* MPPFaceDetectorOptions.h in Headers */,
-				BEC6813707F39D3FFF9BBB93 /* MPPFaceDetectorResult.h in Headers */,
-				14CD5133B844B31572735D5B /* MPPFaceLandmarker.h in Headers */,
-				DD7778945BF05B0704B01CB0 /* MPPFaceLandmarkerOptions.h in Headers */,
-				C2B086087200835E27673240 /* MPPFaceLandmarkerResult.h in Headers */,
-				0A46039C34B4258187988B49 /* MPPFaceStylizer.h in Headers */,
-				193638A5A1380865B83D68A3 /* MPPFaceStylizerOptions.h in Headers */,
-				411E0D8366EC62777CAE69D5 /* MPPFaceStylizerResult.h in Headers */,
-				6216F825D4443222FE1C39AD /* MPPGestureRecognizer.h in Headers */,
-				6A5B1347864F63AFB53F75F6 /* MPPGestureRecognizerOptions.h in Headers */,
-				1E4628188D82FBFDE7343096 /* MPPGestureRecognizerResult.h in Headers */,
-				871322CAB3EFCAD0881F381F /* MPPHandLandmarker.h in Headers */,
-				662EA9632DEAAA5C35A39355 /* MPPHandLandmarkerOptions.h in Headers */,
-				1262172D649D5191FB70D319 /* MPPHandLandmarkerResult.h in Headers */,
-				599F9CD3BF2FAF74497AFF9C /* MPPHolisticLandmarker.h in Headers */,
-				320D45284A4531CD68B4DD3F /* MPPHolisticLandmarkerOptions.h in Headers */,
-				0775A1A1BC81547E353336A7 /* MPPHolisticLandmarkerResult.h in Headers */,
-				AC7E462E4A2FC53346836EB6 /* MPPImage.h in Headers */,
-				7574DA287DAFAA031216D73A /* MPPImageClassifier.h in Headers */,
-				A211D54FF56D16ADE42D4333 /* MPPImageClassifierOptions.h in Headers */,
-				C25FAA122059BBD9AA1B7F89 /* MPPImageClassifierResult.h in Headers */,
-				E137AC031A02FD5C11493FDB /* MPPImageEmbedder.h in Headers */,
-				89DA8AA583ECAF829C011D60 /* MPPImageEmbedderOptions.h in Headers */,
-				6DBA61157C7625BC6EC3A116 /* MPPImageEmbedderResult.h in Headers */,
-				98E5CFF98CAF5F01B8A3B1AA /* MPPImageSegmenter.h in Headers */,
-				02017AC4C5C9A8D9ABE97BE3 /* MPPImageSegmenterOptions.h in Headers */,
-				484917D85AF38FBC49ED12BC /* MPPImageSegmenterResult.h in Headers */,
-				902E124496EAC2DCA3678927 /* MPPInteractiveSegmenter.h in Headers */,
-				E2D5402DC1FDB14FC3A345CE /* MPPInteractiveSegmenterOptions.h in Headers */,
-				115F1708459E2889CE49EEEC /* MPPInteractiveSegmenterResult.h in Headers */,
-				15A3077655B02113826EE42A /* MPPLandmark.h in Headers */,
-				52813676DB35E5E770F29C2F /* MPPMask.h in Headers */,
-				C011B5E8A3043D124260F15F /* MPPObjectDetector.h in Headers */,
-				27369C1EC59A7A41B0D5DE88 /* MPPObjectDetectorOptions.h in Headers */,
-				5FB57DFF6D72B36F416D08C3 /* MPPObjectDetectorResult.h in Headers */,
-				E3D2ADD2A500B76D418F71B2 /* MPPPoseLandmarker.h in Headers */,
-				A2DC2B60CD35E87C17D6365C /* MPPPoseLandmarkerOptions.h in Headers */,
-				A696F9FD5D20CFC7D0BD6F49 /* MPPPoseLandmarkerResult.h in Headers */,
-				71DBE597FBD6E4B000A408D0 /* MPPRegionOfInterest.h in Headers */,
-				6A6A30326139E4ABF488F887 /* MPPRunningMode.h in Headers */,
-				872E2250553B6FEF397400F9 /* MPPTaskOptions.h in Headers */,
-				11C10C9E37BDD029063D2C7D /* MPPTaskResult.h in Headers */,
-				653BC50F4E2C66009202210F /* MediaPipeTasksVision.h in Headers */,
+				B27BBCBC3EDA22833F1AD537 /* MediaPipeTasksVision.h in Headers */,
+				46EB2537EE3A7FE1C2A8AE67 /* MPPBaseOptions.h in Headers */,
+				7D6698394B4B85D08FBFEEDB /* MPPCategory.h in Headers */,
+				66FF0392A338B258A33B05C4 /* MPPClassificationResult.h in Headers */,
+				85196111D4E092D791F0A36A /* MPPClassifierOptions.h in Headers */,
+				AB20047FF431D75676CAF38D /* MPPCommon.h in Headers */,
+				EC5FA1F808BC1DF57CBE1885 /* MPPConnection.h in Headers */,
+				74FCE6C13D32397F9A040765 /* MPPDetection.h in Headers */,
+				54C8792281921180C75795EB /* MPPEmbedding.h in Headers */,
+				93C5093A406183FC006F896E /* MPPEmbeddingResult.h in Headers */,
+				4E2BC50D11EF4A569D12CC9E /* MPPFaceDetector.h in Headers */,
+				89E03DC4197C776041BAEA65 /* MPPFaceDetectorOptions.h in Headers */,
+				45439CB3AA105EA55EC369C4 /* MPPFaceDetectorResult.h in Headers */,
+				D24D206462DAE19089ECA318 /* MPPFaceLandmarker.h in Headers */,
+				7FAD6B9E960C358EBE050ADC /* MPPFaceLandmarkerOptions.h in Headers */,
+				B90BECC025B1BAB0CDA7D34B /* MPPFaceLandmarkerResult.h in Headers */,
+				AAC2B81553120E39D3E45D24 /* MPPFaceStylizer.h in Headers */,
+				92E8957D17EAACC07023B39C /* MPPFaceStylizerOptions.h in Headers */,
+				D27180D7556F65773D332D57 /* MPPFaceStylizerResult.h in Headers */,
+				7D1E112FB21790353316C678 /* MPPGestureRecognizer.h in Headers */,
+				5588D8A51AA209CE889200FE /* MPPGestureRecognizerOptions.h in Headers */,
+				2232E9B07B3756B3A16B1C5A /* MPPGestureRecognizerResult.h in Headers */,
+				A2588E5FDAFBB4AE904C0D60 /* MPPHandLandmarker.h in Headers */,
+				9409178F0F57347514E7FA17 /* MPPHandLandmarkerOptions.h in Headers */,
+				2A01165915C40F9C925B7084 /* MPPHandLandmarkerResult.h in Headers */,
+				0DAD9017D7ABAC21EC44A459 /* MPPHolisticLandmarker.h in Headers */,
+				92FA51D16D76FA441CDD01F1 /* MPPHolisticLandmarkerOptions.h in Headers */,
+				2B1DF07B8F2DA58EF07D6BA7 /* MPPHolisticLandmarkerResult.h in Headers */,
+				CEB51896290907813A585DCA /* MPPImage.h in Headers */,
+				B4CFFA1EEA705F11BCFAC428 /* MPPImageClassifier.h in Headers */,
+				626307737F26506E273ADF2C /* MPPImageClassifierOptions.h in Headers */,
+				35868B05EC21778E5DFA474D /* MPPImageClassifierResult.h in Headers */,
+				91C1F7845ADF6BBFD3BF3A0D /* MPPImageEmbedder.h in Headers */,
+				9E75FD1934F500501C5178E3 /* MPPImageEmbedderOptions.h in Headers */,
+				F1CDBC3DFD579EE7FCA52E6C /* MPPImageEmbedderResult.h in Headers */,
+				27EADE6E53821D09F55FFC2A /* MPPImageSegmenter.h in Headers */,
+				0BF24BD97E5FE52A905E22A7 /* MPPImageSegmenterOptions.h in Headers */,
+				55DB367861DC6A79F393684B /* MPPImageSegmenterResult.h in Headers */,
+				582A9F7DFEB2FA926B677938 /* MPPInteractiveSegmenter.h in Headers */,
+				5B08CE084B8B1EFDB4620D13 /* MPPInteractiveSegmenterOptions.h in Headers */,
+				B08B334CE4B127FE5EE0E9D3 /* MPPInteractiveSegmenterResult.h in Headers */,
+				036A618C5EF2D06F1CE3BB6C /* MPPLandmark.h in Headers */,
+				1A3D9D31DD4484B070919E92 /* MPPMask.h in Headers */,
+				5CF6E13320BCC7813C5D15D6 /* MPPObjectDetector.h in Headers */,
+				9BCB16DE7F94D1EFD6012BB6 /* MPPObjectDetectorOptions.h in Headers */,
+				B4ECB2BBD7860DCA70DD9E9A /* MPPObjectDetectorResult.h in Headers */,
+				CDEB7045E861BBB6A9FECDD5 /* MPPPoseLandmarker.h in Headers */,
+				2BECB972D65DB864AD5C9F33 /* MPPPoseLandmarkerOptions.h in Headers */,
+				252624D41975FC089281316D /* MPPPoseLandmarkerResult.h in Headers */,
+				73C31A2204819DC68FC67073 /* MPPRegionOfInterest.h in Headers */,
+				F5B609096EDE3721687C4FAF /* MPPRunningMode.h in Headers */,
+				A55D581B473C8B6420E4DB1A /* MPPTaskOptions.h in Headers */,
+				04B68815B140119835325708 /* MPPTaskResult.h in Headers */,
+				D8A6AB5FDF2C2F51ED10540D /* MediaPipeTasksVision.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		71F853A5F785570048E9455C /* MediaPipeTasksVision */ = {
+		8D8C950AC63E583A3B00F7CD /* MediaPipeTasksVision */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D8BCC1E4064EDDE87238E1C7 /* Build configuration list for PBXNativeTarget "MediaPipeTasksVision" */;
+			buildConfigurationList = 1A452EF047C4CDE7E2B1C14C /* Build configuration list for PBXNativeTarget "MediaPipeTasksVision" */;
 			buildPhases = (
-				FAD43A63D89A9D9706762CE0 /* Headers */,
-				18BDE5761C1B6E7256F494B5 /* Sources */,
-				EBE5702BCE821B11181FC1B9 /* Frameworks */,
-				EFC6253E1FC16D7AB8044939 /* Resources */,
+				00FCB8A7F8B67F09469B982D /* Headers */,
+				74085D69E789C3C4A282D9EF /* Sources */,
+				ABB55F1BEA917EA6139F4284 /* Frameworks */,
+				3FA02D50550A2EC2D6C2B666 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -358,19 +358,19 @@
 			);
 			name = MediaPipeTasksVision;
 			productName = MediaPipeTasksVision;
-			productReference = 9F40E2D34FC0C7C33BC79FE5 /* MediaPipeTasksVision.framework */;
+			productReference = E7DC20378ABB3B822CE35D4A /* MediaPipeTasksVision.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		BB65DBAF3EE86CC82D7B6B04 /* Project object */ = {
+		432E032F56B98D511402525C /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1600;
 				LastUpgradeCheck = 1600;
 			};
-			buildConfigurationList = A17DBBC63817003B4908613F /* Build configuration list for PBXProject "MediaPipeTasksVisionWrapper" */;
+			buildConfigurationList = 9EE9C28645AFBDA3E096A4DB /* Build configuration list for PBXProject "MediaPipeTasksVisionWrapper" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -378,20 +378,20 @@
 				en,
 				Base,
 			);
-			mainGroup = 95539CC21EFDD45C9358A659;
+			mainGroup = 4A96680DD73AEAF84A91E875;
 			minimizedProjectReferenceProxies = 0;
 			preferredProjectObjectVersion = 100;
-			productRefGroup = 4E46BD62F128910B7E1CF251 /* Products */;
+			productRefGroup = E77E0800FE8126B317FD685E /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				71F853A5F785570048E9455C /* MediaPipeTasksVision */,
+				8D8C950AC63E583A3B00F7CD /* MediaPipeTasksVision */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		EFC6253E1FC16D7AB8044939 /* Resources */ = {
+		3FA02D50550A2EC2D6C2B666 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -401,57 +401,18 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		18BDE5761C1B6E7256F494B5 /* Sources */ = {
+		74085D69E789C3C4A282D9EF /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				37A92DF6B381C28AF032A1BF /* MPPForceLink.mm in Sources */,
+				EBAFF17342B7F62A40269DEC /* MPPForceLink.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		18DA891164EB80E95F042F53 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = arm64;
-				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGNING_ALLOWED = NO;
-				CODE_SIGNING_REQUIRED = NO;
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				HEADER_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = MediaPipeTasksVision/Info.plist;
-				INSTALLHDRS_COPY_PHASE = YES;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MACH_O_TYPE = mh_dylib;
-				MARKETING_VERSION = 0.0.1;
-				MODULEMAP_FILE = "$(SRCROOT)/MediaPipeTasksVision/module.modulemap";
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-ObjC",
-					"-lc++",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.vcamapp.mediapipe.tasks.vision;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				PUBLIC_HEADERS_FOLDER_PATH = Headers;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = NO;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
-		};
-		46FE76D988FD0AA9074F8FDD /* Release */ = {
+		3DC754335F13562A768F9B28 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = arm64;
@@ -491,7 +452,100 @@
 			};
 			name = Release;
 		};
-		47D8EB978DBF7F09BA7177CA /* Debug */ = {
+		5922EDAD6580830648DEF0A8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		A4DFF822BED4490B5CA400DA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = MediaPipeTasksVision/Info.plist;
+				INSTALLHDRS_COPY_PHASE = YES;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MACH_O_TYPE = mh_dylib;
+				MARKETING_VERSION = 0.0.1;
+				MODULEMAP_FILE = "$(SRCROOT)/MediaPipeTasksVision/module.modulemap";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.vcamapp.mediapipe.tasks.vision;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PUBLIC_HEADERS_FOLDER_PATH = Headers;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		BAAF22A26178AB97F1CAA0FA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -552,82 +606,28 @@
 			};
 			name = Debug;
 		};
-		5413669F600D772A9D73DBA3 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				MTL_FAST_MATH = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
-				SWIFT_VERSION = 5.0;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		A17DBBC63817003B4908613F /* Build configuration list for PBXProject "MediaPipeTasksVisionWrapper" */ = {
+		1A452EF047C4CDE7E2B1C14C /* Build configuration list for PBXNativeTarget "MediaPipeTasksVision" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				47D8EB978DBF7F09BA7177CA /* Debug */,
-				5413669F600D772A9D73DBA3 /* Release */,
+				3DC754335F13562A768F9B28 /* Release */,
+				A4DFF822BED4490B5CA400DA /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D8BCC1E4064EDDE87238E1C7 /* Build configuration list for PBXNativeTarget "MediaPipeTasksVision" */ = {
+		9EE9C28645AFBDA3E096A4DB /* Build configuration list for PBXProject "MediaPipeTasksVisionWrapper" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				46FE76D988FD0AA9074F8FDD /* Release */,
-				18DA891164EB80E95F042F53 /* Debug */,
+				BAAF22A26178AB97F1CAA0FA /* Debug */,
+				5922EDAD6580830648DEF0A8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = BB65DBAF3EE86CC82D7B6B04 /* Project object */;
+	rootObject = 432E032F56B98D511402525C /* Project object */;
 }
