@@ -28,16 +28,6 @@ cat > "$root_dir/.build-artifacts/release-notes.md" <<EOF
 - Minimum iOS version: ${MINIMUM_IOS_VERSION}
 - Device architectures: arm64
 - Simulator architectures: arm64
-
-### Installation
-
-Swift code:
-import MediaPipeTasksVision
-
-### Artifact
-
-- MediaPipeTasksVision.xcframework.zip
-- SHA-256: ${sha}
 EOF
 {
   cat "$root_dir/THIRD_PARTY_NOTICES.md"
