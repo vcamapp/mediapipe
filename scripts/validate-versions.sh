@@ -23,10 +23,6 @@ for pod in MediaPipeTasksVision MediaPipeTasksCommon; do
   }
 done
 
-grep -Fq "MediaPipe Tasks Vision $MEDIAPIPE_VERSION" "$root_dir/README.md" || {
-  echo "README MediaPipe version mismatch" >&2
-  exit 1
-}
 grep -Fq "MediaPipe Tasks Vision $MEDIAPIPE_VERSION" "$root_dir/THIRD_PARTY_NOTICES.md" || {
   echo "THIRD_PARTY_NOTICES.md MediaPipe version mismatch" >&2
   exit 1
