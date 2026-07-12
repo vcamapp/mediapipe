@@ -21,10 +21,6 @@ xcode_version=$(xcodebuild -version | tr '\n' ' ' | sed 's/  */ /g')
 cocoapods_version=$(bundle exec pod --version)
 printf '{"repository":"vcamapp/mediapipe","packageVersion":"%s","packageBuild":"%s","mediaPipeVersion":"%s","gitCommit":"%s","podfileLockSHA256":"%s","minimumIOSVersion":"%s","deviceArchitectures":["arm64"],"simulatorArchitectures":["arm64"],"xcodeVersion":"%s","cocoaPodsVersion":"%s","artifactSHA256":"%s"}\n' "$PACKAGE_VERSION" "$PACKAGE_BUILD" "$MEDIAPIPE_VERSION" "$git_commit" "$podfile_lock_sha" "$MINIMUM_IOS_VERSION" "$xcode_version" "$cocoapods_version" "$sha" > "$root_dir/.build-artifacts/metadata/build-metadata.json"
 cat > "$root_dir/.build-artifacts/release-notes.md" <<EOF
-## MediaPipe Tasks Vision ${PACKAGE_VERSION}
-
-Swift Package Manager distribution of MediaPipe Tasks Vision.
-
 ### Bundled versions
 
 - Package version: ${PACKAGE_VERSION}
