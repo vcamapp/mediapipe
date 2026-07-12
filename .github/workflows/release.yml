@@ -23,6 +23,8 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
       - run: make all
         if: startsWith(github.ref, 'refs/tags/')
+      - run: ./scripts/validate-versions.sh "$GITHUB_REF_NAME"
+        if: startsWith(github.ref, 'refs/tags/')
       - run: test "$(sed -n 's/.*checksum: "\([0-9a-f]*\)".*/\1/p' Package.swift)" = "$(head -1 .build-artifacts/checksums.txt)"
         if: startsWith(github.ref, 'refs/tags/')
       - uses: softprops/action-gh-release@v2

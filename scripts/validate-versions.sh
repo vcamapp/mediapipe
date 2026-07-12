@@ -3,7 +3,7 @@ set -euo pipefail
 
 root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "$root_dir/config/versions.env"
-tag="${1:-${GITHUB_REF_NAME:-$PACKAGE_VERSION}}"
+tag="${1:-$PACKAGE_VERSION}"
 
 [[ "$tag" == "$PACKAGE_VERSION" ]] || {
   echo "Tag $tag does not match PACKAGE_VERSION $PACKAGE_VERSION" >&2
