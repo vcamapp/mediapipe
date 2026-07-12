@@ -13,6 +13,11 @@ by the builder; consumers use Swift Package Manager and `import MediaPipeTasksVi
 
 This package currently bundles MediaPipe Tasks Vision 0.10.35.
 
+The optional `MediaPipeTasksVisionHandLandmarker` product includes the standard
+Hand Landmarker model and provides `HandLandmarkerModel.url` and
+`HandLandmarkerModel.makeOptions(runningMode:)` so applications do not need to
+locate the model through `Bundle.module`.
+
 ## License
 
 This project is licensed under the Apache License 2.0.
