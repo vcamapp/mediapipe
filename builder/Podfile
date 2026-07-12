@@ -6,5 +6,5 @@ install! 'cocoapods',
   :deterministic_uuids => true
 
 target 'MediaPipeTasksVisionDependencies' do
-  pod 'MediaPipeTasksVision', ENV.fetch('MEDIAPIPE_VERSION', '0.10.21')
+  pod 'MediaPipeTasksVision', ENV.fetch('MEDIAPIPE_VERSION', '0.10.35')
 end

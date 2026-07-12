@@ -13,7 +13,7 @@ by the builder; consumers use Swift Package Manager and `import MediaPipeTasksVi
 
 ## Bundled MediaPipe Version
 
-This package currently bundles MediaPipe Tasks Vision 0.10.21.
+This package currently bundles MediaPipe Tasks Vision 0.10.35.
 
 Binary artifacts are distributed through this repository's GitHub Releases.
 

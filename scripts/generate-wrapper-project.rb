@@ -49,7 +49,7 @@ target.build_configurations.each do |config|
   config.build_settings['HEADER_SEARCH_PATHS'] = '$(inherited)'
   config.build_settings['OTHER_LDFLAGS'] = '$(inherited) -ObjC -lc++'
 end
-%w[AVFoundation Accelerate CoreGraphics CoreImage CoreMedia CoreVideo Foundation ImageIO Metal MetalKit OpenGLES QuartzCore UIKit].each do |framework|
+%w[AVFoundation Accelerate CoreGraphics CoreImage CoreMedia CoreVideo Foundation ImageIO Metal MetalKit OpenGLES QuartzCore Security UIKit].each do |framework|
   file = project.frameworks_group.new_file("System/Library/Frameworks/#{framework}.framework")
   target.frameworks_build_phase.add_file_reference(file)
 end

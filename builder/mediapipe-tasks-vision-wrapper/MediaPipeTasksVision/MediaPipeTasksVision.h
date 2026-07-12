@@ -14,9 +14,6 @@
 #import <MediaPipeTasksVision/MPPFaceLandmarker.h>
 #import <MediaPipeTasksVision/MPPFaceLandmarkerOptions.h>
 #import <MediaPipeTasksVision/MPPFaceLandmarkerResult.h>
-#import <MediaPipeTasksVision/MPPFaceStylizer.h>
-#import <MediaPipeTasksVision/MPPFaceStylizerOptions.h>
-#import <MediaPipeTasksVision/MPPFaceStylizerResult.h>
 #import <MediaPipeTasksVision/MPPGestureRecognizer.h>
 #import <MediaPipeTasksVision/MPPGestureRecognizerOptions.h>
 #import <MediaPipeTasksVision/MPPGestureRecognizerResult.h>
