@@ -1,0 +1,155 @@
+name: macOS build dependency
+# Builds MediaPipeTasksVision_macos.a (arm64, CPU-only) from upstream MediaPipe
+# plus macos/patches — no separate fork checkout is needed — and uploads the
+# zip to the macos-<MEDIAPIPE_VERSION> release. That release is an internal
+# build dependency, not a package release: users consume the versioned
+# package releases, which bundle iOS and macOS together in one XCFramework.
+# After a run, update MACOS_ARTIFACT_SHA256 in config/versions.env with the
+# value from the job summary.
+on:
+  workflow_dispatch:
+    inputs:
+      upload_release:
+        description: "Upload the zip to the macos-<version> GitHub release"
+        type: boolean
+        default: true
+      overwrite:
+        description: "Replace the asset even if one is already published (invalidates the pinned SHA-256)"
+        type: boolean
+        default: false
+  # Called by build.yml as a fallback when the pinned release asset does not
+  # exist yet; the zip is passed on as a workflow artifact instead.
+  workflow_call:
+    inputs:
+      upload_release:
+        type: boolean
+        default: false
+env:
+  DEVELOPER_DIR: "/Applications/Xcode_26.6.app/Contents/Developer"
+jobs:
+  build:
+    runs-on: macos-26
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - id: versions
+        run: |
+          source config/versions.env
+          {
+            echo "mediapipe=$MEDIAPIPE_VERSION"
+            echo "opencv=$OPENCV_VERSION"
+          } >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v4
+        with:
+          repository: google-ai-edge/mediapipe
+          ref: v${{ steps.versions.outputs.mediapipe }}
+          path: upstream
+      - name: Apply macOS patches
+        run: |
+          cd upstream
+          git apply --stat ../macos/patches/*.patch
+          git apply ../macos/patches/*.patch
+      - uses: actions/cache/restore@v4
+        id: opencv-cache
+        with:
+          path: ~/opencv-static
+          key: opencv-static-${{ runner.arch }}-${{ steps.versions.outputs.opencv }}-${{ hashFiles('macos/build-macos-opencv.sh') }}
+      - name: Build static OpenCV
+        id: build-opencv
+        if: steps.opencv-cache.outputs.cache-hit != 'true'
+        run: ./macos/build-macos-opencv.sh "$RUNNER_TEMP/opencv-work" "$HOME/opencv-static"
+      # Save even if later steps fail, but never a partially installed prefix.
+      - uses: actions/cache/save@v4
+        if: always() && steps.build-opencv.outcome == 'success'
+        with:
+          path: ~/opencv-static
+          key: ${{ steps.opencv-cache.outputs.cache-primary-key }}
+      - run: ln -s "$HOME/opencv-static" upstream/third_party/opencv_static
+      - uses: actions/cache/restore@v4
+        id: bazel-cache
+        with:
+          path: |
+            ~/bazel-disk-cache
+            ~/bazel-repo-cache
+          key: bazel-${{ runner.arch }}-${{ steps.versions.outputs.mediapipe }}-${{ hashFiles('macos/patches/**') }}
+          restore-keys: |
+            bazel-${{ runner.arch }}-${{ steps.versions.outputs.mediapipe }}-
+      - name: Configure Bazel caches
+        run: |
+          {
+            echo "build --disk_cache=$HOME/bazel-disk-cache"
+            echo "build --experimental_disk_cache_gc_max_size=4G"
+            echo "common --repository_cache=$HOME/bazel-repo-cache"
+          } >> upstream/.user.bazelrc
+      - name: Build static library
+        run: ./macos/build-macos-static-lib.sh "$PWD/upstream" "$PWD/out"
+      - uses: actions/cache/save@v4
+        if: always() && steps.bazel-cache.outputs.cache-hit != 'true'
+        with:
+          path: |
+            ~/bazel-disk-cache
+            ~/bazel-repo-cache
+          key: ${{ steps.bazel-cache.outputs.cache-primary-key }}
+      - name: Check public headers drift
+        run: |
+          if ! diff -rq macos/Headers out/Headers; then
+            echo "::warning::Generated public headers differ from macos/Headers; update the repo copy."
+          fi
+      - name: Package
+        id: package
+        run: |
+          zipname="MediaPipeTasksVision-macos-arm64-${{ steps.versions.outputs.mediapipe }}.zip"
+          (cd out && zip -X "../$zipname" MediaPipeTasksVision_macos.a)
+          sha=$(shasum -a 256 "$zipname" | awk '{print $1}')
+          echo "zip=$zipname" >> "$GITHUB_OUTPUT"
+          {
+            echo "### macOS artifact"
+            echo "Set this in \`config/versions.env\`:"
+            echo '~~~'
+            echo "MACOS_ARTIFACT_SHA256=\"$sha\""
+            echo '~~~'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: MediaPipeTasksVision-macos-arm64
+          path: |
+            ${{ steps.package.outputs.zip }}
+            out/Headers
+      - name: Upload to release
+        id: upload
+        if: inputs.upload_release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="macos-${{ steps.versions.outputs.mediapipe }}"
+          zip="${{ steps.package.outputs.zip }}"
+          # Every build has a different SHA-256 (timestamps); the pin in
+          # config/versions.env refers to the published asset. Never replace a
+          # published asset silently — that would invalidate the pin.
+          if gh release view "$tag" --json assets -q '.assets[].name' 2>/dev/null | grep -qx "$zip" \
+             && [[ "${{ inputs.overwrite }}" != "true" ]]; then
+            echo "::notice::$zip is already published on $tag; keeping it (and the pinned SHA-256). Re-run with overwrite=true to replace."
+            echo "uploaded=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          gh release view "$tag" >/dev/null 2>&1 || gh release create "$tag" \
+            --target "$GITHUB_SHA" \
+            --prerelease \
+            --title "Build dependency: macOS static library ($tag)" \
+            --notes "Internal build input, not a package release — use the versioned releases, which bundle iOS and macOS in a single XCFramework. This asset is the CPU-only arm64 static library built from patched MediaPipe sources (see macos/README.md); scripts/fetch.sh downloads it and verifies the SHA-256 pinned in config/versions.env."
+          gh release upload "$tag" "$zip" --clobber
+          echo "uploaded=true" >> "$GITHUB_OUTPUT"
+      - name: Commit the pinned SHA-256
+        if: steps.upload.outputs.uploaded == 'true'
+        run: |
+          sha=$(shasum -a 256 "${{ steps.package.outputs.zip }}" | awk '{print $1}')
+          sed -i '' "s/^MACOS_ARTIFACT_SHA256=.*/MACOS_ARTIFACT_SHA256=\"$sha\"/" config/versions.env
+          if git diff --quiet config/versions.env; then
+            echo "Pin already up to date."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Pin macOS artifact $sha" config/versions.env
+          git push origin "HEAD:$GITHUB_REF_NAME"

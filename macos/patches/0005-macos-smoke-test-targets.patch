@@ -1,0 +1,234 @@
+diff --git a/mediapipe/tasks/c/vision/hand_landmarker/BUILD b/mediapipe/tasks/c/vision/hand_landmarker/BUILD
+index 5060d89..8e5fda7 100644
+--- a/mediapipe/tasks/c/vision/hand_landmarker/BUILD
++++ b/mediapipe/tasks/c/vision/hand_landmarker/BUILD
+@@ -172,3 +172,10 @@ cc_binary(
+     ],
+     deps = [":hand_landmarker_lib"],
+ )
++
++cc_binary(
++    name = "smoke_macos",
++    srcs = ["smoke_macos.cc"],
++    tags = ["manual"],
++    deps = [":hand_landmarker_c_lib"],
++)
+diff --git a/mediapipe/tasks/c/vision/hand_landmarker/smoke_macos.cc b/mediapipe/tasks/c/vision/hand_landmarker/smoke_macos.cc
+new file mode 100644
+index 0000000..c3d5cfa
+--- /dev/null
++++ b/mediapipe/tasks/c/vision/hand_landmarker/smoke_macos.cc
+@@ -0,0 +1,67 @@
++// macOS PoC: run MediaPipe Hand Landmarker (C API) on a still image.
++#include <cstdio>
++#include <cstdlib>
++
++#include "mediapipe/tasks/c/core/base_options.h"
++#include "mediapipe/tasks/c/core/mp_status.h"
++#include "mediapipe/tasks/c/vision/core/image.h"
++#include "mediapipe/tasks/c/vision/hand_landmarker/hand_landmarker.h"
++#include "mediapipe/tasks/c/vision/hand_landmarker/hand_landmarker_result.h"
++
++int main(int argc, char** argv) {
++  if (argc < 3) {
++    std::fprintf(stderr, "usage: %s <model.task> <image>\n", argv[0]);
++    return 2;
++  }
++  char* err = nullptr;
++
++  MpImagePtr image = nullptr;
++  if (MpImageCreateFromFile(argv[2], &image, &err) != kMpOk) {
++    std::fprintf(stderr, "MpImageCreateFromFile failed: %s\n", err ? err : "?");
++    return 1;
++  }
++
++  HandLandmarkerOptions options = {};
++  options.base_options.model_asset_path = argv[1];
++  options.base_options.delegate = Delegate::CPU;
++  options.running_mode = RunningMode::IMAGE;
++  options.num_hands = 2;
++  options.min_hand_detection_confidence = 0.5f;
++  options.min_hand_presence_confidence = 0.5f;
++  options.min_tracking_confidence = 0.5f;
++
++  MpHandLandmarkerPtr landmarker = nullptr;
++  if (MpHandLandmarkerCreate(&options, &landmarker, &err) != kMpOk) {
++    std::fprintf(stderr, "MpHandLandmarkerCreate failed: %s\n", err ? err : "?");
++    return 1;
++  }
++
++  HandLandmarkerResult result = {};
++  if (MpHandLandmarkerDetectImage(landmarker, image, /*options=*/nullptr,
++                                  &result, &err) != kMpOk) {
++    std::fprintf(stderr, "DetectImage failed: %s\n", err ? err : "?");
++    return 1;
++  }
++
++  std::printf("hands detected: %u\n", result.hand_landmarks_count);
++  for (uint32_t i = 0; i < result.hand_landmarks_count; ++i) {
++    const auto& lms = result.hand_landmarks[i];
++    const char* handedness = "?";
++    if (i < result.handedness_count && result.handedness[i].categories_count > 0) {
++      handedness = result.handedness[i].categories[0].category_name;
++    }
++    std::printf("hand[%u]: handedness=%s landmarks=%u\n", i, handedness,
++                lms.landmarks_count);
++    for (uint32_t j = 0; j < lms.landmarks_count && j < 3; ++j) {
++      std::printf("  lm[%u] = (%.3f, %.3f, %.3f)\n", j, lms.landmarks[j].x,
++                  lms.landmarks[j].y, lms.landmarks[j].z);
++    }
++  }
++
++  bool ok = result.hand_landmarks_count > 0 &&
++            result.hand_landmarks[0].landmarks_count == 21;
++  MpHandLandmarkerCloseResult(&result);
++  MpHandLandmarkerClose(landmarker, nullptr);
++  std::printf(ok ? "SMOKE TEST PASSED\n" : "SMOKE TEST FAILED\n");
++  return ok ? 0 : 1;
++}
+diff --git a/mediapipe/tasks/ios/vision/hand_landmarker/BUILD b/mediapipe/tasks/ios/vision/hand_landmarker/BUILD
+index 290b7af..e618a6a 100644
+--- a/mediapipe/tasks/ios/vision/hand_landmarker/BUILD
++++ b/mediapipe/tasks/ios/vision/hand_landmarker/BUILD
+@@ -82,3 +82,31 @@ objc_library(
+         "//third_party/apple_frameworks:Foundation",
+     ],
+ )
++
++objc_library(
++    name = "smoke_objc_macos_lib",
++    srcs = ["smoke_objc_macos.mm"],
++    copts = [
++        "-fobjc-arc",
++        "-std=c++20",
++        "-x objective-c++",
++    ],
++    sdk_frameworks = [
++        "CoreGraphics",
++        "CoreVideo",
++        "ImageIO",
++    ],
++    tags = ["manual"],
++    alwayslink = 1,
++    deps = [
++        ":MPPHandLandmarker",
++        "//mediapipe/tasks/ios/vision/core:MPPImage",
++    ],
++)
++
++cc_binary(
++    name = "smoke_objc_macos",
++    linkopts = ["-ObjC"],
++    tags = ["manual"],
++    deps = [":smoke_objc_macos_lib"],
++)
+diff --git a/mediapipe/tasks/ios/vision/hand_landmarker/smoke_objc_macos.mm b/mediapipe/tasks/ios/vision/hand_landmarker/smoke_objc_macos.mm
+new file mode 100644
+index 0000000..8fae760
+--- /dev/null
++++ b/mediapipe/tasks/ios/vision/hand_landmarker/smoke_objc_macos.mm
+@@ -0,0 +1,104 @@
++// macOS Phase 1 PoC: run the MediaPipe Tasks Vision *Objective-C* API on macOS.
++// Loads a JPEG with ImageIO, wraps it in a BGRA CVPixelBuffer, and runs
++// MPPHandLandmarker in image mode.
++#import <CoreGraphics/CoreGraphics.h>
++#import <CoreVideo/CoreVideo.h>
++#import <Foundation/Foundation.h>
++#import <ImageIO/ImageIO.h>
++
++#import "mediapipe/tasks/ios/vision/core/sources/MPPImage.h"
++#import "mediapipe/tasks/ios/vision/hand_landmarker/sources/MPPHandLandmarker.h"
++
++static CVPixelBufferRef CreateBGRAPixelBufferFromFile(NSString *path) {
++  NSURL *url = [NSURL fileURLWithPath:path];
++  CGImageSourceRef source = CGImageSourceCreateWithURL((__bridge CFURLRef)url, NULL);
++  if (!source) return NULL;
++  CGImageRef cgImage = CGImageSourceCreateImageAtIndex(source, 0, NULL);
++  CFRelease(source);
++  if (!cgImage) return NULL;
++
++  size_t width = CGImageGetWidth(cgImage);
++  size_t height = CGImageGetHeight(cgImage);
++
++  NSDictionary *attrs = @{(id)kCVPixelBufferCGImageCompatibilityKey : @YES};
++  CVPixelBufferRef pixelBuffer = NULL;
++  CVReturn status =
++      CVPixelBufferCreate(kCFAllocatorDefault, width, height, kCVPixelFormatType_32BGRA,
++                          (__bridge CFDictionaryRef)attrs, &pixelBuffer);
++  if (status != kCVReturnSuccess) {
++    CGImageRelease(cgImage);
++    return NULL;
++  }
++
++  CVPixelBufferLockBaseAddress(pixelBuffer, 0);
++  CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
++  CGContextRef context = CGBitmapContextCreate(
++      CVPixelBufferGetBaseAddress(pixelBuffer), width, height, 8,
++      CVPixelBufferGetBytesPerRow(pixelBuffer), colorSpace,
++      kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Little);
++  CGContextDrawImage(context, CGRectMake(0, 0, width, height), cgImage);
++  CGContextRelease(context);
++  CGColorSpaceRelease(colorSpace);
++  CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
++  CGImageRelease(cgImage);
++  return pixelBuffer;
++}
++
++int main(int argc, char **argv) {
++  @autoreleasepool {
++    if (argc < 3) {
++      fprintf(stderr, "usage: %s <model.task> <image>\n", argv[0]);
++      return 2;
++    }
++    NSString *modelPath = [NSString stringWithUTF8String:argv[1]];
++    NSString *imagePath = [NSString stringWithUTF8String:argv[2]];
++
++    CVPixelBufferRef pixelBuffer = CreateBGRAPixelBufferFromFile(imagePath);
++    if (!pixelBuffer) {
++      fprintf(stderr, "failed to load image\n");
++      return 1;
++    }
++
++    NSError *error = nil;
++    MPPImage *image = [[MPPImage alloc] initWithPixelBuffer:pixelBuffer error:&error];
++    CVPixelBufferRelease(pixelBuffer);
++    if (!image) {
++      fprintf(stderr, "MPPImage init failed: %s\n", error.localizedDescription.UTF8String);
++      return 1;
++    }
++
++    MPPHandLandmarkerOptions *options = [[MPPHandLandmarkerOptions alloc] init];
++    options.baseOptions.modelAssetPath = modelPath;
++    options.runningMode = MPPRunningModeImage;
++    options.numHands = 2;
++
++    MPPHandLandmarker *landmarker = [[MPPHandLandmarker alloc] initWithOptions:options
++                                                                         error:&error];
++    if (!landmarker) {
++      fprintf(stderr, "HandLandmarker init failed: %s\n", error.localizedDescription.UTF8String);
++      return 1;
++    }
++
++    MPPHandLandmarkerResult *result = [landmarker detectImage:image error:&error];
++    if (!result) {
++      fprintf(stderr, "detect failed: %s\n", error.localizedDescription.UTF8String);
++      return 1;
++    }
++
++    printf("hands detected: %lu\n", (unsigned long)result.landmarks.count);
++    for (NSUInteger i = 0; i < result.landmarks.count; i++) {
++      NSArray<MPPNormalizedLandmark *> *hand = result.landmarks[i];
++      MPPCategory *handedness = result.handedness[i].firstObject;
++      printf("hand[%lu]: handedness=%s landmarks=%lu\n", (unsigned long)i,
++             handedness.categoryName.UTF8String, (unsigned long)hand.count);
++      for (NSUInteger j = 0; j < MIN((NSUInteger)3, hand.count); j++) {
++        printf("  lm[%lu] = (%.3f, %.3f, %.3f)\n", (unsigned long)j, hand[j].x, hand[j].y,
++               hand[j].z);
++      }
++    }
++
++    BOOL ok = result.landmarks.count > 0 && result.landmarks.firstObject.count == 21;
++    printf(ok ? "OBJC SMOKE TEST PASSED\n" : "OBJC SMOKE TEST FAILED\n");
++    return ok ? 0 : 1;
++  }
++}

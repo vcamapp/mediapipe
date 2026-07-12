@@ -1,0 +1,107 @@
+diff --git a/mediapipe/tasks/ios/BUILD b/mediapipe/tasks/ios/BUILD
+index 92bd708..fd4be3e 100644
+--- a/mediapipe/tasks/ios/BUILD
++++ b/mediapipe/tasks/ios/BUILD
+@@ -363,3 +363,102 @@ mediapipe_static_xcframework(
+     # built as static libraries and force loaded.
+     deps = MEDIAPIPE_TASKS_COMMON_DEPS,
+ )
++
++
++# Umbrella library with the complete MediaPipe Tasks Vision Objective-C API for
++# CPU-only macOS builds. Task graphs, calculators and TFLite (XNNPACK) are
++# included transitively. A distributable single static archive is produced by
++# combining the transitive static libraries of this target with libtool
++# (see build script). GPU must be disabled because the Metal converters require
++# MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER which is unavailable on macOS.
++#   bazel build -c opt --config=darwin_arm64 --apple_generate_dsym=false \
++#     --define MEDIAPIPE_DISABLE_GPU=1 \
++#     //mediapipe/tasks/ios:MediaPipeTasksVision_macos
++objc_library(
++    name = "MediaPipeTasksVision_macos",
++    tags = ["manual"],
++    deps = [
++        ":OpenCV",
++        "//mediapipe/tasks/ios/vision/face_detector:MPPFaceDetector",
++        "//mediapipe/tasks/ios/vision/face_landmarker:MPPFaceLandmarker",
++        "//mediapipe/tasks/ios/vision/gesture_recognizer:MPPGestureRecognizer",
++        "//mediapipe/tasks/ios/vision/hand_landmarker:MPPHandLandmarker",
++        "//mediapipe/tasks/ios/vision/holistic_landmarker:MPPHolisticLandmarker",
++        "//mediapipe/tasks/ios/vision/image_classifier:MPPImageClassifier",
++        "//mediapipe/tasks/ios/vision/image_embedder:MPPImageEmbedder",
++        "//mediapipe/tasks/ios/vision/image_segmenter:MPPImageSegmenter",
++        "//mediapipe/tasks/ios/vision/interactive_segmenter:MPPInteractiveSegmenter",
++        "//mediapipe/tasks/ios/vision/object_detector:MPPObjectDetector",
++        "//mediapipe/tasks/ios/vision/pose_landmarker:MPPPoseLandmarker",
++    ],
++)
++
++
++# Public headers of the Vision framework as a plain filegroup, so macOS
++# packaging can locate them with `bazel cquery --output=files` instead of
++# parsing this file.
++filegroup(
++    name = "MediaPipeTasksVision_macos_hdrs",
++    srcs = [
++        ":MPPBaseOptions.h",
++        ":MPPCategory.h",
++        ":MPPClassificationResult.h",
++        ":MPPClassifierOptions.h",
++        ":MPPDetection.h",
++        ":MPPEmbedding.h",
++        ":MPPEmbeddingResult.h",
++        ":MPPLandmark.h",
++        ":MPPRegionOfInterest.h",
++        ":MPPConnection.h",
++        ":MPPCommon.h",
++        ":MPPTaskOptions.h",
++        ":MPPTaskResult.h",
++        ":MPPImage.h",
++        ":MPPMask.h",
++        ":MPPRunningMode.h",
++        ":MPPFaceDetector.h",
++        ":MPPFaceDetectorOptions.h",
++        ":MPPFaceDetectorResult.h",
++        ":MPPFaceLandmarker.h",
++        ":MPPFaceLandmarkerOptions.h",
++        ":MPPFaceLandmarkerResult.h",
++        ":MPPImageClassifier.h",
++        ":MPPImageClassifierOptions.h",
++        ":MPPImageClassifierResult.h",
++        ":MPPImageEmbedder.h",
++        ":MPPImageEmbedderOptions.h",
++        ":MPPImageEmbedderResult.h",
++        ":MPPImageSegmenter.h",
++        ":MPPImageSegmenterOptions.h",
++        ":MPPImageSegmenterResult.h",
++        ":MPPInteractiveSegmenter.h",
++        ":MPPInteractiveSegmenterOptions.h",
++        ":MPPInteractiveSegmenterResult.h",
++        ":MPPHandLandmarker.h",
++        ":MPPHandLandmarkerOptions.h",
++        ":MPPHandLandmarkerResult.h",
++        ":MPPHolisticLandmarker.h",
++        ":MPPHolisticLandmarkerOptions.h",
++        ":MPPHolisticLandmarkerResult.h",
++        ":MPPGestureRecognizer.h",
++        ":MPPGestureRecognizerOptions.h",
++        ":MPPGestureRecognizerResult.h",
++        ":MPPObjectDetector.h",
++        ":MPPObjectDetectorOptions.h",
++        ":MPPObjectDetectorResult.h",
++        ":MPPPoseLandmarker.h",
++        ":MPPPoseLandmarkerOptions.h",
++        ":MPPPoseLandmarkerResult.h",
++    ],
++)
++
++# Linking this throwaway dylib forces Bazel to materialize every transitive
++# static archive of the umbrella on disk (they are all link inputs), and
++# fails fast on missing or unresolved symbols. macOS packaging builds it
++# before combining the archives with libtool.
++cc_binary(
++    name = "MediaPipeTasksVision_macos_link_check",
++    linkshared = True,
++    tags = ["manual"],
++    deps = [":MediaPipeTasksVision_macos"],
++)

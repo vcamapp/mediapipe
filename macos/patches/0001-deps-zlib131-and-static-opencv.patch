@@ -1,0 +1,216 @@
+diff --git a/.bazelrc b/.bazelrc
+index 5965f96..97e5d9f 100644
+--- a/.bazelrc
++++ b/.bazelrc
+@@ -122,6 +122,17 @@ build:darwin_arm64 --apple_platform_type=macos
+ build:darwin_arm64 --macos_minimum_os=10.16
+ build:darwin_arm64 --cpu=darwin_arm64
+ 
++# Required for the macOS static library build (see macos/README.md in the
++# distribution repository):
++# - TensorFlow's hermetic Python needs a version with a requirements lock;
++#   the interpreter is downloaded, so the host Python version is irrelevant.
++# - Bazel 7 removed its builtin Apple C++ toolchain; objc_library requires
++#   the apple_support crosstool.
++common --repo_env=HERMETIC_PYTHON_VERSION=3.12
++build:macos --apple_crosstool_top=@local_config_apple_cc//:toolchain
++build:macos --crosstool_top=@local_config_apple_cc//:toolchain
++build:macos --host_crosstool_top=@local_config_apple_cc//:toolchain
++
+ # Turn off maximum stdout size
+ build --experimental_ui_max_stdouterr_bytes=-1
+ 
+diff --git a/WORKSPACE b/WORKSPACE
+index 1f57dd8..b53f178 100644
+--- a/WORKSPACE
++++ b/WORKSPACE
+@@ -89,6 +89,22 @@ rules_shell_toolchains()
+ 
+ load("@rules_android_ndk//:rules.bzl", "android_ndk_repository")  # @unused
+ 
++# Declared explicitly (same 1.18.1 that TensorFlow pins transitively) so that
++# the -Wl,-no_uuid removal can be patched in: newer macOS dyld refuses to run
++# the crosstool tools when they lack LC_UUID. Fixed in apple_support upstream;
++# drop this override when MediaPipe moves past it.
++http_archive(
++    name = "build_bazel_apple_support",
++    patch_args = [
++        "-p1",
++    ],
++    patches = [
++        "@//third_party:apple_support_1.18.1_no_uuid.diff",
++    ],
++    sha256 = "d71b02d6df0500f43279e22400db6680024c1c439115c57a9a82e9effe199d7b",
++    url = "https://github.com/bazelbuild/apple_support/releases/download/1.18.1/apple_support.1.18.1.tar.gz",
++)
++
+ http_archive(
+     name = "build_bazel_rules_apple",
+     patch_args = [
+@@ -99,6 +115,9 @@ http_archive(
+         "@//third_party:build_bazel_rules_apple_bypass_test_runner_check.diff",
+         # https://github.com/bazelbuild/rules_apple/commit/95b1305255dc29874cacc3dc7fdc017f16d8dbe8
+         "@//third_party:build_bazel_rules_apple_multi_arch_split_with_new_transition.diff",
++        # Bazel 7 removed --apple_compiler; required for macOS static library
++        # builds. Fixed in rules_apple upstream; drop on the next upgrade.
++        "@//third_party:rules_apple_2.1.0_bazel7_apple_compiler.diff",
+     ],
+     sha256 = "3e2c7ae0ddd181c4053b6491dad1d01ae29011bc322ca87eea45957c76d3a0c3",
+     url = "https://github.com/bazelbuild/rules_apple/releases/download/2.1.0/rules_apple.2.1.0.tar.gz",
+@@ -118,15 +137,9 @@ http_archive(
+ http_archive(
+     name = "zlib",
+     build_file = "@//third_party:zlib.BUILD",
+-    patch_args = [
+-        "-p1",
+-    ],
+-    patches = [
+-        "@//third_party:zlib.diff",
+-    ],
+-    sha256 = "b3a24de97a8fdbc835b9833169501030b8977031bcb54b3b3ac13740f846ab30",
+-    strip_prefix = "zlib-1.2.13",
+-    url = "http://zlib.net/fossils/zlib-1.2.13.tar.gz",
++    sha256 = "17e88863f3600672ab49182f217281b6fc4d3c762bde361935e436a95214d05c",
++    strip_prefix = "zlib-1.3.1",
++    url = "https://github.com/madler/zlib/archive/refs/tags/v1.3.1.tar.gz",
+ )
+ 
+ # gflags needed by glog
+@@ -628,10 +641,10 @@ new_local_repository(
+ new_local_repository(
+     name = "macos_opencv",
+     build_file = "@//third_party:opencv_macos.BUILD",
+-    # For local MacOS builds, the path should point to an opencv@3 installation.
+-    # If you edit the path here, you will also need to update the corresponding
+-    # prefix in "opencv_macos.BUILD".
+-    path = "/usr/local",  # e.g. /usr/local/Cellar for HomeBrew
++    # Statically built OpenCV (core/imgproc/imgcodecs) install prefix.
++    # Place (or symlink) the prefix at third_party/opencv_static; see
++    # macos/README.md in the distribution repository for the build recipe.
++    path = "third_party/opencv_static",
+ )
+ 
+ new_local_repository(
+diff --git a/third_party/apple_support_1.18.1_no_uuid.diff b/third_party/apple_support_1.18.1_no_uuid.diff
+new file mode 100644
+index 0000000..799f100
+--- /dev/null
++++ b/third_party/apple_support_1.18.1_no_uuid.diff
+@@ -0,0 +1,10 @@
++--- a/crosstool/universal_exec_tool.bzl	2026-07-15 19:40:43
+++++ b/crosstool/universal_exec_tool.bzl	2026-07-15 19:40:57
++@@ -39,7 +39,6 @@
++     -arch arm64 \
++     -arch x86_64 \
++     -Wl,-no_adhoc_codesign \
++-    -Wl,-no_uuid \
++     -O3 \
++     -o $@ \
++     $(SRCS)
+diff --git a/third_party/opencv_macos.BUILD b/third_party/opencv_macos.BUILD
+index 4139f18..c268903 100644
+--- a/third_party/opencv_macos.BUILD
++++ b/third_party/opencv_macos.BUILD
+@@ -1,58 +1,29 @@
+ # Description:
+-#   OpenCV libraries for video/image processing on MacOS
++#   Statically linked OpenCV libraries for macOS. The referenced install
++#   prefix is produced by a cmake build with BUILD_SHARED_LIBS=OFF and
++#   BUILD_LIST=core,imgcodecs,imgproc (see macos/README.md). zlib is
++#   deliberately NOT bundled (BUILD_ZLIB=OFF) to avoid duplicate symbols with
++#   MediaPipe's own zlib; consumers link the system libz instead.
+ 
+-load("@bazel_skylib//lib:paths.bzl", "paths")
+-
+-licenses(["notice"])  # BSD license
++licenses(["notice"])  # Apache 2.0
+ 
+ exports_files(["LICENSE"])
+ 
+-# Example configurations:
+-#
+-# # OpenCV 3
+-# To configure OpenCV 3, obtain the path of OpenCV 3 from Homebrew. The
+-# following commands show the output of the command with version 3.4.16_10:
+-#
+-# $ brew ls opencv@3 | grep version.hpp
+-# $ /opt/homebrew/Cellar/opencv@3/3.4.16_10/include/opencv2/core/version.hpp
+-#
+-# Then set path in "macos_opencv" rule in the WORKSPACE file to
+-# "/opt/homebrew/Cellar" and the PREFIX below to "opencv/<version>" (e.g.
+-# "opencv/3.4.16_10" for the example above).
+-#
+-# # OpenCV 4
+-# To configure OpenCV 4, obtain the path of OpenCV 4 from Homebrew. The
+-# following commands show the output of the command with version 4.10.0_12:
+-#
+-# $ brew ls opencv | grep version.hpp
+-# $ /opt/homebrew/Cellar/opencv/4.10.0_12/include/opencv4/opencv2/core/version.hpp
+-# $ /opt/homebrew/Cellar/opencv/4.10.0_12/include/opencv4/opencv2/dnn/version.hpp
+-#
+-# Then set path in "macos_opencv" rule in the WORKSPACE file to
+-# "/opt/homebrew/Cellar" and the PREFIX below to "opencv/<version>" (e.g.
+-# "opencv/4.10.0_12" for the example above). For OpenCV 4, you will also need to
+-# adjust the include paths. The header search path should be
+-# "include/opencv4/opencv2/**/*.h*" and the include prefix needs to be set to
+-# "include/opencv4".
+-
+-PREFIX = "opt/opencv@3"
+-
+ cc_library(
+     name = "opencv",
+-    srcs = glob(
+-        [
+-            paths.join(PREFIX, "lib/libopencv_core.dylib"),
+-            paths.join(PREFIX, "lib/libopencv_calib3d.dylib"),
+-            paths.join(PREFIX, "lib/libopencv_features2d.dylib"),
+-            paths.join(PREFIX, "lib/libopencv_highgui.dylib"),
+-            paths.join(PREFIX, "lib/libopencv_imgcodecs.dylib"),
+-            paths.join(PREFIX, "lib/libopencv_imgproc.dylib"),
+-            paths.join(PREFIX, "lib/libopencv_video.dylib"),
+-            paths.join(PREFIX, "lib/libopencv_videoio.dylib"),
+-        ],
+-    ),
+-    hdrs = glob([paths.join(PREFIX, "include/opencv2/**/*.h*")]),
+-    includes = [paths.join(PREFIX, "include/")],
++    srcs = glob([
++        "lib/libopencv_core.a",
++        "lib/libopencv_imgproc.a",
++        "lib/libopencv_imgcodecs.a",
++        "lib/opencv4/3rdparty/*.a",
++    ]),
++    hdrs = glob(["include/opencv4/opencv2/**/*.h*"]),
++    includes = ["include/opencv4/"],
++    linkopts = [
++        "-framework Accelerate",
++        "-framework AppKit",
++        "-lz",
++    ],
+     linkstatic = 1,
+     visibility = ["//visibility:public"],
+ )
+diff --git a/third_party/rules_apple_2.1.0_bazel7_apple_compiler.diff b/third_party/rules_apple_2.1.0_bazel7_apple_compiler.diff
+new file mode 100644
+index 0000000..22b0799
+--- /dev/null
++++ b/third_party/rules_apple_2.1.0_bazel7_apple_compiler.diff
+@@ -0,0 +1,19 @@
++--- a/apple/internal/transition_support.bzl	2026-07-15 19:39:15
+++++ b/apple/internal/transition_support.bzl	2026-07-15 19:39:15
++@@ -198,7 +198,7 @@
++         "//command_line_option:apple_platform_type": platform_type,
++         "//command_line_option:apple_platforms": apple_platforms,
++         "//command_line_option:apple_split_cpu": cpu if cpu else "",
++-        "//command_line_option:compiler": settings["//command_line_option:apple_compiler"],
+++        "//command_line_option:compiler": None,
++         "//command_line_option:cpu": _cpu_string(
++             cpu = cpu,
++             platform_type = platform_type,
++@@ -338,7 +338,6 @@
++ # - https://github.com/bazelbuild/bazel/blob/master/src/main/java/com/google/devtools/build/lib/rules/apple/AppleCommandLineOptions.java
++ # - https://github.com/bazelbuild/bazel/blob/master/src/main/java/com/google/devtools/build/lib/rules/cpp/CppOptions.java
++ _apple_rule_common_transition_inputs = [
++-    "//command_line_option:apple_compiler",
++     "//command_line_option:apple_crosstool_top",
++ ]
++ _apple_rule_base_transition_inputs = _apple_rule_common_transition_inputs + [

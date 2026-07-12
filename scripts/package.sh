@@ -19,18 +19,25 @@ printf '%s\n' "$checksum" > "$root_dir/.build-artifacts/checksums.txt"
 printf '%s  %s\n' "$sha" "$(basename "$zip")" >> "$root_dir/.build-artifacts/checksums.txt"
 xcode_version=$(xcodebuild -version | tr '\n' ' ' | sed 's/  */ /g')
 cocoapods_version=$(bundle exec pod --version)
-printf '{"repository":"vcamapp/mediapipe","packageVersion":"%s","packageBuild":"%s","mediaPipeVersion":"%s","gitCommit":"%s","podfileLockSHA256":"%s","minimumIOSVersion":"%s","deviceArchitectures":["arm64"],"simulatorArchitectures":["arm64"],"xcodeVersion":"%s","cocoaPodsVersion":"%s","artifactSHA256":"%s"}\n' "$PACKAGE_VERSION" "$PACKAGE_BUILD" "$MEDIAPIPE_VERSION" "$git_commit" "$podfile_lock_sha" "$MINIMUM_IOS_VERSION" "$xcode_version" "$cocoapods_version" "$sha" > "$root_dir/.build-artifacts/metadata/build-metadata.json"
+printf '{"repository":"vcamapp/mediapipe","packageVersion":"%s","packageBuild":"%s","mediaPipeVersion":"%s","gitCommit":"%s","podfileLockSHA256":"%s","minimumIOSVersion":"%s","minimumMacOSVersion":"%s","deviceArchitectures":["arm64"],"simulatorArchitectures":["arm64"],"macOSArchitectures":["arm64"],"macOSArtifactSHA256":"%s","xcodeVersion":"%s","cocoaPodsVersion":"%s","artifactSHA256":"%s"}\n' "$PACKAGE_VERSION" "$PACKAGE_BUILD" "$MEDIAPIPE_VERSION" "$git_commit" "$podfile_lock_sha" "$MINIMUM_IOS_VERSION" "$MINIMUM_MACOS_VERSION" "$MACOS_ARTIFACT_SHA256" "$xcode_version" "$cocoapods_version" "$sha" > "$root_dir/.build-artifacts/metadata/build-metadata.json"
 cat > "$root_dir/.build-artifacts/release-notes.md" <<EOF
 ### Bundled versions
 
 - Package version: ${PACKAGE_VERSION}
 - MediaPipe Tasks Vision: ${MEDIAPIPE_VERSION}
 - Minimum iOS version: ${MINIMUM_IOS_VERSION}
+- Minimum macOS version: ${MINIMUM_MACOS_VERSION}
 - Device architectures: arm64
 - Simulator architectures: arm64
+- macOS architectures: arm64 (CPU inference only; OpenCV statically linked)
 EOF
 {
   cat "$root_dir/THIRD_PARTY_NOTICES.md"
+  printf '\n\n## macOS statically linked libraries\n'
+  for notice in "$root_dir"/macos/licenses/*; do
+    printf '\n--- %s ---\n' "$(basename "$notice")"
+    cat "$notice"
+  done
   printf '\n\n## CocoaPods licenses\n'
   find "$root_dir/builder/Pods" -type f \( -iname 'LICENSE' -o -iname 'LICENSE.txt' -o -iname 'LICENSE.md' -o -iname 'NOTICE' -o -iname 'NOTICE.txt' -o -iname 'NOTICE.md' -o -iname 'COPYING' -o -iname 'COPYING.txt' -o -iname 'PATENTS' -o -iname 'PATENTS.txt' \) -print0 | while IFS= read -r -d '' notice; do
     printf '\n--- %s ---\n' "${notice#$root_dir/builder/Pods/}"
