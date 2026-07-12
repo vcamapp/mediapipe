@@ -2,4 +2,6 @@
 .build/
 builder/Pods/
 builder/*.xcworkspace
+builder/mediapipe-tasks-vision-wrapper/MediaPipeTasksVisionWrapper.xcodeproj/
+smoke-test/MediaPipeSmokeTest.xcodeproj/
 .DS_Store

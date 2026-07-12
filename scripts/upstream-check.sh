@@ -9,7 +9,12 @@ latest=$(bundle exec pod trunk info MediaPipeTasksVision | ruby -e '
 ')
 [[ -n "$latest" ]] || { echo "Could not determine latest stable MediaPipeTasksVision version." >&2; exit 1; }
 echo "bundled=$MEDIAPIPE_VERSION latest=$latest"
-if [[ "$latest" != "$MEDIAPIPE_VERSION" ]]; then
+if ruby -r rubygems -e 'exit Gem::Version.new(ARGV[0]) > Gem::Version.new(ARGV[1]) ? 0 : (Gem::Version.new(ARGV[0]) == Gem::Version.new(ARGV[1]) ? 1 : 2)' "$latest" "$MEDIAPIPE_VERSION"; then
   echo "A newer stable CocoaPods release is available: $latest" >&2
   exit 10
+fi
+comparison=$?
+if [[ "$comparison" == 2 ]]; then
+  echo "Bundled MediaPipe version $MEDIAPIPE_VERSION is newer than CocoaPods latest $latest; verify the upstream registry." >&2
+  exit 11
 fi

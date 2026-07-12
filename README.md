@@ -11,6 +11,8 @@ by the builder; consumers use Swift Package Manager and `import MediaPipeTasksVi
 - arm64 iOS Simulator
 - Xcode 16.4 or later
 
+This package currently bundles MediaPipe Tasks Vision 0.10.35.
+
 ## License
 
 This project is licensed under the Apache License 2.0.

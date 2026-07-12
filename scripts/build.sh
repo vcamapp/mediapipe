@@ -18,5 +18,16 @@ build_one() {
   cp "$root_dir/builder/mediapipe-tasks-vision-wrapper/MediaPipeTasksVision/MediaPipeTasksVision.h" "$framework/Headers/MediaPipeTasksVision.h"
   find "$vision/MediaPipeTasksVision.framework/Headers" -maxdepth 1 -type f -name '*.h' ! -name 'MediaPipeTasksVision.h' -exec cp {} "$framework/Headers/" \;
 }
+vision_xcframework="$pod_root/MediaPipeTasksVision/frameworks/MediaPipeTasksVision.xcframework"
+simulator_slice=$(ruby -rjson -e '
+  info = JSON.parse(`plutil -convert json -o - -- #{ARGV[0]}`)
+  library = info.fetch("AvailableLibraries").find do |candidate|
+    candidate["SupportedPlatform"] == "ios" &&
+      candidate["SupportedPlatformVariant"] == "simulator" &&
+      candidate.fetch("SupportedArchitectures", []).include?("arm64")
+  end
+  puts library.fetch("LibraryIdentifier") if library
+' "$vision_xcframework/Info.plist")
+[[ -n "$simulator_slice" ]] || { echo "No arm64 iOS Simulator slice found in $vision_xcframework" >&2; exit 1; }
 build_one iphoneos 'generic/platform=iOS' MediaPipeTasksVision-iOS ios-arm64
-build_one iphonesimulator 'generic/platform=iOS Simulator' MediaPipeTasksVision-Simulator ios-arm64_x86_64-simulator
+build_one iphonesimulator 'generic/platform=iOS Simulator' MediaPipeTasksVision-Simulator "$simulator_slice"
