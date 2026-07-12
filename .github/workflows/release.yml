@@ -1,7 +1,8 @@
 name: Release
 on:
-  workflow_dispatch:
   push:
+    tags:
+      - "*"
 jobs:
   release:
     runs-on: macos-15
@@ -29,10 +30,9 @@ jobs:
       - uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
+          body_path: .build-artifacts/release-notes.md
           files: |
             .build-artifacts/MediaPipeTasksVision.xcframework.zip
-            .build-artifacts/MediaPipeTasksVision.dSYMs.zip
-            .build-artifacts/checksums.txt
             .build-artifacts/metadata/build-metadata.json
             .build-artifacts/THIRD_PARTY_NOTICES.txt
           fail_on_unmatched_files: true

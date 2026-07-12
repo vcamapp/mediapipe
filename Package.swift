@@ -10,8 +10,8 @@ let package = Package(
     targets: [
         .binaryTarget(
             name: "MediaPipeTasksVision",
-            url: "https://github.com/vcamapp/mediapipe/releases/download/1.0.0/MediaPipeTasksVision.xcframework.zip",
-            checksum: "5d5250332d927bb35da372a113045cc8b01df6295a8a4f47c88e4ff2a8fb95f3"
+            url: "https://github.com/vcamapp/mediapipe/releases/download/0.0.1/MediaPipeTasksVision.xcframework.zip",
+            checksum: "c7131a3512f8e8bbeea0bb4d426a054b38bd66e96e4c6f504626288bf046b013"
         )
     ]
 )

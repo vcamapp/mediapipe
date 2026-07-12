@@ -14,7 +14,10 @@ import MediaPipeTasksVision
         let landmarker = try HandLandmarker(options: options)
         let result = try landmarker.detect(image: image)
 
-        #expect(result.landmarks.count >= 0)
+        #expect(result.landmarks.count > 0)
+        #expect(result.landmarks.allSatisfy { $0.count == 21 })
+        #expect(result.handedness.count == result.landmarks.count)
+        #expect(result.worldLandmarks.count == result.landmarks.count)
 }
 
 private final class SmokeTestBundleMarker {}

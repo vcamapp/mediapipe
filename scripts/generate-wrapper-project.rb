@@ -2,6 +2,7 @@ require 'xcodeproj'
 require 'fileutils'
 
 root = File.expand_path('..', __dir__)
+versions = File.read(File.join(root, 'config/versions.env')).scan(/^(PACKAGE_VERSION|PACKAGE_BUILD)=\"([^\"]+)\"/).to_h
 project_dir = File.join(root, 'builder/mediapipe-tasks-vision-wrapper')
 project_path = File.join(project_dir, 'MediaPipeTasksVisionWrapper.xcodeproj')
 FileUtils.mkdir_p(project_dir) unless Dir.exist?(project_dir)
@@ -39,15 +40,17 @@ target.build_configurations.each do |config|
   config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'
   config.build_settings['CODE_SIGNING_REQUIRED'] = 'NO'
   config.build_settings['ARCHS'] = 'arm64'
+  config.build_settings['MARKETING_VERSION'] = versions.fetch('PACKAGE_VERSION')
+  config.build_settings['CURRENT_PROJECT_VERSION'] = versions.fetch('PACKAGE_BUILD')
   config.build_settings['PUBLIC_HEADERS_FOLDER_PATH'] = 'Headers'
   config.build_settings['INSTALLHDRS_COPY_PHASE'] = 'YES'
   config.build_settings['INFOPLIST_FILE'] = 'MediaPipeTasksVision/Info.plist'
   config.build_settings['MODULEMAP_FILE'] = '$(SRCROOT)/MediaPipeTasksVision/module.modulemap'
   config.build_settings['HEADER_SEARCH_PATHS'] = '$(inherited)'
   config.build_settings['OTHER_LDFLAGS'] = '$(inherited) -ObjC -lc++'
-  %w[AVFoundation Accelerate CoreGraphics CoreImage CoreMedia CoreVideo Foundation ImageIO Metal MetalKit OpenGLES QuartzCore UIKit].each do |framework|
-    file = project.frameworks_group.new_file("System/Library/Frameworks/#{framework}.framework")
-    target.frameworks_build_phase.add_file_reference(file)
-  end
+end
+%w[AVFoundation Accelerate CoreGraphics CoreImage CoreMedia CoreVideo Foundation ImageIO Metal MetalKit OpenGLES QuartzCore UIKit].each do |framework|
+  file = project.frameworks_group.new_file("System/Library/Frameworks/#{framework}.framework")
+  target.frameworks_build_phase.add_file_reference(file)
 end
 project.save

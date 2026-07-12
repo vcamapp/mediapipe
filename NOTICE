@@ -1,1 +1,6 @@
-MediaPipe Tasks Vision redistribution notices are generated into release artifacts.
+VCamApp MediaPipe Tasks Vision Swift Package
+
+This distribution bundles MediaPipe Tasks Vision and its transitive
+dependencies. Copyright and attribution notices for bundled dependencies
+are included in THIRD_PARTY_NOTICES.md and in the corresponding release
+asset THIRD_PARTY_NOTICES.txt.
