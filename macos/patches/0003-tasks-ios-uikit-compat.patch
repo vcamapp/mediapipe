@@ -1,0 +1,346 @@
+diff --git a/mediapipe/tasks/ios/components/containers/BUILD b/mediapipe/tasks/ios/components/containers/BUILD
+index 6e0bd5d..913d08b 100644
+--- a/mediapipe/tasks/ios/components/containers/BUILD
++++ b/mediapipe/tasks/ios/components/containers/BUILD
+@@ -64,8 +64,10 @@ objc_library(
+     deps = [
+         ":MPPCategory",
+         "//third_party/apple_frameworks:Foundation",
+-        "//third_party/apple_frameworks:UIKit",
+-    ],
++    ] + select({
++        "//mediapipe:macos": ["//third_party/apple_frameworks:CoreGraphics"],
++        "//conditions:default": ["//third_party/apple_frameworks:UIKit"],
++    }),
+ )
+ 
+ objc_library(
+diff --git a/mediapipe/tasks/ios/components/containers/sources/MPPDetection.h b/mediapipe/tasks/ios/components/containers/sources/MPPDetection.h
+index 0aaad19..2240a06 100644
+--- a/mediapipe/tasks/ios/components/containers/sources/MPPDetection.h
++++ b/mediapipe/tasks/ios/components/containers/sources/MPPDetection.h
+@@ -13,7 +13,7 @@
+ // limitations under the License.
+ 
+ #import <Foundation/Foundation.h>
+-#import <UIKit/UIKit.h>
++#import <CoreGraphics/CoreGraphics.h>
+ #import "mediapipe/tasks/ios/components/containers/sources/MPPCategory.h"
+ 
+ NS_ASSUME_NONNULL_BEGIN
+diff --git a/mediapipe/tasks/ios/vision/core/BUILD b/mediapipe/tasks/ios/vision/core/BUILD
+index 3e216f9..26f4782 100644
+--- a/mediapipe/tasks/ios/vision/core/BUILD
++++ b/mediapipe/tasks/ios/vision/core/BUILD
+@@ -36,8 +36,10 @@ objc_library(
+         "//third_party/apple_frameworks:CoreMedia",
+         "//third_party/apple_frameworks:CoreVideo",
+         "//third_party/apple_frameworks:Foundation",
+-        "//third_party/apple_frameworks:UIKit",
+-    ],
++    ] + select({
++        "//mediapipe:macos": ["//third_party/apple_frameworks:CoreGraphics"],
++        "//conditions:default": ["//third_party/apple_frameworks:UIKit"],
++    }),
+ )
+ 
+ objc_library(
+@@ -92,9 +94,11 @@ objc_library(
+         "//mediapipe/tasks/ios/core:MPPTaskInfo",
+         "//mediapipe/tasks/ios/core:MPPTaskRunner",
+         "//third_party/apple_frameworks:Foundation",
+-        "//third_party/apple_frameworks:UIKit",
+         "@com_google_absl//absl/status:statusor",
+-    ],
++    ] + select({
++        "//mediapipe:macos": ["//third_party/apple_frameworks:CoreGraphics"],
++        "//conditions:default": ["//third_party/apple_frameworks:UIKit"],
++    }),
+ )
+ 
+ objc_library(
+diff --git a/mediapipe/tasks/ios/vision/core/sources/MPPImage.h b/mediapipe/tasks/ios/vision/core/sources/MPPImage.h
+index 0e819cb..d06b996 100644
+--- a/mediapipe/tasks/ios/vision/core/sources/MPPImage.h
++++ b/mediapipe/tasks/ios/vision/core/sources/MPPImage.h
+@@ -16,7 +16,46 @@
+ 
+ #import <CoreMedia/CoreMedia.h>
+ #import <CoreVideo/CoreVideo.h>
++#if __has_include(<UIKit/UIKit.h>)
+ #import <UIKit/UIKit.h>
++#endif
++
++#if __has_include(<UIKit/UIKit.h>)
++/**
++ * The display orientation of an image. On platforms with UIKit this is an alias of
++ * `UIImage.Orientation` so that the public API is source and binary compatible with the
++ * official iOS distribution. On platforms without UIKit (macOS) an equivalent enum with
++ * identical raw values is provided.
++ */
++typedef UIImageOrientation MPPImageOrientation;
++
++static const MPPImageOrientation MPPImageOrientationUp = UIImageOrientationUp;
++static const MPPImageOrientation MPPImageOrientationDown = UIImageOrientationDown;
++static const MPPImageOrientation MPPImageOrientationLeft = UIImageOrientationLeft;
++static const MPPImageOrientation MPPImageOrientationRight = UIImageOrientationRight;
++static const MPPImageOrientation MPPImageOrientationUpMirrored = UIImageOrientationUpMirrored;
++static const MPPImageOrientation MPPImageOrientationDownMirrored = UIImageOrientationDownMirrored;
++static const MPPImageOrientation MPPImageOrientationLeftMirrored = UIImageOrientationLeftMirrored;
++static const MPPImageOrientation MPPImageOrientationRightMirrored =
++    UIImageOrientationRightMirrored;
++#else
++#import <CoreGraphics/CoreGraphics.h>
++
++/**
++ * The display orientation of an image. Mirrors the cases and raw values of
++ * `UIImage.Orientation` on platforms where UIKit is unavailable (macOS).
++ */
++typedef NS_ENUM(NSInteger, MPPImageOrientation) {
++  MPPImageOrientationUp,
++  MPPImageOrientationDown,
++  MPPImageOrientationLeft,
++  MPPImageOrientationRight,
++  MPPImageOrientationUpMirrored,
++  MPPImageOrientationDownMirrored,
++  MPPImageOrientationLeftMirrored,
++  MPPImageOrientationRightMirrored,
++} NS_SWIFT_NAME(MPImageOrientation);
++#endif  // __has_include(<UIKit/UIKit.h>)
+ 
+ NS_ASSUME_NONNULL_BEGIN
+ 
+@@ -46,13 +85,15 @@ NS_SWIFT_NAME(MPImage)
+  * and is set to any orientation other than `UIImage.Orientation.up`, inference will be performed on
+  * a rotated copy of the image according to the orientation.
+  */
+-@property(nonatomic, readonly) UIImageOrientation orientation;
++@property(nonatomic, readonly) MPPImageOrientation orientation;
+ 
+ /** The type of the image source. */
+ @property(nonatomic, readonly) MPPImageSourceType imageSourceType;
+ 
++#if __has_include(<UIKit/UIKit.h>)
+ /** The source image. `nil` if `imageSourceType` is not `.image`. */
+ @property(nonatomic, readonly, nullable) UIImage *image;
++#endif  // __has_include(<UIKit/UIKit.h>)
+ 
+ /** The source pixel buffer. `nil` if ``imageSourceType`` is not `.pixelBuffer`. */
+ @property(nonatomic, readonly, nullable) CVPixelBufferRef pixelBuffer;
+@@ -60,6 +101,7 @@ NS_SWIFT_NAME(MPImage)
+ /** The source sample buffer. `nil` if ``imageSourceType`` is not `.sampleBuffer`. */
+ @property(nonatomic, readonly, nullable) CMSampleBufferRef sampleBuffer;
+ 
++#if __has_include(<UIKit/UIKit.h>)
+ /**
+  * Initializes an `MPImage` object with the given `UIImage`.
+  *
+@@ -99,8 +141,9 @@ NS_SWIFT_NAME(MPImage)
+  *     `image` is `nil` or invalid.
+  */
+ - (nullable instancetype)initWithUIImage:(UIImage *)image
+-                             orientation:(UIImageOrientation)orientation
++                             orientation:(MPPImageOrientation)orientation
+                                    error:(NSError **)error NS_DESIGNATED_INITIALIZER;
++#endif  // __has_include(<UIKit/UIKit.h>)
+ 
+ /**
+  * Initializes an `MPImage` object with the given pixel buffer.
+@@ -136,7 +179,7 @@ NS_SWIFT_NAME(MPImage)
+  * `nil` if the given pixel buffer is `nil` or invalid.
+  */
+ - (nullable instancetype)initWithPixelBuffer:(CVPixelBufferRef)pixelBuffer
+-                                 orientation:(UIImageOrientation)orientation
++                                 orientation:(MPPImageOrientation)orientation
+                                        error:(NSError **)error NS_DESIGNATED_INITIALIZER;
+ 
+ /**
+@@ -172,7 +215,7 @@ NS_SWIFT_NAME(MPImage)
+  *     `nil` if the given sample buffer is `nil` or invalid.
+  */
+ - (nullable instancetype)initWithSampleBuffer:(CMSampleBufferRef)sampleBuffer
+-                                  orientation:(UIImageOrientation)orientation
++                                  orientation:(MPPImageOrientation)orientation
+                                         error:(NSError **)error NS_DESIGNATED_INITIALIZER;
+ 
+ /** Unavailable. */
+diff --git a/mediapipe/tasks/ios/vision/core/sources/MPPImage.m b/mediapipe/tasks/ios/vision/core/sources/MPPImage.m
+index 1f5104e..fb6680a 100644
+--- a/mediapipe/tasks/ios/vision/core/sources/MPPImage.m
++++ b/mediapipe/tasks/ios/vision/core/sources/MPPImage.m
+@@ -20,12 +20,13 @@
+ 
+ @implementation MPPImage
+ 
++#if __has_include(<UIKit/UIKit.h>)
+ - (nullable instancetype)initWithUIImage:(UIImage *)image error:(NSError **)error {
+   return [self initWithUIImage:image orientation:image.imageOrientation error:error];
+ }
+ 
+ - (nullable instancetype)initWithUIImage:(UIImage *)image
+-                             orientation:(UIImageOrientation)orientation
++                             orientation:(MPPImageOrientation)orientation
+                                    error:(NSError **)error {
+   if (image == nil) {
+     [MPPCommonUtils createCustomError:error
+@@ -51,13 +52,14 @@ - (nullable instancetype)initWithUIImage:(UIImage *)image
+   }
+   return self;
+ }
++#endif  // __has_include(<UIKit/UIKit.h>)
+ 
+ - (nullable instancetype)initWithPixelBuffer:(CVPixelBufferRef)pixelBuffer error:(NSError **)error {
+-  return [self initWithPixelBuffer:pixelBuffer orientation:UIImageOrientationUp error:error];
++  return [self initWithPixelBuffer:pixelBuffer orientation:MPPImageOrientationUp error:error];
+ }
+ 
+ - (nullable instancetype)initWithPixelBuffer:(CVPixelBufferRef)pixelBuffer
+-                                 orientation:(UIImageOrientation)orientation
++                                 orientation:(MPPImageOrientation)orientation
+                                        error:(NSError **)error {
+   if (pixelBuffer == NULL) {
+     [MPPCommonUtils createCustomError:error
+@@ -80,11 +82,11 @@ - (nullable instancetype)initWithPixelBuffer:(CVPixelBufferRef)pixelBuffer
+ 
+ - (nullable instancetype)initWithSampleBuffer:(CMSampleBufferRef)sampleBuffer
+                                         error:(NSError **)error {
+-  return [self initWithSampleBuffer:sampleBuffer orientation:UIImageOrientationUp error:error];
++  return [self initWithSampleBuffer:sampleBuffer orientation:MPPImageOrientationUp error:error];
+ }
+ 
+ - (nullable instancetype)initWithSampleBuffer:(CMSampleBufferRef)sampleBuffer
+-                                  orientation:(UIImageOrientation)orientation
++                                  orientation:(MPPImageOrientation)orientation
+                                         error:(NSError **)error {
+   if (!CMSampleBufferIsValid(sampleBuffer)) {
+     [MPPCommonUtils createCustomError:error
+diff --git a/mediapipe/tasks/ios/vision/core/sources/MPPVisionTaskRunner.h b/mediapipe/tasks/ios/vision/core/sources/MPPVisionTaskRunner.h
+index 02a0193..2ec3225 100644
+--- a/mediapipe/tasks/ios/vision/core/sources/MPPVisionTaskRunner.h
++++ b/mediapipe/tasks/ios/vision/core/sources/MPPVisionTaskRunner.h
+@@ -13,7 +13,6 @@
+ // limitations under the License.
+ 
+ #import <Foundation/Foundation.h>
+-#import <UIKit/UIKit.h>
+ 
+ #import "mediapipe/tasks/ios/core/sources/MPPTaskRunner.h"
+ #import "mediapipe/tasks/ios/vision/core/sources/MPPImage.h"
+diff --git a/mediapipe/tasks/ios/vision/core/sources/MPPVisionTaskRunner.mm b/mediapipe/tasks/ios/vision/core/sources/MPPVisionTaskRunner.mm
+index b7b425f..eed039b 100644
+--- a/mediapipe/tasks/ios/vision/core/sources/MPPVisionTaskRunner.mm
++++ b/mediapipe/tasks/ios/vision/core/sources/MPPVisionTaskRunner.mm
+@@ -120,7 +120,7 @@ - (nullable instancetype)initWithTaskInfo:(MPPTaskInfo *)taskInfo
+ - (std::optional<NormalizedRect>)normalizedRectWithRegionOfInterest:(CGRect)roi
+                                                           imageSize:(CGSize)imageSize
+                                                    imageOrientation:
+-                                                       (UIImageOrientation)imageOrientation
++                                                       (MPPImageOrientation)imageOrientation
+                                                               error:(NSError **)error {
+   // Redundant `roiAllowed` check is not needed here since it is already accounted for
+   // before this method is called.
+@@ -132,17 +132,17 @@ - (nullable instancetype)initWithTaskInfo:(MPPTaskInfo *)taskInfo
+ 
+   int rotationDegrees = 0;
+   switch (imageOrientation) {
+-    case UIImageOrientationUp:
++    case MPPImageOrientationUp:
+       break;
+-    case UIImageOrientationRight: {
++    case MPPImageOrientationRight: {
+       rotationDegrees = kMPPOrientationDegreesRight;
+       break;
+     }
+-    case UIImageOrientationDown: {
++    case MPPImageOrientationDown: {
+       rotationDegrees = kMPPOrientationDegreesDown;
+       break;
+     }
+-    case UIImageOrientationLeft: {
++    case MPPImageOrientationLeft: {
+       rotationDegrees = kMPPOrientationDegreesLeft;
+       break;
+     }
+@@ -188,9 +188,9 @@ - (nullable instancetype)initWithTaskInfo:(MPPTaskInfo *)taskInfo
+ // checked here to avoid redundant switch cases with `[MPPVisionTaskRunner
+ // normalizedRectWithRegionOfInterest:imageSize:imageOrientation:error:]`.
+ - (BOOL)shouldTaskContinueWithRegionOfInterest:(CGRect)roi
+-                              imageOrientation:(UIImageOrientation)imageOrientation
++                              imageOrientation:(MPPImageOrientation)imageOrientation
+                                          error:(NSError **)error {
+-  if (!_normRectInputStreamName && imageOrientation != UIImageOrientationUp) {
++  if (!_normRectInputStreamName && imageOrientation != MPPImageOrientationUp) {
+     [MPPCommonUtils createCustomError:error
+                              withCode:MPPTasksErrorCodeInvalidArgumentError
+                           description:@"Unsupported UIImageOrientation. This task only supports "
+diff --git a/mediapipe/tasks/ios/vision/core/utils/sources/MPPImage+Utils.mm b/mediapipe/tasks/ios/vision/core/utils/sources/MPPImage+Utils.mm
+index 256e146..4b78014 100644
+--- a/mediapipe/tasks/ios/vision/core/utils/sources/MPPImage+Utils.mm
++++ b/mediapipe/tasks/ios/vision/core/utils/sources/MPPImage+Utils.mm
+@@ -111,11 +111,13 @@ + (CGImageRef)cgImageFromImageFrame:(std::shared_ptr<ImageFrame>)imageFrame
+ 
+ @end
+ 
++#if __has_include(<UIKit/UIKit.h>)
+ @interface UIImage (ImageFrameUtils)
+ 
+ - (std::unique_ptr<ImageFrame>)imageFrameWithError:(NSError **)error;
+ 
+ @end
++#endif  // __has_include(<UIKit/UIKit.h>)
+ 
+ @implementation MPPPixelDataUtils : NSObject
+ 
+@@ -464,6 +466,7 @@ + (CGImageRef)cgImageFromImageFrame:(std::shared_ptr<ImageFrame>)imageFrame
+ 
+ @end
+ 
++#if __has_include(<UIKit/UIKit.h>)
+ @implementation UIImage (ImageFrameUtils)
+ 
+ - (std::unique_ptr<ImageFrame>)imageFrameFromCIImageWithError:(NSError **)error {
+@@ -497,6 +500,8 @@ @implementation UIImage (ImageFrameUtils)
+ }
+ 
+ @end
++#endif  // __has_include(<UIKit/UIKit.h>)
++
+ 
+ @implementation MPPImage (Utils)
+ 
+@@ -519,6 +524,7 @@ - (nullable instancetype)initWithCppImage:(const mediapipe::Image &)image
+   }
+ 
+   switch (sourceImage.imageSourceType) {
++#if __has_include(<UIKit/UIKit.h>)
+     case MPPImageSourceTypeImage: {
+       CGImageRef cgImageRef = [MPPCGImageUtils cgImageFromImageFrame:image.GetImageFrameSharedPtr()
+                                                  shouldCopyPixelData:shouldCopyPixelData
+@@ -546,6 +552,15 @@ - (nullable instancetype)initWithCppImage:(const mediapipe::Image &)image
+ 
+       return mpImage;
+     }
++#else
++    case MPPImageSourceTypeImage: {
++      [MPPCommonUtils createCustomError:error
++                               withCode:MPPTasksErrorCodeInvalidArgumentError
++                            description:@"MPImage instances backed by a UIImage are not "
++                                        @"supported on this platform."];
++      return nil;
++    }
++#endif  // __has_include(<UIKit/UIKit.h>)
+     case MPPImageSourceTypePixelBuffer: {
+       if (!shouldCopyPixelData) {
+         // TODO: Investigate possibility of permuting channels of `mediapipe::Image` returned by
+@@ -626,9 +641,11 @@ - (nullable instancetype)initWithCppImage:(const mediapipe::Image &)image
+     case MPPImageSourceTypePixelBuffer: {
+       return [MPPCVPixelBufferUtils imageFrameFromCVPixelBuffer:self.pixelBuffer error:error];
+     }
++#if __has_include(<UIKit/UIKit.h>)
+     case MPPImageSourceTypeImage: {
+       return [self.image imageFrameWithError:error];
+     }
++#endif  // __has_include(<UIKit/UIKit.h>)
+     default:
+       [MPPCommonUtils createCustomError:error
+                                withCode:MPPTasksErrorCodeInvalidArgumentError

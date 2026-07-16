@@ -1,6 +1,6 @@
 # VCam MediaPipe Tasks Vision
 
-An unofficial Swift Package Manager distribution of [Google MediaPipe Tasks Vision](https://github.com/google-ai-edge/mediapipe) for iOS.
+An unofficial Swift Package Manager distribution of [Google MediaPipe Tasks Vision](https://github.com/google-ai-edge/mediapipe) for iOS and macOS.
 
 The package provides:
 
@@ -11,8 +11,8 @@ The package provides:
 
 ## Requirements
 
-- iOS 17 or later
-- arm64 iOS devices/simulators
+- iOS 17 or later / macOS 14 or later
+- arm64 iOS devices/simulators, Apple Silicon Macs
 - Xcode 26.x or later
 
 ## Installation
@@ -47,7 +47,7 @@ let options = try HandLandmarkerModel.makeOptions(
 let handLandmarker = try HandLandmarker(options: options)
 ```
 
-### Detect hands in a UIImage
+### Detect hands in a UIImage (iOS)
 
 ```swift
 import MediaPipeTasksVision
@@ -67,6 +67,27 @@ func detectHands(in image: UIImage) throws -> HandLandmarkerResult {
 ```
 
 Each detected hand contains 21 normalized landmarks, world landmarks, and handedness information.
+
+### Detect hands in a CVPixelBuffer (iOS / macOS)
+
+On macOS there is no `UIImage`; wrap a `CVPixelBuffer` (for example the output
+of a camera capture or an `NSImage` rendered into a BGRA buffer) instead:
+
+```swift
+import MediaPipeTasksVision
+import MediaPipeTasksVisionHandLandmarker
+
+func detectHands(in pixelBuffer: CVPixelBuffer) throws -> HandLandmarkerResult {
+    let options = try HandLandmarkerModel.makeOptions(
+        runningMode: .image
+    )
+
+    let handLandmarker = try HandLandmarker(options: options)
+    let mpImage = try MPImage(pixelBuffer: pixelBuffer)
+
+    return try handLandmarker.detect(image: mpImage)
+}
+```
 
 ### Live stream mode
 
@@ -132,6 +153,13 @@ options.numHands = 2
 
 let handLandmarker = try HandLandmarker(options: options)
 ```
+
+## macOS notes
+
+The macOS slice is built from upstream MediaPipe sources plus the patches in
+[`macos/`](macos/README.md) (Google does not ship macOS binaries):
+
+- Inference runs on the CPU (XNNPACK). The GPU delegate is not available.
 
 ## License
 

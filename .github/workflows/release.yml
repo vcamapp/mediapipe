@@ -3,10 +3,22 @@ on:
   push:
     tags:
       - "*"
+  # Fully CI-driven release: builds, writes the version and checksum pins,
+  # commits, tags that commit, and publishes the same artifacts — no local
+  # build needed. The pinned macOS asset must already be published
+  # (run the "macOS build dependency" workflow first when it changed).
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Package version to release (e.g. 0.1.0)"
+        required: true
 env:
   DEVELOPER_DIR: "/Applications/Xcode_26.6.app/Contents/Developer"
 jobs:
   release:
+    # macos-* tags are the static-library artifact releases handled by
+    # macos-artifact.yml, not package releases.
+    if: ${{ github.event_name == 'push' && !startsWith(github.ref_name, 'macos-') }}
     runs-on: macos-26
     permissions:
       contents: write
@@ -25,11 +37,62 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
       - run: ./scripts/validate-versions.sh "$GITHUB_REF_NAME"
         if: startsWith(github.ref, 'refs/tags/')
-      - run: test "$(sed -n 's/.*checksum: "\([0-9a-f]*\)".*/\1/p' Package.swift)" = "$(head -1 .build-artifacts/checksums.txt)"
+      - run: >-
+          test "$(sed -n 's/.*checksum: "\([0-9a-f]*\)".*/\1/p' Package.swift)"
+          = "$(head -1 .build-artifacts/checksums.txt)"
         if: startsWith(github.ref, 'refs/tags/')
       - uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
+          name: "MediaPipe Tasks Vision ${{ github.ref_name }}"
+          body_path: .build-artifacts/release-notes.md
+          files: |
+            .build-artifacts/MediaPipeTasksVision.xcframework.zip
+            .build-artifacts/metadata/build-metadata.json
+            .build-artifacts/THIRD_PARTY_NOTICES.txt
+          fail_on_unmatched_files: true
+  auto-release:
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+    runs-on: macos-26
+    permissions:
+      contents: write
+    concurrency: release
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - name: Guard against duplicates
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          v="${{ inputs.version }}"
+          [[ "$v" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Invalid version: $v" >&2; exit 1; }
+          ! git rev-parse -q --verify "refs/tags/$v" >/dev/null || { echo "Tag $v already exists" >&2; exit 1; }
+          ! gh release view "$v" >/dev/null 2>&1 || { echo "Release $v already exists" >&2; exit 1; }
+      - name: Set the package version
+        run: sed -i '' "s/^PACKAGE_VERSION=.*/PACKAGE_VERSION=\"${{ inputs.version }}\"/" config/versions.env
+      - run: make all
+      - name: Pin the package checksum
+        run: |
+          checksum=$(head -1 .build-artifacts/checksums.txt)
+          sed -i '' -E "s|releases/download/[^/]+/MediaPipeTasksVision\.xcframework\.zip|releases/download/${{ inputs.version }}/MediaPipeTasksVision.xcframework.zip|" Package.swift
+          sed -i '' -E "s|checksum: \"[0-9a-f]+\"|checksum: \"$checksum\"|" Package.swift
+      - run: ./scripts/validate-versions.sh "${{ inputs.version }}"
+      - name: Commit, tag, and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "Release ${{ inputs.version }}"
+          git tag "${{ inputs.version }}"
+          git push origin "HEAD:$GITHUB_REF_NAME" "refs/tags/${{ inputs.version }}"
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.version }}
+          name: "MediaPipe Tasks Vision ${{ inputs.version }}"
           body_path: .build-artifacts/release-notes.md
           files: |
             .build-artifacts/MediaPipeTasksVision.xcframework.zip
