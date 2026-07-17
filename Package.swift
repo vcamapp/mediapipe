@@ -14,8 +14,8 @@ let package = Package(
     targets: [
         .binaryTarget(
             name: "MediaPipeTasksVision",
-            url: "https://github.com/vcamapp/mediapipe/releases/download/0.0.3/MediaPipeTasksVision.xcframework.zip",
-            checksum: "5764d256fa14d8cd45b483e7f5bdd91d6678a4b0aa940e96deb99e6bb4edc05c"
+            url: "https://github.com/vcamapp/mediapipe/releases/download/0.0.4/MediaPipeTasksVision.xcframework.zip",
+            checksum: "3641633312623131609538d0ad07d0c36c2962ef9434f07c5c3c92a55359855d"
         ),
         .target(
             name: "MediaPipeTasksVisionHandLandmarker",
