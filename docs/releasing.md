@@ -9,8 +9,9 @@ The `macos-*` prereleases are internal build inputs only.
    package build, produced from source (see [`../macos/README.md`](../macos/README.md)).
    Not consumed by package users.
 2. **The package itself** (`MediaPipeTasksVision.xcframework.zip`, containing
-   the iOS device/simulator and macOS slices) on the `<PACKAGE_VERSION>`
-   release — what `Package.swift` points at.
+   the iOS device/simulator slices and the universal macOS slice — arm64
+   implementation plus the x86_64 link-only stub from `builder/x86_64-stub`)
+   on the `<PACKAGE_VERSION>` release — what `Package.swift` points at.
 
 ## 1. macOS static library (only when MediaPipe or the patches change)
 

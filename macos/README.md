@@ -99,7 +99,10 @@ settings that matter for correctness, not just size:
 2. `MPImage(uiImage:)` is unavailable on macOS; use `CVPixelBuffer` or
    `CMSampleBuffer`. Orientation is `UIImage.Orientation` on iOS and
    `MPImageOrientation` (same cases and raw values) on macOS.
-3. arm64 only. An x86_64 slice should be buildable with
-   `--cpu=darwin_x86_64` but has not been verified.
+3. The MediaPipe implementation is arm64 only. The x86_64 slice of the
+   released framework is the link-only stub from `builder/x86_64-stub`
+   (built by `scripts/build-x86_64-stub.sh`), so MediaPipe never runs on
+   Intel Macs or under Rosetta. Building the real implementation with
+   `--cpu=darwin_x86_64` has not been verified.
 4. `interactive_segmenter_legacy` does not exist in v0.10.35 (master only)
    and is excluded from the umbrella target.

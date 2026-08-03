@@ -78,7 +78,7 @@ jobs:
       # Not `make all`: its final validate-versions target must run only after
       # the checksum below is pinned into Package.swift, and the checksum only
       # exists once `package` has built the zip.
-      - run: make bootstrap fetch build create-xcframework validate smoke-test package validate-model
+      - run: make bootstrap fetch build build-x86_64-stub create-xcframework validate smoke-test package validate-model
       - name: Pin the package checksum
         run: |
           checksum=$(head -1 .build-artifacts/checksums.txt)

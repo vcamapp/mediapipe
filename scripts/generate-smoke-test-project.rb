@@ -43,5 +43,5 @@ add_smoke_target(project, resources,
 add_smoke_target(project, resources,
                  name: 'MediaPipeSmokeTestsMac', platform: :osx,
                  deployment_target: versions.fetch('MINIMUM_MACOS_VERSION'),
-                 slice: 'macos-arm64')
+                 slice: 'macos-arm64_x86_64')
 project.save
