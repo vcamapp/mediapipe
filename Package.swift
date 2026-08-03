@@ -9,8 +9,8 @@ let mediaPipeTasksVision: Target = if let path = Context.environment["MEDIAPIPE_
 } else {
     .binaryTarget(
         name: "MediaPipeTasksVision",
-        url: "https://github.com/vcamapp/mediapipe/releases/download/0.0.4/MediaPipeTasksVision.xcframework.zip",
-        checksum: "3641633312623131609538d0ad07d0c36c2962ef9434f07c5c3c92a55359855d"
+        url: "https://github.com/vcamapp/mediapipe/releases/download/0.0.5/MediaPipeTasksVision.xcframework.zip",
+        checksum: "07b75e22589deb94fb7684e2d354457ddfe1b46b9dcbcad106ba45d5585e0285"
     )
 }
 
