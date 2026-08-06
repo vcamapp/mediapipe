@@ -29,7 +29,7 @@ index 0aaad19..2240a06 100644
  
  NS_ASSUME_NONNULL_BEGIN
 diff --git a/mediapipe/tasks/ios/vision/core/BUILD b/mediapipe/tasks/ios/vision/core/BUILD
-index 3e216f9..26f4782 100644
+index fc4d698..ffd61af 100644
 --- a/mediapipe/tasks/ios/vision/core/BUILD
 +++ b/mediapipe/tasks/ios/vision/core/BUILD
 @@ -36,8 +36,10 @@ objc_library(
@@ -45,7 +45,7 @@ index 3e216f9..26f4782 100644
  )
  
  objc_library(
-@@ -92,9 +94,11 @@ objc_library(
+@@ -95,9 +97,11 @@ objc_library(
          "//mediapipe/tasks/ios/core:MPPTaskInfo",
          "//mediapipe/tasks/ios/core:MPPTaskRunner",
          "//third_party/apple_frameworks:Foundation",
@@ -274,7 +274,7 @@ index b7b425f..eed039b 100644
                               withCode:MPPTasksErrorCodeInvalidArgumentError
                            description:@"Unsupported UIImageOrientation. This task only supports "
 diff --git a/mediapipe/tasks/ios/vision/core/utils/sources/MPPImage+Utils.mm b/mediapipe/tasks/ios/vision/core/utils/sources/MPPImage+Utils.mm
-index 256e146..4b78014 100644
+index cbd2e88..772bd6f 100644
 --- a/mediapipe/tasks/ios/vision/core/utils/sources/MPPImage+Utils.mm
 +++ b/mediapipe/tasks/ios/vision/core/utils/sources/MPPImage+Utils.mm
 @@ -111,11 +111,13 @@ + (CGImageRef)cgImageFromImageFrame:(std::shared_ptr<ImageFrame>)imageFrame
@@ -291,7 +291,7 @@ index 256e146..4b78014 100644
  
  @implementation MPPPixelDataUtils : NSObject
  
-@@ -464,6 +466,7 @@ + (CGImageRef)cgImageFromImageFrame:(std::shared_ptr<ImageFrame>)imageFrame
+@@ -522,6 +524,7 @@ + (CGImageRef)cgImageFromImageFrame:(std::shared_ptr<ImageFrame>)imageFrame
  
  @end
  
@@ -299,7 +299,7 @@ index 256e146..4b78014 100644
  @implementation UIImage (ImageFrameUtils)
  
  - (std::unique_ptr<ImageFrame>)imageFrameFromCIImageWithError:(NSError **)error {
-@@ -497,6 +500,8 @@ @implementation UIImage (ImageFrameUtils)
+@@ -555,6 +558,8 @@ @implementation UIImage (ImageFrameUtils)
  }
  
  @end
@@ -308,15 +308,15 @@ index 256e146..4b78014 100644
  
  @implementation MPPImage (Utils)
  
-@@ -519,6 +524,7 @@ - (nullable instancetype)initWithCppImage:(const mediapipe::Image &)image
+@@ -570,6 +575,7 @@ - (nullable instancetype)initWithCppImage:(const mediapipe::Image &)image
    }
  
    switch (sourceImage.imageSourceType) {
 +#if __has_include(<UIKit/UIKit.h>)
      case MPPImageSourceTypeImage: {
-       CGImageRef cgImageRef = [MPPCGImageUtils cgImageFromImageFrame:image.GetImageFrameSharedPtr()
-                                                  shouldCopyPixelData:shouldCopyPixelData
-@@ -546,6 +552,15 @@ - (nullable instancetype)initWithCppImage:(const mediapipe::Image &)image
+       auto sharedImageFrame = image.GetImageFrameSharedPtr();
+       if (sharedImageFrame && sharedImageFrame->Format() == ImageFormat::VEC32F1) {
+@@ -621,6 +627,15 @@ - (nullable instancetype)initWithCppImage:(const mediapipe::Image &)image
  
        return mpImage;
      }
@@ -331,8 +331,8 @@ index 256e146..4b78014 100644
 +#endif  // __has_include(<UIKit/UIKit.h>)
      case MPPImageSourceTypePixelBuffer: {
        if (!shouldCopyPixelData) {
-         // TODO: Investigate possibility of permuting channels of `mediapipe::Image` returned by
-@@ -626,9 +641,11 @@ - (nullable instancetype)initWithCppImage:(const mediapipe::Image &)image
+         // TODO: b/517979398 - Investigate possibility of permuting channels of `mediapipe::Image`
+@@ -701,9 +716,11 @@ - (nullable instancetype)initWithCppImage:(const mediapipe::Image &)image
      case MPPImageSourceTypePixelBuffer: {
        return [MPPCVPixelBufferUtils imageFrameFromCVPixelBuffer:self.pixelBuffer error:error];
      }

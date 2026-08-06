@@ -1,8 +1,8 @@
 diff --git a/mediapipe/tasks/ios/BUILD b/mediapipe/tasks/ios/BUILD
-index 92bd708..fd4be3e 100644
+index 1bf779f..d42fc12 100644
 --- a/mediapipe/tasks/ios/BUILD
 +++ b/mediapipe/tasks/ios/BUILD
-@@ -363,3 +363,102 @@ mediapipe_static_xcframework(
+@@ -388,3 +388,103 @@ mediapipe_static_xcframework(
      # built as static libraries and force loaded.
      deps = MEDIAPIPE_TASKS_COMMON_DEPS,
  )
@@ -30,7 +30,7 @@ index 92bd708..fd4be3e 100644
 +        "//mediapipe/tasks/ios/vision/image_classifier:MPPImageClassifier",
 +        "//mediapipe/tasks/ios/vision/image_embedder:MPPImageEmbedder",
 +        "//mediapipe/tasks/ios/vision/image_segmenter:MPPImageSegmenter",
-+        "//mediapipe/tasks/ios/vision/interactive_segmenter:MPPInteractiveSegmenter",
++        "//mediapipe/tasks/ios/vision/interactive_segmenter_legacy:MPPInteractiveSegmenterLegacy",
 +        "//mediapipe/tasks/ios/vision/object_detector:MPPObjectDetector",
 +        "//mediapipe/tasks/ios/vision/pose_landmarker:MPPPoseLandmarker",
 +    ],
@@ -58,6 +58,7 @@ index 92bd708..fd4be3e 100644
 +        ":MPPTaskResult.h",
 +        ":MPPImage.h",
 +        ":MPPMask.h",
++        ":MPPCoreRunningMode.h",
 +        ":MPPRunningMode.h",
 +        ":MPPFaceDetector.h",
 +        ":MPPFaceDetectorOptions.h",
@@ -74,9 +75,9 @@ index 92bd708..fd4be3e 100644
 +        ":MPPImageSegmenter.h",
 +        ":MPPImageSegmenterOptions.h",
 +        ":MPPImageSegmenterResult.h",
-+        ":MPPInteractiveSegmenter.h",
-+        ":MPPInteractiveSegmenterOptions.h",
-+        ":MPPInteractiveSegmenterResult.h",
++        ":MPPInteractiveSegmenterLegacy.h",
++        ":MPPInteractiveSegmenterLegacyOptions.h",
++        ":MPPInteractiveSegmenterLegacyResult.h",
 +        ":MPPHandLandmarker.h",
 +        ":MPPHandLandmarkerOptions.h",
 +        ":MPPHandLandmarkerResult.h",

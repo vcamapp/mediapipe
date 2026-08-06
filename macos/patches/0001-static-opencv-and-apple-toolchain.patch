@@ -1,5 +1,5 @@
 diff --git a/.bazelrc b/.bazelrc
-index 5965f96..97e5d9f 100644
+index 99a0afd..6b09ed7 100644
 --- a/.bazelrc
 +++ b/.bazelrc
 @@ -122,6 +122,17 @@ build:darwin_arm64 --apple_platform_type=macos
@@ -20,63 +20,44 @@ index 5965f96..97e5d9f 100644
  # Turn off maximum stdout size
  build --experimental_ui_max_stdouterr_bytes=-1
  
+diff --git a/MODULE.bazel b/MODULE.bazel
+index f5b6313..ab7a267 100644
+--- a/MODULE.bazel
++++ b/MODULE.bazel
+@@ -1,6 +1,11 @@
+ module(name = "mediapipe")
+ 
+ bazel_dep(name = "bazel_skylib", version = "1.8.2")
++
++# apple_support must be declared before rules_cc so its CC toolchain wins
++# toolchain resolution for objc_library (macOS static library build).
++bazel_dep(name = "apple_support", version = "2.6.1", repo_name = "build_bazel_apple_support")
++bazel_dep(name = "rules_apple", version = "3.16.1", repo_name = "build_bazel_rules_apple")
+ bazel_dep(name = "platforms", version = "0.0.11")
+ single_version_override(
+     module_name = "platforms",
+@@ -27,8 +32,6 @@ bazel_dep(name = "aspect_rules_js", version = "2.7.0")
+ bazel_dep(name = "aspect_bazel_lib", version = "2.21.2")
+ bazel_dep(name = "aspect_rules_rollup", version = "2.0.0")
+ bazel_dep(name = "aspect_rules_ts", version = "3.7.0")
+-bazel_dep(name = "apple_support", version = "2.6.1", repo_name = "build_bazel_apple_support")
+-bazel_dep(name = "rules_apple", version = "3.16.1", repo_name = "build_bazel_rules_apple")
+ bazel_dep(name = "rules_swift", version = "2.3.0", repo_name = "build_bazel_rules_swift")
+ bazel_dep(name = "rules_proto_grpc_js", version = "5.8.0")
+ bazel_dep(name = "rules_rust", version = "0.46.0")
+@@ -89,3 +92,7 @@ node.toolchain(node_version = "20.14.0")
+ use_repo(node, "nodejs_toolchains")
+ 
+ register_toolchains("@nodejs_toolchains//:all")
++# Expose apple_support's configured CC toolchain repo to the root module so
++# the --crosstool_top flags in .bazelrc (macOS static library build) resolve.
++apple_cc_configure = use_extension("@build_bazel_apple_support//crosstool:setup.bzl", "apple_cc_configure_extension")
++use_repo(apple_cc_configure, "local_config_apple_cc")
 diff --git a/WORKSPACE b/WORKSPACE
-index 1f57dd8..b53f178 100644
+index c353b11..0d40e16 100644
 --- a/WORKSPACE
 +++ b/WORKSPACE
-@@ -89,6 +89,22 @@ rules_shell_toolchains()
- 
- load("@rules_android_ndk//:rules.bzl", "android_ndk_repository")  # @unused
- 
-+# Declared explicitly (same 1.18.1 that TensorFlow pins transitively) so that
-+# the -Wl,-no_uuid removal can be patched in: newer macOS dyld refuses to run
-+# the crosstool tools when they lack LC_UUID. Fixed in apple_support upstream;
-+# drop this override when MediaPipe moves past it.
-+http_archive(
-+    name = "build_bazel_apple_support",
-+    patch_args = [
-+        "-p1",
-+    ],
-+    patches = [
-+        "@//third_party:apple_support_1.18.1_no_uuid.diff",
-+    ],
-+    sha256 = "d71b02d6df0500f43279e22400db6680024c1c439115c57a9a82e9effe199d7b",
-+    url = "https://github.com/bazelbuild/apple_support/releases/download/1.18.1/apple_support.1.18.1.tar.gz",
-+)
-+
- http_archive(
-     name = "build_bazel_rules_apple",
-     patch_args = [
-@@ -99,6 +115,9 @@ http_archive(
-         "@//third_party:build_bazel_rules_apple_bypass_test_runner_check.diff",
-         # https://github.com/bazelbuild/rules_apple/commit/95b1305255dc29874cacc3dc7fdc017f16d8dbe8
-         "@//third_party:build_bazel_rules_apple_multi_arch_split_with_new_transition.diff",
-+        # Bazel 7 removed --apple_compiler; required for macOS static library
-+        # builds. Fixed in rules_apple upstream; drop on the next upgrade.
-+        "@//third_party:rules_apple_2.1.0_bazel7_apple_compiler.diff",
-     ],
-     sha256 = "3e2c7ae0ddd181c4053b6491dad1d01ae29011bc322ca87eea45957c76d3a0c3",
-     url = "https://github.com/bazelbuild/rules_apple/releases/download/2.1.0/rules_apple.2.1.0.tar.gz",
-@@ -118,15 +137,9 @@ http_archive(
- http_archive(
-     name = "zlib",
-     build_file = "@//third_party:zlib.BUILD",
--    patch_args = [
--        "-p1",
--    ],
--    patches = [
--        "@//third_party:zlib.diff",
--    ],
--    sha256 = "b3a24de97a8fdbc835b9833169501030b8977031bcb54b3b3ac13740f846ab30",
--    strip_prefix = "zlib-1.2.13",
--    url = "http://zlib.net/fossils/zlib-1.2.13.tar.gz",
-+    sha256 = "17e88863f3600672ab49182f217281b6fc4d3c762bde361935e436a95214d05c",
-+    strip_prefix = "zlib-1.3.1",
-+    url = "https://github.com/madler/zlib/archive/refs/tags/v1.3.1.tar.gz",
- )
- 
- # gflags needed by glog
-@@ -628,10 +641,10 @@ new_local_repository(
+@@ -492,10 +492,10 @@ new_local_repository(
  new_local_repository(
      name = "macos_opencv",
      build_file = "@//third_party:opencv_macos.BUILD",
@@ -91,22 +72,6 @@ index 1f57dd8..b53f178 100644
  )
  
  new_local_repository(
-diff --git a/third_party/apple_support_1.18.1_no_uuid.diff b/third_party/apple_support_1.18.1_no_uuid.diff
-new file mode 100644
-index 0000000..799f100
---- /dev/null
-+++ b/third_party/apple_support_1.18.1_no_uuid.diff
-@@ -0,0 +1,10 @@
-+--- a/crosstool/universal_exec_tool.bzl	2026-07-15 19:40:43
-++++ b/crosstool/universal_exec_tool.bzl	2026-07-15 19:40:57
-+@@ -39,7 +39,6 @@
-+     -arch arm64 \
-+     -arch x86_64 \
-+     -Wl,-no_adhoc_codesign \
-+-    -Wl,-no_uuid \
-+     -O3 \
-+     -o $@ \
-+     $(SRCS)
 diff --git a/third_party/opencv_macos.BUILD b/third_party/opencv_macos.BUILD
 index 4139f18..c268903 100644
 --- a/third_party/opencv_macos.BUILD
@@ -189,28 +154,3 @@ index 4139f18..c268903 100644
      linkstatic = 1,
      visibility = ["//visibility:public"],
  )
-diff --git a/third_party/rules_apple_2.1.0_bazel7_apple_compiler.diff b/third_party/rules_apple_2.1.0_bazel7_apple_compiler.diff
-new file mode 100644
-index 0000000..22b0799
---- /dev/null
-+++ b/third_party/rules_apple_2.1.0_bazel7_apple_compiler.diff
-@@ -0,0 +1,19 @@
-+--- a/apple/internal/transition_support.bzl	2026-07-15 19:39:15
-++++ b/apple/internal/transition_support.bzl	2026-07-15 19:39:15
-+@@ -198,7 +198,7 @@
-+         "//command_line_option:apple_platform_type": platform_type,
-+         "//command_line_option:apple_platforms": apple_platforms,
-+         "//command_line_option:apple_split_cpu": cpu if cpu else "",
-+-        "//command_line_option:compiler": settings["//command_line_option:apple_compiler"],
-++        "//command_line_option:compiler": None,
-+         "//command_line_option:cpu": _cpu_string(
-+             cpu = cpu,
-+             platform_type = platform_type,
-+@@ -338,7 +338,6 @@
-+ # - https://github.com/bazelbuild/bazel/blob/master/src/main/java/com/google/devtools/build/lib/rules/apple/AppleCommandLineOptions.java
-+ # - https://github.com/bazelbuild/bazel/blob/master/src/main/java/com/google/devtools/build/lib/rules/cpp/CppOptions.java
-+ _apple_rule_common_transition_inputs = [
-+-    "//command_line_option:apple_compiler",
-+     "//command_line_option:apple_crosstool_top",
-+ ]
-+ _apple_rule_base_transition_inputs = _apple_rule_common_transition_inputs + [

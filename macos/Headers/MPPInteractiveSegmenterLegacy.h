@@ -16,8 +16,8 @@
 
 #import "MPPRegionOfInterest.h"
 #import "MPPImage.h"
-#import "MPPInteractiveSegmenterOptions.h"
-#import "MPPInteractiveSegmenterResult.h"
+#import "MPPInteractiveSegmenterLegacyOptions.h"
+#import "MPPInteractiveSegmenterLegacyResult.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -25,7 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief Class that performs interactive segmentation on images.
  *
  * Users can represent user interaction through `RegionOfInterest`, which gives a hint to
- * `InteractiveSegmenter` to perform segmentation focusing on the given region of interest.
+ * `InteractiveSegmenterLegacy` to perform segmentation focusing on the given region of interest.
  *
  * The API expects a TFLite model with mandatory TFLite Model Metadata.
  *
@@ -45,38 +45,39 @@ NS_ASSUME_NONNULL_BEGIN
  * An example of such model can be found at:
  * https://tfhub.dev/tensorflow/lite-model/deeplabv3/1/metadata/2
  */
-NS_SWIFT_NAME(InteractiveSegmenter)
-@interface MPPInteractiveSegmenter : NSObject
+NS_SWIFT_NAME(InteractiveSegmenterLegacy)
+@interface MPPInteractiveSegmenterLegacy : NSObject
 
 /**
- * Get the category label list of the `InteractiveSegmenter` can recognize. For CATEGORY_MASK type,
- * the index in the category mask corresponds to the category in the label list. For CONFIDENCE_MASK
- * type, the output mask list at index corresponds to the category in the label list. If there is no
- * labelmap provided in the model file, empty array is returned.
+ * Get the category label list of the `InteractiveSegmenterLegacy` can recognize. For CATEGORY_MASK
+ * type, the index in the category mask corresponds to the category in the label list. For
+ * CONFIDENCE_MASK type, the output mask list at index corresponds to the category in the label
+ * list. If there is no labelmap provided in the model file, empty array is returned.
  */
 @property(nonatomic, readonly) NSArray<NSString *> *labels;
 
 /**
- * Creates a new instance of `InteractiveSegmenter` from an absolute path to a TensorFlow Lite model
- * file stored locally on the device and the default `InteractiveSegmenterOptions`.
+ * Creates a new instance of `InteractiveSegmenterLegacy` from an absolute path to a TensorFlow Lite
+ * model file stored locally on the device and the default `InteractiveSegmenterLegacyOptions`.
  *
  * @param modelPath An absolute path to a TensorFlow Lite model file stored locally on the device.
  *
- * @return A new instance of `InteractiveSegmenter` with the given model path. `nil` if there is an
- * error in initializing the interactive segmenter.
+ * @return A new instance of `InteractiveSegmenterLegacy` with the given model path. `nil` if there
+ * is an error in initializing the interactive segmenter.
  */
 - (nullable instancetype)initWithModelPath:(NSString *)modelPath error:(NSError **)error;
 
 /**
- * Creates a new instance of `InteractiveSegmenter` from the given `InteractiveSegmenterOptions`.
+ * Creates a new instance of `InteractiveSegmenterLegacy` from the given
+ * `InteractiveSegmenterLegacyOptions`.
  *
- * @param options The options of type `InteractiveSegmenterOptions` to use for configuring the
- * `InteractiveSegmenter`.
+ * @param options The options of type `InteractiveSegmenterLegacyOptions` to use for configuring the
+ * `InteractiveSegmenterLegacy`.
  *
- * @return A new instance of `InteractiveSegmenter` with the given options. `nil` if there is an
- * error in initializing the interactive segmenter.
+ * @return A new instance of `InteractiveSegmenterLegacy` with the given options. `nil` if there is
+ * an error in initializing the interactive segmenter.
  */
-- (nullable instancetype)initWithOptions:(MPPInteractiveSegmenterOptions *)options
+- (nullable instancetype)initWithOptions:(MPPInteractiveSegmenterLegacyOptions *)options
                                    error:(NSError **)error NS_DESIGNATED_INITIALIZER;
 
 /**
@@ -92,11 +93,12 @@ NS_SWIFT_NAME(InteractiveSegmenter)
  *
  * @param image The `MPImage` on which segmentation is to be performed.
  *
- * @return An `InteractiveSegmenterResult` that contains the segmented masks.
+ * @return An `InteractiveSegmenterLegacyResult` that contains the segmented masks.
  */
-- (nullable MPPInteractiveSegmenterResult *)segmentImage:(MPPImage *)image
-                                        regionOfInterest:(MPPRegionOfInterest *)regionOfInterest
-                                                   error:(NSError **)error
+- (nullable MPPInteractiveSegmenterLegacyResult *)segmentImage:(MPPImage *)image
+                                              regionOfInterest:
+                                                  (MPPRegionOfInterest *)regionOfInterest
+                                                         error:(NSError **)error
     NS_SWIFT_NAME(segment(image:regionOfInterest:));
 
 /**
@@ -115,13 +117,14 @@ NS_SWIFT_NAME(InteractiveSegmenter)
  *
  * @param image The `MPImage` on which segmentation is to be performed.
  * @param completionHandler A block to be invoked with the results of performing segmentation on the
- * image. The block takes two arguments, the optional `InteractiveSegmenterResult` that contains the
- * segmented masks if the segmentation was successful and an optional error populated upon failure.
- * The lifetime of the returned masks is only guaranteed for the duration of the block.
+ * image. The block takes two arguments, the optional `InteractiveSegmenterLegacyResult` that
+ * contains the segmented masks if the segmentation was successful and an optional error populated
+ * upon failure. The lifetime of the returned masks is only guaranteed for the duration of the
+ * block.
  */
 - (void)segmentImage:(MPPImage *)image
          regionOfInterest:(MPPRegionOfInterest *)regionOfInterest
-    withCompletionHandler:(void (^)(MPPInteractiveSegmenterResult *_Nullable result,
+    withCompletionHandler:(void (^)(MPPInteractiveSegmenterLegacyResult *_Nullable result,
                                     NSError *_Nullable error))completionHandler
     NS_SWIFT_NAME(segment(image:regionOfInterest:completion:));
 

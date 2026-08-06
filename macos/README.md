@@ -18,10 +18,11 @@ prebuilt archive itself is distributed through GitHub Releases (tag
 | Path | Description |
 |---|---|
 | `Headers/` | Flattened public headers for the macOS framework slice, generated from the patched sources (includes the `MPPImageOrientation` compatibility layer in `MPPImage.h`) |
-| `patches/0001-…` | Dependency updates: zlib 1.3.1, `macos_opencv` repointed at a statically built OpenCV (`third_party/opencv_static`), and fixes for `apple_support` (dyld on recent macOS refuses tools without `LC_UUID`) and `rules_apple` (Bazel 7 removed `--apple_compiler`). The fix diffs are added to `third_party/` by this patch; both are already fixed upstream and can be dropped when MediaPipe upgrades those rules |
+| `patches/0001-…` | Build wiring for the macOS static library: `macos_opencv` repointed at a statically built OpenCV (`third_party/opencv_static`), the `.bazelrc` additions (hermetic Python, Apple crosstool for `--config=macos`), and MODULE.bazel fixes for bzlmod — `apple_support` declared before `rules_cc` so its CC toolchain wins objc toolchain resolution, plus `apple_cc_configure` exposed to the root module so the `--crosstool_top` flags resolve. (The zlib/apple_support/rules_apple fixes the pre-1.0.0 patch carried are upstream now.) |
 | `patches/0003-…` | UIKit-independence for the Objective-C API. On iOS the public API is unchanged (`typedef UIImageOrientation MPPImageOrientation`); on macOS an `NS_ENUM` with identical cases and raw values is provided. `UIImage` APIs are guarded with `#if __has_include(<UIKit/UIKit.h>)`, and `BUILD` dependencies on UIKit are `select()`ed away for `//mediapipe:macos` |
 | `patches/0004-…` | Adds `//mediapipe/tasks/ios:MediaPipeTasksVision_macos`, an `objc_library` umbrella covering every vision task |
 | `patches/0005-…` | Optional smoke-test targets (C API and Objective-C API) |
+| `patches/0006-…` | FP16 inference for the XNNPACK delegate (`TFLITE_XNNPACK_DELEGATE_FLAG_FORCE_FP16` in the default delegate options; ~1.8x faster on Apple Silicon, measured landmark drift ≤1% of the normalized frame) |
 | `licenses/` | License texts for the libraries statically linked into the macOS artifact (OpenCV, libjpeg-turbo, libpng, libtiff, KleidiCV); bundled into each release's `THIRD_PARTY_NOTICES.txt` |
 | `build-macos-opencv.sh` | Builds the statically linked OpenCV that the artifact embeds |
 | `build-macos-static-lib.sh` | Builds `MediaPipeTasksVision_macos.a` and the `Headers/` set from a patched checkout |
@@ -104,5 +105,6 @@ settings that matter for correctness, not just size:
    (built by `scripts/build-x86_64-stub.sh`), so MediaPipe never runs on
    Intel Macs or under Rosetta. Building the real implementation with
    `--cpu=darwin_x86_64` has not been verified.
-4. `interactive_segmenter_legacy` does not exist in v0.10.35 (master only)
-   and is excluded from the umbrella target.
+4. The rewritten `MPPInteractiveSegmenter` introduced in v1.0.0 ships without
+   a `BUILD` file upstream and is excluded from the umbrella target; the
+   macOS slice carries `MPPInteractiveSegmenterLegacy` instead.

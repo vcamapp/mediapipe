@@ -13,7 +13,7 @@ build_one() {
   local common="$pod_root/MediaPipeTasksCommon/frameworks/MediaPipeTasksCommon.xcframework/$slice"
   local graph_platform="device"; [[ "$platform" == iphonesimulator ]] && graph_platform="simulator"
   local graph="$pod_root/MediaPipeTasksCommon/frameworks/graph_libraries/libMediaPipeTasksCommon_${graph_platform}_graph.a"
-  local flags="-ObjC -lc++ -lz -force_load $vision/MediaPipeTasksVision.framework/MediaPipeTasksVision -force_load $graph -framework MediaPipeTasksCommon"
+  local flags="-ObjC -lc++ -lz -force_load $vision/MediaPipeTasksVision.framework/MediaPipeTasksVision -force_load $graph -framework MediaPipeTasksCommon -framework AudioToolbox -framework CoreAudio"
   xcodebuild archive -project "$project" -scheme MediaPipeTasksVision -configuration Release -destination "$destination" -archivePath "$root_dir/.build-artifacts/archives/$archive" ARCHS=arm64 EXCLUDED_ARCHS=x86_64 IPHONEOS_DEPLOYMENT_TARGET="$MINIMUM_IOS_VERSION" SKIP_INSTALL=NO BUILD_LIBRARY_FOR_DISTRIBUTION=YES CODE_SIGNING_ALLOWED=NO FRAMEWORK_SEARCH_PATHS="$vision $common" HEADER_SEARCH_PATHS="$vision/MediaPipeTasksVision.framework/Headers $common/MediaPipeTasksCommon.framework/Headers" OTHER_LDFLAGS="$flags"
   local framework="$root_dir/.build-artifacts/archives/$archive.xcarchive/Products/Library/Frameworks/MediaPipeTasksVision.framework"
   mkdir -p "$framework/Headers"

@@ -46,6 +46,15 @@ bazelisk cquery "${flags[@]}" "$umbrella" \
   --output=starlark --starlark:file="$starlark" 2>/dev/null \
   | grep -v '^$' | sort -u > "$out_dir/static_libs.txt"
 
+# MediaPipe 1.0.0 pulls zlib twice under hybrid WORKSPACE/bzlmod resolution
+# (external/zlib from WORKSPACE and external/zlib~ from the module graph).
+# Keep the module copy and drop the WORKSPACE one to avoid duplicate symbols
+# in the combined archive.
+if grep -q 'external/zlib~/libz\.a' "$out_dir/static_libs.txt"; then
+  grep -v 'external/zlib/libzlib\.a' "$out_dir/static_libs.txt" > "$out_dir/static_libs.txt.tmp"
+  mv "$out_dir/static_libs.txt.tmp" "$out_dir/static_libs.txt"
+fi
+
 # 3. Materialize every dependency archive: linking the throwaway dylib that
 #    patch 0004 defines makes all of them link inputs, so Bazel is forced to
 #    produce each one (and verifies the symbol graph is complete).

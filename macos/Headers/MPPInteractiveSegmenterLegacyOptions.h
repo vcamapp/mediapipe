@@ -18,11 +18,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class MPPInteractiveSegmenter;
+@class MPPInteractiveSegmenterLegacy;
 
-/** Options for setting up a `InteractiveSegmenter`. */
-NS_SWIFT_NAME(InteractiveSegmenterOptions)
-@interface MPPInteractiveSegmenterOptions : MPPTaskOptions <NSCopying>
+/** Options for setting up a `InteractiveSegmenterLegacy`. */
+NS_SWIFT_NAME(InteractiveSegmenterLegacyOptions)
+@interface MPPInteractiveSegmenterLegacyOptions : MPPTaskOptions <NSCopying>
 
 /**
  * The locale to use for display names specified through the TFLite Model Metadata, if any. Defaults
