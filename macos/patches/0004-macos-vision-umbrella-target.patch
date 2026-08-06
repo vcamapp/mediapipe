@@ -1,8 +1,8 @@
 diff --git a/mediapipe/tasks/ios/BUILD b/mediapipe/tasks/ios/BUILD
-index 1bf779f..d42fc12 100644
+index 1bf779f..9d7b324 100644
 --- a/mediapipe/tasks/ios/BUILD
 +++ b/mediapipe/tasks/ios/BUILD
-@@ -388,3 +388,103 @@ mediapipe_static_xcframework(
+@@ -388,3 +388,102 @@ mediapipe_static_xcframework(
      # built as static libraries and force loaded.
      deps = MEDIAPIPE_TASKS_COMMON_DEPS,
  )
@@ -12,10 +12,9 @@ index 1bf779f..d42fc12 100644
 +# CPU-only macOS builds. Task graphs, calculators and TFLite (XNNPACK) are
 +# included transitively. A distributable single static archive is produced by
 +# combining the transitive static libraries of this target with libtool
-+# (see build script). GPU must be disabled because the Metal converters require
-+# MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER which is unavailable on macOS.
++# (see build script). GPU stays enabled: since MediaPipe 1.0.0 GpuBuffer is
++# CVPixelBuffer-backed on macOS, so the Metal inference delegate works.
 +#   bazel build -c opt --config=darwin_arm64 --apple_generate_dsym=false \
-+#     --define MEDIAPIPE_DISABLE_GPU=1 \
 +#     //mediapipe/tasks/ios:MediaPipeTasksVision_macos
 +objc_library(
 +    name = "MediaPipeTasksVision_macos",

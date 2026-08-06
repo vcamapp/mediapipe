@@ -19,6 +19,7 @@ final class MediaPipeHandLandmarkTracker: HandLandmarkTracking, @unchecked Senda
             minimumPresenceConfidence: configuration.minimumPresenceConfidence,
             minimumTrackingConfidence: configuration.minimumTrackingConfidence
         )
+        options.baseOptions.delegate = configuration.inferenceBackend == .gpu ? .GPU : .CPU
         landmarker = try HandLandmarker(options: options)
     }
 

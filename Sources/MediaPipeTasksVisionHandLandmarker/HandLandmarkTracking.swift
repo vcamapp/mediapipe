@@ -12,22 +12,33 @@ public protocol HandLandmarkTracking: AnyObject, Sendable {
     ) throws -> HandLandmarkResult
 }
 
+/// Where the landmark models run. `.gpu` uses the Metal delegate and
+/// requires a GPU-enabled framework build; creation throws when the
+/// backend cannot be initialized, so callers can fall back to `.cpu`.
+public enum HandInferenceBackend: Sendable {
+    case cpu
+    case gpu
+}
+
 public struct HandLandmarkTrackingConfiguration: Sendable {
     public var numberOfHands: Int
     public var minimumDetectionConfidence: Float
     public var minimumPresenceConfidence: Float
     public var minimumTrackingConfidence: Float
+    public var inferenceBackend: HandInferenceBackend
 
     public init(
         numberOfHands: Int = 2,
         minimumDetectionConfidence: Float = 0.5,
         minimumPresenceConfidence: Float = 0.5,
-        minimumTrackingConfidence: Float = 0.5
+        minimumTrackingConfidence: Float = 0.5,
+        inferenceBackend: HandInferenceBackend = .cpu
     ) {
         self.numberOfHands = numberOfHands
         self.minimumDetectionConfidence = minimumDetectionConfidence
         self.minimumPresenceConfidence = minimumPresenceConfidence
         self.minimumTrackingConfidence = minimumTrackingConfidence
+        self.inferenceBackend = inferenceBackend
     }
 }
 

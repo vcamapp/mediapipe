@@ -26,7 +26,7 @@ build_macos() {
   local static_lib="$root_dir/.build-artifacts/macos/MediaPipeTasksVision_macos.a"
   [[ -f "$static_lib" ]] || { echo "macOS static library not fetched; run scripts/fetch.sh first." >&2; exit 1; }
   # OpenCV (core/imgproc/imgcodecs) is statically linked inside the artifact.
-  local flags="-ObjC -lc++ -lz -force_load $static_lib"
+  local flags="-ObjC -lc++ -lz -force_load $static_lib -framework Metal -framework MetalKit -framework MetalPerformanceShaders -framework OpenGL -framework IOSurface -framework CoreVideo"
   xcodebuild archive -project "$project" -scheme MediaPipeTasksVisionMac -configuration Release -destination 'generic/platform=macOS' -archivePath "$root_dir/.build-artifacts/archives/$archive" ARCHS=arm64 MACOSX_DEPLOYMENT_TARGET="$MINIMUM_MACOS_VERSION" SKIP_INSTALL=NO BUILD_LIBRARY_FOR_DISTRIBUTION=YES CODE_SIGNING_ALLOWED=NO OTHER_LDFLAGS="$flags"
   local framework="$root_dir/.build-artifacts/archives/$archive.xcarchive/Products/Library/Frameworks/MediaPipeTasksVision.framework"
   mkdir -p "$framework/Versions/A/Headers"

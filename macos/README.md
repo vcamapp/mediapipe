@@ -5,8 +5,8 @@ official CocoaPods are iOS-only. The macOS slice of
 `MediaPipeTasksVision.xcframework` is therefore built from source: upstream
 [MediaPipe](https://github.com/google-ai-edge/mediapipe) plus the patches in
 this directory produce a single static library
-(`MediaPipeTasksVision_macos.a`, arm64, CPU-only) that the wrapper project
-links into the framework.
+(`MediaPipeTasksVision_macos.a`, arm64, XNNPACK CPU + Metal GPU delegate)
+that the wrapper project links into the framework.
 
 This directory contains everything required to reproduce that library. The
 prebuilt archive itself is distributed through GitHub Releases (tag
@@ -56,7 +56,7 @@ path/to/macos/build-macos-static-lib.sh "$PWD" <out-dir>
 ```
 
 The Bazel invocation behind step 3 is:
-`-c opt --config=darwin_arm64 --apple_generate_dsym=false --define MEDIAPIPE_DISABLE_GPU=1`.
+`-c opt --config=darwin_arm64 --apple_generate_dsym=false` (GPU enabled).
 If the generated `<out-dir>/Headers/` differ from `Headers/` in this
 directory, update the committed copy — the wrapper project compiles against
 it.
@@ -69,7 +69,8 @@ Used by `scripts/build.sh`; relevant when consuming the `.a` directly:
   — `-force_load` is required for the calculators' static registration, and
   `-ObjC` for Objective-C categories.
 - Frameworks: Foundation, CoreFoundation, CoreGraphics, CoreVideo, CoreMedia,
-  Accelerate, AppKit, CoreImage, QuartzCore, AVFoundation
+  Accelerate, AppKit, CoreImage, QuartzCore, AVFoundation, Metal, MetalKit,
+  MetalPerformanceShaders, OpenGL, IOSurface
   (UIKit / OpenGLES / AssetsLibrary are not needed).
 - OpenCV is embedded in the archive; no extra OpenCV link flags are needed.
 
@@ -93,10 +94,13 @@ settings that matter for correctness, not just size:
 
 ## Known limitations
 
-1. **CPU (XNNPACK) inference only.** The GPU path requires
-   `MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER`, which upstream defines only for
-   non-macOS Apple targets; enabling Metal on macOS would need additional
-   patches to the `mediapipe/gpu` layer.
+1. **The runtime default is still CPU (XNNPACK) inference.** The build is
+   GPU-enabled (possible since MediaPipe 1.0.0 defines
+   `MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER` for all Apple targets) and the
+   Metal delegate is opt-in per tracker via
+   `HandLandmarkTrackingConfiguration.inferenceBackend = .gpu` (~5x lower CPU
+   per inference; GPU landmarks drift up to 2.6% of the normalized frame vs
+   CPU, and Google does not test this configuration on macOS).
 2. `MPImage(uiImage:)` is unavailable on macOS; use `CVPixelBuffer` or
    `CMSampleBuffer`. Orientation is `UIImage.Orientation` on iOS and
    `MPImageOrientation` (same cases and raw values) on macOS.

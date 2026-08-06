@@ -1,5 +1,6 @@
 .build-artifacts/
 .build/
+.swiftpm/
 builder/Pods/
 builder/*.xcworkspace
 builder/mediapipe-tasks-vision-wrapper/MediaPipeTasksVisionWrapper.xcodeproj/

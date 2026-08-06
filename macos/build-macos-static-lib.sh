@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Builds MediaPipeTasksVision_macos.a (arm64, CPU-only) + flattened public
-# headers from a patched google-ai-edge/mediapipe v0.10.35 checkout.
+# Builds MediaPipeTasksVision_macos.a (arm64, GPU-enabled: XNNPACK CPU +
+# Metal delegate) + flattened public headers from a patched
+# google-ai-edge/mediapipe checkout at the pinned MEDIAPIPE_VERSION.
 #
 # Prerequisites:
 #   - bazelisk (Bazel 7.4.1 is picked via .bazelversion)
@@ -20,7 +21,7 @@ out_dir="${2:?usage: $0 <mediapipe-src-dir> <out-dir>}"
 # the Bytes), which also applies to --disk_cache — on cache hits intermediate
 # archives would never be materialized in bazel-out, corrupting the combine
 # step below.
-flags=(-c opt --config=darwin_arm64 --apple_generate_dsym=false --define MEDIAPIPE_DISABLE_GPU=1 --remote_download_outputs=all)
+flags=(-c opt --config=darwin_arm64 --apple_generate_dsym=false --remote_download_outputs=all)
 umbrella="//mediapipe/tasks/ios:MediaPipeTasksVision_macos"
 
 cd "$src_dir"
