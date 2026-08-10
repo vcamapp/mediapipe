@@ -23,6 +23,7 @@ prebuilt archive itself is distributed through GitHub Releases (tag
 | `patches/0004-…` | Adds `//mediapipe/tasks/ios:MediaPipeTasksVision_macos`, an `objc_library` umbrella covering every vision task |
 | `patches/0005-…` | Optional smoke-test targets (C API and Objective-C API) |
 | `patches/0006-…` | FP16 inference for the XNNPACK delegate (`TFLITE_XNNPACK_DELEGATE_FLAG_FORCE_FP16` in the default delegate options; ~1.8x faster on Apple Silicon, measured landmark drift ≤1% of the normalized frame) |
+| `patches/0007-…` | Flushes the `CVOpenGLTextureCache` before each texture creation in `GpuBufferStorageCvPixelBuffer::GetTexture`. Unlike the iOS ES cache, the macOS cache never recycles entries on create and nothing flushes it outside the pixel-buffer-pool path, so the GPU delegate leaks ~2 IOSurfaces per frame (measured with `ioclasscount`) until `CVPixelBufferCreate` fails with `kCVReturnAllocationFailed` (-6662) and MediaPipe aborts after ~10 minutes (google-ai-edge/mediapipe/issues/5267, google-ai-edge/mediapipe/issues/5510) |
 | `licenses/` | License texts for the libraries statically linked into the macOS artifact (OpenCV, libjpeg-turbo, libpng, libtiff, KleidiCV); bundled into each release's `THIRD_PARTY_NOTICES.txt` |
 | `build-macos-opencv.sh` | Builds the statically linked OpenCV that the artifact embeds |
 | `build-macos-static-lib.sh` | Builds `MediaPipeTasksVision_macos.a` and the `Headers/` set from a patched checkout |

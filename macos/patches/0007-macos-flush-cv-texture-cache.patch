@@ -1,0 +1,20 @@
+diff --git a/mediapipe/gpu/gpu_buffer_storage_cv_pixel_buffer.cc b/mediapipe/gpu/gpu_buffer_storage_cv_pixel_buffer.cc
+index 5983758..d43d07c 100644
+--- a/mediapipe/gpu/gpu_buffer_storage_cv_pixel_buffer.cc
++++ b/mediapipe/gpu/gpu_buffer_storage_cv_pixel_buffer.cc
+@@ -33,6 +33,15 @@ GlTextureView GpuBufferStorageCvPixelBuffer::GetTexture(
+   auto gl_context = GlContext::GetCurrent();
+   ABSL_CHECK(gl_context);
+ #if TARGET_OS_OSX
++  // VCam: unlike the iOS ES variant, CVOpenGLTextureCache does not recycle
++  // unused entries on create, and nothing else flushes it outside the pixel
++  // buffer pool path, which the ImageFrame conversion path never uses. The
++  // per-frame textures therefore pile up together with their backing
++  // IOSurfaces until CVPixelBufferCreate fails with
++  // kCVReturnAllocationFailed (-6662) and MediaPipe aborts. Flushing releases
++  // only entries whose CVOpenGLTextureRef is no longer retained, so views
++  // still held by in-flight GlTextureViews are unaffected.
++  CVOpenGLTextureCacheFlush(gl_context->cv_texture_cache(), 0);
+   CVTextureType cv_texture_temp;
+   err = CVOpenGLTextureCacheCreateTextureFromImage(
+       kCFAllocatorDefault, gl_context->cv_texture_cache(), **this, NULL,
