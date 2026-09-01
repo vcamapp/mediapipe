@@ -106,4 +106,43 @@ private func makePoseLandmarker(delegate: Delegate) throws -> PoseLandmarker {
 }
 #endif
 
+private func assertValidFaceResult(_ result: FaceLandmarkerResult) {
+    #expect(result.faceLandmarks.count == 1)
+    #expect(result.faceLandmarks.allSatisfy { $0.count == 478 })
+    // The bundle's second model scores the 52 expression channels; it is the
+    // only output that tells whether it ran at all.
+    #expect(result.faceBlendshapes.count == result.faceLandmarks.count)
+    #expect(result.faceBlendshapes.allSatisfy { $0.categories.count == 52 })
+    // The scores are consumed by index, so the order is part of the contract.
+    #expect(result.faceBlendshapes.first?.categories.first?.categoryName == "_neutral")
+    #expect(result.faceBlendshapes.first?.categories.last?.categoryName == "noseSneerRight")
+    #expect(result.facialTransformationMatrixes.allSatisfy { $0.rows == 4 && $0.columns == 4 })
+}
+
+private func makeFaceLandmarker(delegate: Delegate) throws -> FaceLandmarker {
+    let bundle = Bundle(for: SmokeTestBundleMarker.self)
+    let modelURL = try #require(bundle.url(forResource: "face_landmarker", withExtension: "task"))
+    let options = FaceLandmarkerOptions()
+    options.baseOptions.modelAssetPath = modelURL.path
+    options.baseOptions.delegate = delegate
+    options.numFaces = 1
+    options.outputFaceBlendshapes = true
+    options.outputFacialTransformationMatrixes = true
+    return try FaceLandmarker(options: options)
+}
+
+@Test func faceLandmarkerDetectsFixedImageOnCPU() throws {
+    let pixelBuffer = try makeBGRAPixelBuffer(contentsOf: testImageURL("face"))
+    let result = try makeFaceLandmarker(delegate: .CPU).detect(image: try MPImage(pixelBuffer: pixelBuffer))
+    assertValidFaceResult(result)
+}
+
+#if os(macOS)
+@Test func faceLandmarkerDetectsFixedImageOnGPU() throws {
+    let pixelBuffer = try makeBGRAPixelBuffer(contentsOf: testImageURL("face"))
+    let result = try makeFaceLandmarker(delegate: .GPU).detect(image: try MPImage(pixelBuffer: pixelBuffer))
+    assertValidFaceResult(result)
+}
+#endif
+
 private final class SmokeTestBundleMarker {}

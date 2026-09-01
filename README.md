@@ -10,6 +10,8 @@ The package provides:
   - The standard Hand Landmarker model and helpers for creating `HandLandmarkerOptions`
 - `MediaPipeTasksVisionPoseLandmarker`
   - The Pose Landmarker (lite) model and helpers for creating `PoseLandmarkerOptions`
+- `MediaPipeTasksVisionFaceLandmarker`
+  - The Face Landmarker model and helpers for creating `FaceLandmarkerOptions`
 
 ## Requirements
 
@@ -31,6 +33,7 @@ Select one of the following products:
 | `MediaPipeTasksVision` | MediaPipe Tasks Vision APIs only |
 | `MediaPipeTasksVisionHandLandmarker` | APIs and the bundled Hand Landmarker model |
 | `MediaPipeTasksVisionPoseLandmarker` | APIs and the bundled Pose Landmarker model |
+| `MediaPipeTasksVisionFaceLandmarker` | APIs and the bundled Face Landmarker model |
 
 Select a landmarker product when using the model it bundles; the products can be
 used together.
@@ -191,6 +194,53 @@ for pose in result.poses {
 The tracker keeps the CPU delegate in full precision and leaves segmentation
 masks off — see [macOS notes](#macos-notes) for why both matter there.
 
+## Face Landmarker
+
+### Create a Face Landmarker
+
+The bundled product includes `face_landmarker.task` (Face Mesh V2): 478
+landmarks, the 52 blend shape scores, and the facial transformation matrix.
+
+```swift
+import MediaPipeTasksVision
+import MediaPipeTasksVisionFaceLandmarker
+
+let options = try FaceLandmarkerModel.makeOptions(
+    runningMode: .video,
+    numberOfFaces: 1
+)
+
+let faceLandmarker = try FaceLandmarker(options: options)
+```
+
+Blend shapes are requested by default because they are what most callers are
+after; the transformation matrix is opt-in (`outputsTransform: true`). Frames
+are supplied exactly like the Hand Landmarker.
+
+### Face tracking without MediaPipe types
+
+```swift
+import MediaPipeTasksVisionFaceLandmarker
+
+guard MediaPipeFaceTrackingSupport.isAvailable else {
+    // Fall back to another implementation (e.g. Vision).
+    return
+}
+
+let tracker = try MediaPipeFaceTrackingFactory.makeTracker(
+    configuration: FaceLandmarkTrackingConfiguration(numberOfFaces: 1)
+)
+
+let result = try tracker.detect(in: pixelBuffer, timestampInMilliseconds: timestamp)
+for face in result.faces {
+    print(face.landmarks.count, face.blendShapes[.jawOpen] ?? 0)
+}
+```
+
+`blendShapes` is keyed by `FaceBlendShape`, whose 52 cases are named after the
+ARKit blend shape locations (plus `neutral`), so the scores reach an
+ARKit-shaped rig without a lookup table of category names.
+
 ## Using a custom model
 
 Use the `MediaPipeTasksVision` product and provide an absolute path to your
@@ -241,7 +291,8 @@ The macOS slice is built from upstream MediaPipe sources plus the patches in
 - The CPU delegate runs models in full precision unless a task opts into FP16
   through `MEDIAPIPE_XNNPACK_FORCE_FP16=1`. The bundled hand tracker opts in
   (~1.8x faster, ~1% landmark drift); the pose tracker must not, because its
-  detector stops producing detections in FP16.
+  detector stops producing detections in FP16; the face tracker gains neither
+  speed nor drift from it and stays in full precision.
 - Pose segmentation masks are unavailable: the mask branch of the graph uses
   shaders that the macOS OpenGL context (2.1) rejects, so `PoseLandmarker` is
   only created with `shouldOutputSegmentationMasks = false`.
@@ -263,8 +314,8 @@ Silicon Macs when the app runs under Rosetta.
 
 This project is licensed under the Apache License 2.0.
 
-MediaPipe, the bundled Hand Landmarker model, and bundled third-party
-dependencies remain subject to their respective licenses and notices.
+MediaPipe, the bundled models, and bundled third-party dependencies remain
+subject to their respective licenses and notices.
 
 See:
 

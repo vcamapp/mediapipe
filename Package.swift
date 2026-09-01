@@ -26,6 +26,10 @@ let package = Package(
         .library(
             name: "MediaPipeTasksVisionPoseLandmarker",
             targets: ["MediaPipeTasksVisionPoseLandmarker"]
+        ),
+        .library(
+            name: "MediaPipeTasksVisionFaceLandmarker",
+            targets: ["MediaPipeTasksVisionFaceLandmarker"]
         )
     ],
     targets: [
@@ -41,6 +45,11 @@ let package = Package(
             dependencies: ["MediaPipeTasksVision", "MediaPipeTasksVisionSupport"],
             resources: [.copy("Resources/Models")]
         ),
+        .target(
+            name: "MediaPipeTasksVisionFaceLandmarker",
+            dependencies: ["MediaPipeTasksVision", "MediaPipeTasksVisionSupport"],
+            resources: [.copy("Resources/Models")]
+        ),
         .testTarget(
             name: "MediaPipeTasksVisionHandLandmarkerTests",
             dependencies: ["MediaPipeTasksVisionHandLandmarker"]
@@ -48,6 +57,10 @@ let package = Package(
         .testTarget(
             name: "MediaPipeTasksVisionPoseLandmarkerTests",
             dependencies: ["MediaPipeTasksVisionPoseLandmarker"]
+        ),
+        .testTarget(
+            name: "MediaPipeTasksVisionFaceLandmarkerTests",
+            dependencies: ["MediaPipeTasksVisionFaceLandmarker"]
         )
     ]
 )
