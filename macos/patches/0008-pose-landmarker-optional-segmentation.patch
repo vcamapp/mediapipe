@@ -1,0 +1,115 @@
+diff --git a/mediapipe/tasks/ios/vision/pose_landmarker/sources/MPPPoseLandmarker.mm b/mediapipe/tasks/ios/vision/pose_landmarker/sources/MPPPoseLandmarker.mm
+index a7bea40a4..2b22af968 100644
+--- a/mediapipe/tasks/ios/vision/pose_landmarker/sources/MPPPoseLandmarker.mm
++++ b/mediapipe/tasks/ios/vision/pose_landmarker/sources/MPPPoseLandmarker.mm
+@@ -51,19 +51,23 @@
+     }                                                       \
+   }
+ 
+-#define PoseLandmarkerResultWithOutputPacketMap(outputPacketMap)                                \
++#define PoseLandmarkerResultWithOutputPacketMap(outputPacketMap, includesSegmentationMasks)     \
+   ([MPPPoseLandmarkerResult                                                                     \
+       poseLandmarkerResultWithLandmarksPacket:outputPacketMap[kPoseLandmarksOutStreamName       \
+                                                                   .cppString]                   \
+                          worldLandmarksPacket:outputPacketMap[kWorldLandmarksOutStreamName      \
+                                                                   .cppString]                   \
+-                      segmentationMasksPacket:&(outputPacketMap[kSegmentationMasksOutStreamName \
+-                                                                    .cppString])])
++                      segmentationMasksPacket:(includesSegmentationMasks                        \
++                                                   ? &(outputPacketMap                          \
++                                                           [kSegmentationMasksOutStreamName     \
++                                                                .cppString])                    \
++                                                   : nullptr)])
+ 
+ @interface MPPPoseLandmarker () {
+   /** iOS Vision Task Runner */
+   MPPVisionTaskRunner *_visionTaskRunner;
+   dispatch_queue_t _callbackQueue;
++  BOOL _outputsSegmentationMasks;
+ }
+ @property(nonatomic, weak) id<MPPPoseLandmarkerLiveStreamDelegate> poseLandmarkerLiveStreamDelegate;
+ @end
+@@ -75,6 +79,19 @@ @implementation MPPPoseLandmarker
+ - (instancetype)initWithOptions:(MPPPoseLandmarkerOptions *)options error:(NSError **)error {
+   self = [super init];
+   if (self) {
++    _outputsSegmentationMasks = options.shouldOutputSegmentationMasks;
++
++    NSMutableArray<NSString *> *outputStreams = [@[
++      [NSString stringWithFormat:@"%@:%@", kPoseLandmarksTag, kPoseLandmarksOutStreamName],
++      [NSString stringWithFormat:@"%@:%@", kWorldLandmarksTag, kWorldLandmarksOutStreamName]
++    ] mutableCopy];
++    if (_outputsSegmentationMasks) {
++      [outputStreams
++          addObject:[NSString stringWithFormat:@"%@:%@", kSegmentationMasksTag,
++                                               kSegmentationMasksOutStreamName]];
++    }
++    [outputStreams addObject:[NSString stringWithFormat:@"%@:%@", kImageTag, kImageOutStreamName]];
++
+     MPPTaskInfo *taskInfo = [[MPPTaskInfo alloc]
+           initWithTaskName:kTaskName
+              taskGraphName:kTaskGraphName
+@@ -82,14 +99,7 @@ - (instancetype)initWithOptions:(MPPPoseLandmarkerOptions *)options error:(NSErr
+                 [NSString stringWithFormat:@"%@:%@", kImageTag, kImageInStreamName],
+                 [NSString stringWithFormat:@"%@:%@", kNormRectTag, kNormRectInStreamName]
+               ]
+-             outputStreams:@[
+-               [NSString stringWithFormat:@"%@:%@", kPoseLandmarksTag, kPoseLandmarksOutStreamName],
+-               [NSString
+-                   stringWithFormat:@"%@:%@", kWorldLandmarksTag, kWorldLandmarksOutStreamName],
+-               [NSString stringWithFormat:@"%@:%@", kSegmentationMasksTag,
+-                                          kSegmentationMasksOutStreamName],
+-               [NSString stringWithFormat:@"%@:%@", kImageTag, kImageOutStreamName]
+-             ]
++             outputStreams:outputStreams
+                taskOptions:options
+         enableFlowLimiting:options.runningMode == MPPRunningModeLiveStream
+                runningMode:MPPCoreRunningModeFromVisionRunningMode(options.runningMode)
+@@ -145,7 +155,8 @@ - (instancetype)initWithModelPath:(NSString *)modelPath error:(NSError **)error
+ - (nullable MPPPoseLandmarkerResult *)detectImage:(MPPImage *)image error:(NSError **)error {
+   std::optional<PacketMap> outputPacketMap = [_visionTaskRunner processImage:image error:error];
+ 
+-  return [MPPPoseLandmarker poseLandmarkerResultWithOptionalOutputPacketMap:outputPacketMap];
++  return [MPPPoseLandmarker poseLandmarkerResultWithOptionalOutputPacketMap:outputPacketMap
++                                                  includesSegmentationMasks:_outputsSegmentationMasks];
+ }
+ 
+ - (nullable MPPPoseLandmarkerResult *)detectVideoFrame:(MPPImage *)image
+@@ -156,7 +167,8 @@ - (nullable MPPPoseLandmarkerResult *)detectVideoFrame:(MPPImage *)image
+                    timestampInMilliseconds:timestampInMilliseconds
+                                      error:error];
+ 
+-  return [MPPPoseLandmarker poseLandmarkerResultWithOptionalOutputPacketMap:outputPacketMap];
++  return [MPPPoseLandmarker poseLandmarkerResultWithOptionalOutputPacketMap:outputPacketMap
++                                                  includesSegmentationMasks:_outputsSegmentationMasks];
+ }
+ 
+ - (BOOL)detectAsyncImage:(MPPImage *)image
+@@ -196,7 +208,8 @@ - (void)processLiveStreamResult:(absl::StatusOr<PacketMap>)liveStreamResult {
+     return;
+   }
+ 
+-  MPPPoseLandmarkerResult *result = PoseLandmarkerResultWithOutputPacketMap(outputPacketMap);
++  MPPPoseLandmarkerResult *result =
++      PoseLandmarkerResultWithOutputPacketMap(outputPacketMap, _outputsSegmentationMasks);
+ 
+   NSInteger timestampInMilliseconds =
+       outputPacketMap[kImageOutStreamName.cppString].Timestamp().Value() /
+@@ -209,13 +222,14 @@ - (void)processLiveStreamResult:(absl::StatusOr<PacketMap>)liveStreamResult {
+   });
+ }
+ 
+-+ (nullable MPPPoseLandmarkerResult *)poseLandmarkerResultWithOptionalOutputPacketMap:
+-    (std::optional<PacketMap> &)outputPacketMap {
+++ (nullable MPPPoseLandmarkerResult *)
++    poseLandmarkerResultWithOptionalOutputPacketMap:(std::optional<PacketMap> &)outputPacketMap
++                          includesSegmentationMasks:(BOOL)includesSegmentationMasks {
+   if (!outputPacketMap.has_value()) {
+     return nil;
+   }
+ 
+-  return PoseLandmarkerResultWithOutputPacketMap(outputPacketMap.value());
++  return PoseLandmarkerResultWithOutputPacketMap(outputPacketMap.value(), includesSegmentationMasks);
+ }
+ 
+ @end

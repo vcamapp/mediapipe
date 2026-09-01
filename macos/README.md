@@ -22,8 +22,9 @@ prebuilt archive itself is distributed through GitHub Releases (tag
 | `patches/0003-…` | UIKit-independence for the Objective-C API. On iOS the public API is unchanged (`typedef UIImageOrientation MPPImageOrientation`); on macOS an `NS_ENUM` with identical cases and raw values is provided. `UIImage` APIs are guarded with `#if __has_include(<UIKit/UIKit.h>)`, and `BUILD` dependencies on UIKit are `select()`ed away for `//mediapipe:macos` |
 | `patches/0004-…` | Adds `//mediapipe/tasks/ios:MediaPipeTasksVision_macos`, an `objc_library` umbrella covering every vision task |
 | `patches/0005-…` | Optional smoke-test targets (C API and Objective-C API) |
-| `patches/0006-…` | FP16 inference for the XNNPACK delegate (`TFLITE_XNNPACK_DELEGATE_FLAG_FORCE_FP16` in the default delegate options; ~1.8x faster on Apple Silicon, measured landmark drift ≤1% of the normalized frame) |
+| `patches/0006-…` | Opt-in FP16 inference for the XNNPACK delegate: `TFLITE_XNNPACK_DELEGATE_FLAG_FORCE_FP16` is added to the default delegate options only when `MEDIAPIPE_XNNPACK_FORCE_FP16=1` is set while the task builds its delegate. FP16 is ~1.8x faster on Apple Silicon (13.9 ms vs 25.9 ms per hand frame, landmark drift ≤1% of the normalized frame) but cannot be forced globally: the pose detector returns no detection at all in FP16 |
 | `patches/0007-…` | Flushes the `CVOpenGLTextureCache` before each texture creation in `GpuBufferStorageCvPixelBuffer::GetTexture`. Unlike the iOS ES cache, the macOS cache never recycles entries on create and nothing flushes it outside the pixel-buffer-pool path, so the GPU delegate leaks ~2 IOSurfaces per frame (measured with `ioclasscount`) until `CVPixelBufferCreate` fails with `kCVReturnAllocationFailed` (-6662) and MediaPipe aborts after ~10 minutes (google-ai-edge/mediapipe/issues/5267, google-ai-edge/mediapipe/issues/5510) |
+| `patches/0008-…` | `MPPPoseLandmarker` requests the `SEGMENTATION_MASK` output stream only when `shouldOutputSegmentationMasks` is set. The graph adds its mask branch based on that output, and both of the branch's calculators (`TensorsToSegmentationCalculator`, `WarpAffineCalculator`) compile GLSL 3.30 shaders, which the macOS NSOpenGL context (2.1, since MediaPipe only requests a 3.2 Core profile under `OSX_ENABLE_3_2_CORE`) rejects — the GPU delegate could not run pose at all |
 | `licenses/` | License texts for the libraries statically linked into the macOS artifact (OpenCV, libjpeg-turbo, libpng, libtiff, KleidiCV); bundled into each release's `THIRD_PARTY_NOTICES.txt` |
 | `build-macos-opencv.sh` | Builds the statically linked OpenCV that the artifact embeds |
 | `build-macos-static-lib.sh` | Builds `MediaPipeTasksVision_macos.a` and the `Headers/` set from a patched checkout |
@@ -113,3 +114,7 @@ settings that matter for correctness, not just size:
 4. The rewritten `MPPInteractiveSegmenter` introduced in v1.0.0 ships without
    a `BUILD` file upstream and is excluded from the umbrella target; the
    macOS slice carries `MPPInteractiveSegmenterLegacy` instead.
+5. **Pose segmentation masks are unavailable.** With
+   `shouldOutputSegmentationMasks = true` the graph builds the GL calculators
+   described in `patches/0008-…`, which cannot compile their shaders in the
+   macOS OpenGL 2.1 context. Landmarks are unaffected.

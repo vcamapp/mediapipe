@@ -6,32 +6,35 @@ import Foundation
 import MediaPipeTasksVision
 import MediaPipeTasksVisionSupport
 
-final class MediaPipeHandLandmarkTracker: HandLandmarkTracking, @unchecked Sendable {
-    private let landmarker: HandLandmarker
-    // HandLandmarker's video mode is not thread-safe and requires
+final class MediaPipePoseLandmarkTracker: PoseLandmarkTracking, @unchecked Sendable {
+    private let landmarker: PoseLandmarker
+    // PoseLandmarker's video mode is not thread-safe and requires
     // monotonically increasing timestamps, so calls are serialized.
     private let lock = NSLock()
 
-    init(configuration: HandLandmarkTrackingConfiguration) throws {
-        let options = try HandLandmarkerModel.makeOptions(
+    init(configuration: PoseLandmarkTrackingConfiguration) throws {
+        let options = try PoseLandmarkerModel.makeOptions(
             runningMode: .video,
-            numberOfHands: configuration.numberOfHands,
+            numberOfPoses: configuration.numberOfPoses,
             minimumDetectionConfidence: configuration.minimumDetectionConfidence,
             minimumPresenceConfidence: configuration.minimumPresenceConfidence,
             minimumTrackingConfidence: configuration.minimumTrackingConfidence
         )
         options.baseOptions.delegate = configuration.inferenceBackend == .gpu ? .GPU : .CPU
-        // Hand landmarks stay within ~1% drift in FP16, which nearly halves the
-        // cost of the CPU delegate.
-        landmarker = try XNNPackInference.makeTask(forcingFP16: true) {
-            try HandLandmarker(options: options)
+        // Segmentation masks stay off: the graph then skips its mask branch,
+        // whose calculators cannot run on the macOS OpenGL context.
+        options.shouldOutputSegmentationMasks = false
+        // The pose detector finds nothing at all when the CPU delegate runs in
+        // FP16, so this task keeps full precision.
+        landmarker = try XNNPackInference.makeTask(forcingFP16: false) {
+            try PoseLandmarker(options: options)
         }
     }
 
     func detect(
         in pixelBuffer: CVPixelBuffer,
         timestampInMilliseconds: Int
-    ) throws -> HandLandmarkResult {
+    ) throws -> PoseLandmarkResult {
         let image = try MPImage(pixelBuffer: pixelBuffer)
         lock.lock()
         defer { lock.unlock() }
@@ -39,34 +42,21 @@ final class MediaPipeHandLandmarkTracker: HandLandmarkTracking, @unchecked Senda
             videoFrame: image,
             timestampInMilliseconds: timestampInMilliseconds
         )
-        return HandLandmarkResult(result)
+        return PoseLandmarkResult(result)
     }
 }
 
-private extension HandLandmarkResult {
-    init(_ result: HandLandmarkerResult) {
-        self.init(hands: result.landmarks.indices.map { index in
-            let handedness = result.handedness.indices.contains(index)
-                ? result.handedness[index].first : nil
-            return DetectedHand(
+private extension PoseLandmarkResult {
+    init(_ result: PoseLandmarkerResult) {
+        self.init(poses: result.landmarks.indices.map { index in
+            DetectedPose(
                 landmarks: result.landmarks[index].map { SIMD3($0.x, $0.y, $0.z) },
                 worldLandmarks: result.worldLandmarks.indices.contains(index)
                     ? result.worldLandmarks[index].map { SIMD3($0.x, $0.y, $0.z) }
                     : [],
-                handedness: Handedness(categoryName: handedness?.categoryName),
-                handednessConfidence: handedness?.score ?? 0
+                visibilities: result.landmarks[index].map { $0.visibility?.floatValue ?? 0 }
             )
         })
-    }
-}
-
-private extension Handedness {
-    init(categoryName: String?) {
-        switch categoryName {
-        case "Left": self = .left
-        case "Right": self = .right
-        default: self = .unknown
-        }
     }
 }
 #endif

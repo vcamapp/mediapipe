@@ -22,9 +22,9 @@ private func makeHandLandmarker() throws -> HandLandmarker {
     return try HandLandmarker(options: options)
 }
 
-private func testImageURL() throws -> URL {
+private func testImageURL(_ name: String) throws -> URL {
     let bundle = Bundle(for: SmokeTestBundleMarker.self)
-    return try #require(bundle.url(forResource: "hand", withExtension: "jpg"))
+    return try #require(bundle.url(forResource: name, withExtension: "jpg"))
 }
 
 // CVPixelBuffer is the platform-independent input path (and the only one on
@@ -57,7 +57,7 @@ private func makeBGRAPixelBuffer(contentsOf url: URL) throws -> CVPixelBuffer {
 }
 
 @Test func handLandmarkerDetectsFixedImageFromPixelBuffer() throws {
-    let pixelBuffer = try makeBGRAPixelBuffer(contentsOf: testImageURL())
+    let pixelBuffer = try makeBGRAPixelBuffer(contentsOf: testImageURL("hand"))
     let image = try MPImage(pixelBuffer: pixelBuffer)
     let result = try makeHandLandmarker().detect(image: image)
     assertValidHandResult(result)
@@ -65,10 +65,44 @@ private func makeBGRAPixelBuffer(contentsOf url: URL) throws -> CVPixelBuffer {
 
 #if canImport(UIKit)
 @Test func handLandmarkerDetectsFixedUIImage() throws {
-    let uiImage = try #require(UIImage(contentsOfFile: testImageURL().path))
+    let uiImage = try #require(UIImage(contentsOfFile: testImageURL("hand").path))
     let image = try MPImage(uiImage: uiImage)
     let result = try makeHandLandmarker().detect(image: image)
     assertValidHandResult(result)
+}
+#endif
+
+private func assertValidPoseResult(_ result: PoseLandmarkerResult) {
+    #expect(result.landmarks.count == 1)
+    #expect(result.landmarks.allSatisfy { $0.count == 33 })
+    #expect(result.worldLandmarks.count == result.landmarks.count)
+}
+
+private func makePoseLandmarker(delegate: Delegate) throws -> PoseLandmarker {
+    let bundle = Bundle(for: SmokeTestBundleMarker.self)
+    let modelURL = try #require(bundle.url(forResource: "pose_landmarker_lite", withExtension: "task"))
+    let options = PoseLandmarkerOptions()
+    options.baseOptions.modelAssetPath = modelURL.path
+    options.baseOptions.delegate = delegate
+    options.numPoses = 1
+    return try PoseLandmarker(options: options)
+}
+
+// The CPU delegate must stay in full precision: the pose detector returns no
+// detection at all when XNNPACK runs the model in FP16.
+@Test func poseLandmarkerDetectsFixedImageOnCPU() throws {
+    let pixelBuffer = try makeBGRAPixelBuffer(contentsOf: testImageURL("pose"))
+    let result = try makePoseLandmarker(delegate: .CPU).detect(image: try MPImage(pixelBuffer: pixelBuffer))
+    assertValidPoseResult(result)
+}
+
+#if os(macOS)
+// Segmentation masks are not requested, so the graph must not build its mask
+// branch: those calculators need shaders the macOS OpenGL context rejects.
+@Test func poseLandmarkerDetectsFixedImageOnGPU() throws {
+    let pixelBuffer = try makeBGRAPixelBuffer(contentsOf: testImageURL("pose"))
+    let result = try makePoseLandmarker(delegate: .GPU).detect(image: try MPImage(pixelBuffer: pixelBuffer))
+    assertValidPoseResult(result)
 }
 #endif
 

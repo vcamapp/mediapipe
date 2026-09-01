@@ -22,18 +22,32 @@ let package = Package(
         .library(
             name: "MediaPipeTasksVisionHandLandmarker",
             targets: ["MediaPipeTasksVisionHandLandmarker"]
+        ),
+        .library(
+            name: "MediaPipeTasksVisionPoseLandmarker",
+            targets: ["MediaPipeTasksVisionPoseLandmarker"]
         )
     ],
     targets: [
         mediaPipeTasksVision,
+        .target(name: "MediaPipeTasksVisionSupport"),
         .target(
             name: "MediaPipeTasksVisionHandLandmarker",
-            dependencies: ["MediaPipeTasksVision"],
+            dependencies: ["MediaPipeTasksVision", "MediaPipeTasksVisionSupport"],
+            resources: [.copy("Resources/Models")]
+        ),
+        .target(
+            name: "MediaPipeTasksVisionPoseLandmarker",
+            dependencies: ["MediaPipeTasksVision", "MediaPipeTasksVisionSupport"],
             resources: [.copy("Resources/Models")]
         ),
         .testTarget(
             name: "MediaPipeTasksVisionHandLandmarkerTests",
             dependencies: ["MediaPipeTasksVisionHandLandmarker"]
+        ),
+        .testTarget(
+            name: "MediaPipeTasksVisionPoseLandmarkerTests",
+            dependencies: ["MediaPipeTasksVisionPoseLandmarker"]
         )
     ]
 )

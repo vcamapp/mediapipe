@@ -8,6 +8,8 @@ The package provides:
   - MediaPipe Tasks Vision XCFramework
 - `MediaPipeTasksVisionHandLandmarker`
   - The standard Hand Landmarker model and helpers for creating `HandLandmarkerOptions`
+- `MediaPipeTasksVisionPoseLandmarker`
+  - The Pose Landmarker (lite) model and helpers for creating `PoseLandmarkerOptions`
 
 ## Requirements
 
@@ -28,8 +30,10 @@ Select one of the following products:
 |---|---|
 | `MediaPipeTasksVision` | MediaPipe Tasks Vision APIs only |
 | `MediaPipeTasksVisionHandLandmarker` | APIs and the bundled Hand Landmarker model |
+| `MediaPipeTasksVisionPoseLandmarker` | APIs and the bundled Pose Landmarker model |
 
-Select `MediaPipeTasksVisionHandLandmarker` when using the standard Hand Landmarker model included with this package.
+Select a landmarker product when using the model it bundles; the products can be
+used together.
 
 ## Hand Landmarker
 
@@ -141,6 +145,52 @@ print(metadata.testedMediaPipeVersion)
 print(metadata.sha256)
 ```
 
+## Pose Landmarker
+
+### Create a Pose Landmarker
+
+The bundled product includes `pose_landmarker_lite.task` (33 landmarks,
+BlazePose GHUM).
+
+```swift
+import MediaPipeTasksVision
+import MediaPipeTasksVisionPoseLandmarker
+
+let options = try PoseLandmarkerModel.makeOptions(
+    runningMode: .video,
+    numberOfPoses: 1
+)
+
+let poseLandmarker = try PoseLandmarker(options: options)
+```
+
+Frames are supplied exactly like the Hand Landmarker: `MPImage(pixelBuffer:)`
+on both platforms, `MPImage(uiImage:)` on iOS, and `detectAsync` with a
+delegate in live stream mode.
+
+### Pose tracking without MediaPipe types
+
+```swift
+import MediaPipeTasksVisionPoseLandmarker
+
+guard MediaPipePoseTrackingSupport.isAvailable else {
+    // Fall back to another implementation (e.g. Vision).
+    return
+}
+
+let tracker = try MediaPipePoseTrackingFactory.makeTracker(
+    configuration: PoseLandmarkTrackingConfiguration(numberOfPoses: 1)
+)
+
+let result = try tracker.detect(in: pixelBuffer, timestampInMilliseconds: timestamp)
+for pose in result.poses {
+    print(pose.landmarks.count, pose.worldLandmarks.count, pose.visibilities.count)
+}
+```
+
+The tracker keeps the CPU delegate in full precision and leaves segmentation
+masks off — see [macOS notes](#macos-notes) for why both matter there.
+
 ## Using a custom model
 
 Use the `MediaPipeTasksVision` product and provide an absolute path to your
@@ -186,7 +236,15 @@ for hand in result.hands {
 The macOS slice is built from upstream MediaPipe sources plus the patches in
 [`macos/`](macos/README.md) (Google does not ship macOS binaries):
 
-- Inference runs on the CPU (XNNPACK). The GPU delegate is not available.
+- Inference runs on the CPU (XNNPACK) by default; the Metal GPU delegate is
+  opt-in per tracker.
+- The CPU delegate runs models in full precision unless a task opts into FP16
+  through `MEDIAPIPE_XNNPACK_FORCE_FP16=1`. The bundled hand tracker opts in
+  (~1.8x faster, ~1% landmark drift); the pose tracker must not, because its
+  detector stops producing detections in FP16.
+- Pose segmentation masks are unavailable: the mask branch of the graph uses
+  shaders that the macOS OpenGL context (2.1) rejects, so `PoseLandmarker` is
+  only created with `shouldOutputSegmentationMasks = false`.
 
 ### Intel Macs and Rosetta (x86_64)
 

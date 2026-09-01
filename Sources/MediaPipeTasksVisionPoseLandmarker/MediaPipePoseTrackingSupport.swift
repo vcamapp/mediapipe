@@ -1,6 +1,6 @@
 import MediaPipeTasksVisionSupport
 
-public enum MediaPipeHandTrackingSupport {
+public enum MediaPipePoseTrackingSupport {
     /// Whether MediaPipe inference is available in the current process.
     ///
     /// The decision is based on the executing binary slice: the x86_64 slice
