@@ -29,6 +29,8 @@ env:
 jobs:
   build:
     runs-on: macos-26
+    # A cold bazel build (no cache) takes about an hour.
+    timeout-minutes: 180
     permissions:
       contents: write
     steps:

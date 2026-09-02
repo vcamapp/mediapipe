@@ -35,6 +35,9 @@ jobs:
     needs: [check-macos-artifact, build-macos-artifact]
     if: always() && needs.check-macos-artifact.result == 'success' && (needs.build-macos-artifact.result == 'success' || needs.build-macos-artifact.result == 'skipped')
     runs-on: macos-26
+    # A hung simulator test would otherwise hold the runner for the 6 hour
+    # job limit; the whole build takes well under 30 minutes.
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1

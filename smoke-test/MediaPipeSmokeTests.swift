@@ -56,22 +56,6 @@ private func makeBGRAPixelBuffer(contentsOf url: URL) throws -> CVPixelBuffer {
     return buffer
 }
 
-@Test func handLandmarkerDetectsFixedImageFromPixelBuffer() throws {
-    let pixelBuffer = try makeBGRAPixelBuffer(contentsOf: testImageURL("hand"))
-    let image = try MPImage(pixelBuffer: pixelBuffer)
-    let result = try makeHandLandmarker().detect(image: image)
-    assertValidHandResult(result)
-}
-
-#if canImport(UIKit)
-@Test func handLandmarkerDetectsFixedUIImage() throws {
-    let uiImage = try #require(UIImage(contentsOfFile: testImageURL("hand").path))
-    let image = try MPImage(uiImage: uiImage)
-    let result = try makeHandLandmarker().detect(image: image)
-    assertValidHandResult(result)
-}
-#endif
-
 private func assertValidPoseResult(_ result: PoseLandmarkerResult) {
     #expect(result.landmarks.count == 1)
     #expect(result.landmarks.allSatisfy { $0.count == 33 })
@@ -87,24 +71,6 @@ private func makePoseLandmarker(delegate: Delegate) throws -> PoseLandmarker {
     options.numPoses = 1
     return try PoseLandmarker(options: options)
 }
-
-// The CPU delegate must stay in full precision: the pose detector returns no
-// detection at all when XNNPACK runs the model in FP16.
-@Test func poseLandmarkerDetectsFixedImageOnCPU() throws {
-    let pixelBuffer = try makeBGRAPixelBuffer(contentsOf: testImageURL("pose"))
-    let result = try makePoseLandmarker(delegate: .CPU).detect(image: try MPImage(pixelBuffer: pixelBuffer))
-    assertValidPoseResult(result)
-}
-
-#if os(macOS)
-// Segmentation masks are not requested, so the graph must not build its mask
-// branch: those calculators need shaders the macOS OpenGL context rejects.
-@Test func poseLandmarkerDetectsFixedImageOnGPU() throws {
-    let pixelBuffer = try makeBGRAPixelBuffer(contentsOf: testImageURL("pose"))
-    let result = try makePoseLandmarker(delegate: .GPU).detect(image: try MPImage(pixelBuffer: pixelBuffer))
-    assertValidPoseResult(result)
-}
-#endif
 
 private func assertValidFaceResult(_ result: FaceLandmarkerResult) {
     #expect(result.faceLandmarks.count == 1)
@@ -131,18 +97,59 @@ private func makeFaceLandmarker(delegate: Delegate) throws -> FaceLandmarker {
     return try FaceLandmarker(options: options)
 }
 
-@Test func faceLandmarkerDetectsFixedImageOnCPU() throws {
-    let pixelBuffer = try makeBGRAPixelBuffer(contentsOf: testImageURL("face"))
-    let result = try makeFaceLandmarker(delegate: .CPU).detect(image: try MPImage(pixelBuffer: pixelBuffer))
-    assertValidFaceResult(result)
-}
+// Serialized: swift-testing runs tests in parallel by default, and
+// concurrent MediaPipe graphs deadlock on the simulator's shared OpenGL
+// context (observed on a 3-core CI runner: every test stopped logging and
+// the run never finished).
+@Suite(.serialized)
+struct MediaPipeSmokeTests {
+    @Test func handLandmarkerDetectsFixedImageFromPixelBuffer() throws {
+        let pixelBuffer = try makeBGRAPixelBuffer(contentsOf: testImageURL("hand"))
+        let image = try MPImage(pixelBuffer: pixelBuffer)
+        let result = try makeHandLandmarker().detect(image: image)
+        assertValidHandResult(result)
+    }
 
-#if os(macOS)
-@Test func faceLandmarkerDetectsFixedImageOnGPU() throws {
-    let pixelBuffer = try makeBGRAPixelBuffer(contentsOf: testImageURL("face"))
-    let result = try makeFaceLandmarker(delegate: .GPU).detect(image: try MPImage(pixelBuffer: pixelBuffer))
-    assertValidFaceResult(result)
+    #if canImport(UIKit)
+    @Test func handLandmarkerDetectsFixedUIImage() throws {
+        let uiImage = try #require(UIImage(contentsOfFile: testImageURL("hand").path))
+        let image = try MPImage(uiImage: uiImage)
+        let result = try makeHandLandmarker().detect(image: image)
+        assertValidHandResult(result)
+    }
+    #endif
+
+    // The CPU delegate must stay in full precision: the pose detector returns no
+    // detection at all when XNNPACK runs the model in FP16.
+    @Test func poseLandmarkerDetectsFixedImageOnCPU() throws {
+        let pixelBuffer = try makeBGRAPixelBuffer(contentsOf: testImageURL("pose"))
+        let result = try makePoseLandmarker(delegate: .CPU).detect(image: try MPImage(pixelBuffer: pixelBuffer))
+        assertValidPoseResult(result)
+    }
+
+    #if os(macOS)
+    // Segmentation masks are not requested, so the graph must not build its mask
+    // branch: those calculators need shaders the macOS OpenGL context rejects.
+    @Test func poseLandmarkerDetectsFixedImageOnGPU() throws {
+        let pixelBuffer = try makeBGRAPixelBuffer(contentsOf: testImageURL("pose"))
+        let result = try makePoseLandmarker(delegate: .GPU).detect(image: try MPImage(pixelBuffer: pixelBuffer))
+        assertValidPoseResult(result)
+    }
+    #endif
+
+    @Test func faceLandmarkerDetectsFixedImageOnCPU() throws {
+        let pixelBuffer = try makeBGRAPixelBuffer(contentsOf: testImageURL("face"))
+        let result = try makeFaceLandmarker(delegate: .CPU).detect(image: try MPImage(pixelBuffer: pixelBuffer))
+        assertValidFaceResult(result)
+    }
+
+    #if os(macOS)
+    @Test func faceLandmarkerDetectsFixedImageOnGPU() throws {
+        let pixelBuffer = try makeBGRAPixelBuffer(contentsOf: testImageURL("face"))
+        let result = try makeFaceLandmarker(delegate: .GPU).detect(image: try MPImage(pixelBuffer: pixelBuffer))
+        assertValidFaceResult(result)
+    }
+    #endif
 }
-#endif
 
 private final class SmokeTestBundleMarker {}
