@@ -54,6 +54,13 @@ def configure_target(target, versions, infoplist)
     config.build_settings['MODULEMAP_FILE'] = '$(SRCROOT)/MediaPipeTasksVision/module.modulemap'
     config.build_settings['HEADER_SEARCH_PATHS'] = '$(inherited)'
     config.build_settings['OTHER_LDFLAGS'] = '$(inherited) -ObjC -lc++'
+    # The graph library is force-loaded so calculator registrations survive;
+    # exporting only the MPP* API lets dead stripping drop the rest of the
+    # archive (LLM/text tooling, ICU, tracing) that vision never reaches.
+    config.build_settings['EXPORTED_SYMBOLS_FILE'] = '$(SRCROOT)/MediaPipeTasksVision/ExportedSymbols.txt'
+    config.build_settings['DEAD_CODE_STRIPPING'] = 'YES'
+    config.build_settings['STRIP_INSTALLED_PRODUCT'] = 'YES'
+    config.build_settings['STRIP_STYLE'] = 'non-global'
   end
 end
 

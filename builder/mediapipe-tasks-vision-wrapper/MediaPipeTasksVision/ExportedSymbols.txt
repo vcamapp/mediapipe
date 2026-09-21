@@ -1,0 +1,5 @@
+_OBJC_CLASS_$_MPP*
+_OBJC_METACLASS_$_MPP*
+_MPP*
+_MediaPipeTasksVisionVersionNumber
+_MediaPipeTasksVisionVersionString
