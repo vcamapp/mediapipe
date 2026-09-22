@@ -1,0 +1,28 @@
+# Object files dropped from the force-loaded MediaPipeTasksCommon graph
+# library before linking. They are GTMSessionFetcher / GoogleToolboxForMac
+# (SDKs on Apple's "commonly used third-party SDK" list, whose statically
+# linked copies cannot carry the signature App Store Connect demands,
+# ITMS-91065) and the only code that reaches them: the Ion HTTP client used
+# by MediaPipe's internal Clearcut telemetry logger, which no vision task
+# ever instantiates. The list is the transitive closure of dependents, so a
+# stale entry after a MediaPipe upgrade shows up as an undefined symbol at
+# link time rather than as a silent regression.
+GIPDefaultMinimumLogLevelFilter.o
+GIPLog.o
+GIPLogCallstack.o
+GIPLogFilter.o
+GIPLogMessage.o
+GIPLogMetadata.o
+GIPLogMultiplexer.o
+GIPLoggingReroutingGTMLogger.o
+GIPSafeParameter.o
+GIPSystemLogger.o
+GTMLogger.o
+GTMSessionFetcher.o
+GTMSessionFetcherService.o
+GTMSessionUploadFetcher.o
+ionnetworkhelper.o
+darwinnetworkmanager.o
+ion_http_client.o
+clearcut_logging_client.o
+logging_factory.o

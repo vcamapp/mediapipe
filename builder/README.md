@@ -8,6 +8,12 @@ headers and force-link source define the public module surface, and
 surface (`MPP*` classes and functions). Everything else in the force-loaded
 graph library is dead-stripped, which keeps the LLM/text tooling, ICU and
 tracing code bundled with the upstream pod out of the shipped binary.
+Objective-C classes survive a force-load regardless, so
+`scripts/filter-graph-library.sh` first drops the objects listed in
+`config/excluded-graph-objects.txt` (GTMSessionFetcher, GoogleToolboxForMac
+and the internal telemetry client that is their only user) from the archive;
+App Store Connect rejects binaries that embed those SDKs without a signature
+(ITMS-91065), and `scripts/validate.sh` fails if their classes reappear.
 
 `x86_64-stub/` provides the link-only x86_64 slice of the macOS framework
 (see its README); it is built by `scripts/build-x86_64-stub.sh` and merged

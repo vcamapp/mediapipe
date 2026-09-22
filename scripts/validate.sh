@@ -33,6 +33,16 @@ check_symbols() {
   done
 }
 
+# App Store Connect scans ObjC class names for SDKs on Apple's "commonly used
+# third-party SDK" list and rejects statically linked copies for lacking a
+# signature (ITMS-91065); see config/excluded-graph-objects.txt.
+check_no_listed_sdk_classes() {
+  local binary_file="$1"
+  local classes
+  classes=$(otool -ov "$binary_file" | awk '/^ +name +0x/ {print $3}' | grep -E '^(GTM|GIP|IonNetworkHelper)' | sort -u || true)
+  [[ -z "$classes" ]] || { echo "Listed third-party SDK classes found in $binary_file:" >&2; echo "$classes" >&2; exit 1; }
+}
+
 check_dsym() {
   local slice="$1" binary_file="$2"
   local dsym="$binary/$slice/dSYMs/MediaPipeTasksVision.framework.dSYM"
@@ -53,6 +63,7 @@ for slice in ios-arm64 ios-arm64-simulator; do
   install_name=$(otool -D "$framework/MediaPipeTasksVision" | tail -1)
   [[ "$install_name" == '@rpath/MediaPipeTasksVision.framework/MediaPipeTasksVision' ]] || { echo "Invalid install name: $install_name" >&2; exit 1; }
   check_dsym "$slice" "$framework/MediaPipeTasksVision"
+  check_no_listed_sdk_classes "$framework/MediaPipeTasksVision"
 done
 check_symbols "$binary/ios-arm64/MediaPipeTasksVision.framework/MediaPipeTasksVision" arm64
 

@@ -74,6 +74,9 @@ end
 # --- iOS target -------------------------------------------------------------
 ios_target = project.new_target(:framework, 'MediaPipeTasksVision', :ios, versions.fetch('MINIMUM_IOS_VERSION'))
 ios_target.source_build_phase.add_file_reference(project.main_group.new_file('MediaPipeTasksVision/MPPForceLink.mm'))
+# The macOS slice is built from open-source MediaPipe, whose factory is
+# already the no-op logger.
+ios_target.source_build_phase.add_file_reference(project.main_group.new_file('MediaPipeTasksVision/TasksLoggerFactory.cc'))
 ios_umbrella = project.main_group.new_file('MediaPipeTasksVision/MediaPipeTasksVision.h')
 ios_target.headers_build_phase.add_file_reference(ios_umbrella, :public)
 Dir[File.join(ios_headers_dir, '*.h')].each do |header|
