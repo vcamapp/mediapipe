@@ -4,7 +4,7 @@ env:
   DEVELOPER_DIR: "/Applications/Xcode_26.6.app/Contents/Developer"
 jobs:
   # The macOS static library normally comes from the pinned release asset.
-  # When that asset does not exist yet (fresh fork, bumped MEDIAPIPE_VERSION),
+  # When that asset does not exist yet (fresh fork, bumped MACOS_MEDIAPIPE_VERSION),
   # build it in this run instead so CI never depends on a manual upload.
   check-macos-artifact:
     runs-on: ubuntu-latest

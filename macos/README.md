@@ -1,7 +1,7 @@
 # macOS support
 
 Google does not publish macOS binaries of MediaPipe Tasks Vision — the
-official CocoaPods are iOS-only. The macOS slice of
+official binaries are iOS-only. The macOS slice of
 `MediaPipeTasksVision.xcframework` is therefore built from source: upstream
 [MediaPipe](https://github.com/google-ai-edge/mediapipe) plus the patches in
 this directory produce a single static library
@@ -10,7 +10,7 @@ that the wrapper project links into the framework.
 
 This directory contains everything required to reproduce that library. The
 prebuilt archive itself is distributed through GitHub Releases (tag
-`macos-<MEDIAPIPE_VERSION>`, pinned by URL and SHA-256 in
+`macos-<MACOS_MEDIAPIPE_VERSION>`, pinned by URL and SHA-256 in
 `config/versions.env`) because it is too large for git.
 
 ## Contents
@@ -35,8 +35,8 @@ prebuilt archive itself is distributed through GitHub Releases (tag
 
 Run the **“macOS build dependency”** GitHub Actions workflow
 (`.github/workflows/macos-artifact.yml`). It checks out upstream MediaPipe at
-`v<MEDIAPIPE_VERSION>`, applies `patches/`, builds the static OpenCV (cached),
-builds the library, uploads the zip to the `macos-<MEDIAPIPE_VERSION>`
+`v<MACOS_MEDIAPIPE_VERSION>`, applies `patches/`, builds the static OpenCV (cached),
+builds the library, uploads the zip to the `macos-<MACOS_MEDIAPIPE_VERSION>`
 release, and prints the SHA-256 to set as `MACOS_ARTIFACT_SHA256` in
 `config/versions.env`.
 
@@ -46,7 +46,7 @@ Requirements: Apple Silicon Mac, Xcode, `bazelisk`, `cmake`.
 
 ```bash
 # 1. Check out upstream at the pinned tag and apply the patches
-git clone --branch "v$MEDIAPIPE_VERSION" https://github.com/google-ai-edge/mediapipe.git
+git clone --branch "v$MACOS_MEDIAPIPE_VERSION" https://github.com/google-ai-edge/mediapipe.git
 cd mediapipe && git apply path/to/macos/patches/*.patch
 
 # 2. Build static OpenCV once and link it into the checkout

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Builds MediaPipeTasksVision_macos.a (arm64, GPU-enabled: XNNPACK CPU +
 # Metal delegate) + flattened public headers from a patched
-# google-ai-edge/mediapipe checkout at the pinned MEDIAPIPE_VERSION.
+# google-ai-edge/mediapipe checkout at the pinned MACOS_MEDIAPIPE_VERSION.
 #
 # Prerequisites:
 #   - bazelisk (Bazel 7.4.1 is picked via .bazelversion)

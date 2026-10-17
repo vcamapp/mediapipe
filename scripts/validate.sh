@@ -18,10 +18,10 @@ check_common() {
   plutil -extract CFBundleShortVersionString raw -o - "$plist" | grep -q "^${PACKAGE_VERSION//./\\.}$" || { echo "Invalid framework version" >&2; exit 1; }
   plutil -extract CFBundleVersion raw -o - "$plist" | grep -q "^${PACKAGE_BUILD}$" || { echo "Invalid framework build" >&2; exit 1; }
   local dependencies
-  # tail -n +2 drops otool's header line (the file's own path), which would
-  # self-match when the repository checkout lives under a path like /tmp/.
-  dependencies=$(otool -L "$framework/MediaPipeTasksVision" | tail -n +2)
-  ! grep -Eiq 'builder/Pods|Bazel|DerivedData|/tmp/|/Users/.*/workspace' <<< "$dependencies" || { echo "Build-path dependency found: $framework" >&2; exit 1; }
+  # Only the tab-indented lines are load commands; the header lines (one per
+  # architecture) carry the file's own path, which lives under .build-artifacts.
+  dependencies=$(otool -L "$framework/MediaPipeTasksVision" | grep $'^\t')
+  ! grep -Eiq '\.build-artifacts|Bazel|DerivedData|/tmp/|/Users/.*/workspace' <<< "$dependencies" || { echo "Build-path dependency found: $framework" >&2; exit 1; }
 }
 
 check_symbols() {
@@ -35,7 +35,8 @@ check_symbols() {
 
 # App Store Connect scans ObjC class names for SDKs on Apple's "commonly used
 # third-party SDK" list and rejects statically linked copies for lacking a
-# signature (ITMS-91065); see config/excluded-graph-objects.txt.
+# signature (ITMS-91065). Google's internal builds of MediaPipe link
+# GTMSessionFetcher and GoogleToolboxForMac into their telemetry client.
 check_no_listed_sdk_classes() {
   local binary_file="$1"
   local classes

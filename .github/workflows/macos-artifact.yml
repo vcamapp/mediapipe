@@ -1,7 +1,7 @@
 name: macOS build dependency
 # Builds MediaPipeTasksVision_macos.a (arm64, CPU-only) from upstream MediaPipe
 # plus macos/patches — no separate fork checkout is needed — and uploads the
-# zip to the macos-<MEDIAPIPE_VERSION> release. That release is an internal
+# zip to the macos-<MACOS_MEDIAPIPE_VERSION> release. That release is an internal
 # build dependency, not a package release: users consume the versioned
 # package releases, which bundle iOS and macOS together in one XCFramework.
 # After a run, update MACOS_ARTIFACT_SHA256 in config/versions.env with the
@@ -39,7 +39,7 @@ jobs:
         run: |
           source config/versions.env
           {
-            echo "mediapipe=$MEDIAPIPE_VERSION"
+            echo "mediapipe=$MACOS_MEDIAPIPE_VERSION"
             echo "opencv=$OPENCV_VERSION"
           } >> "$GITHUB_OUTPUT"
       - uses: actions/checkout@v4

@@ -1,5 +1,7 @@
-_OBJC_CLASS_$_MPP*
-_OBJC_METACLASS_$_MPP*
-_MPP*
+# Upstream's iOS binaries rename their internal C++ symbols and Objective-C
+# classes to MPP_...; [A-Z] keeps those out of the exported API.
+_OBJC_CLASS_$_MPP[A-Z]*
+_OBJC_METACLASS_$_MPP[A-Z]*
+_MPP[A-Z]*
 _MediaPipeTasksVisionVersionNumber
 _MediaPipeTasksVisionVersionString
