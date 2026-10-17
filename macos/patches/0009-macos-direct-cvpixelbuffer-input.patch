@@ -1,0 +1,109 @@
+diff --git a/mediapipe/tasks/ios/vision/core/BUILD b/mediapipe/tasks/ios/vision/core/BUILD
+index ffd61af..08e9ecc 100644
+--- a/mediapipe/tasks/ios/vision/core/BUILD
++++ b/mediapipe/tasks/ios/vision/core/BUILD
+@@ -67,10 +67,13 @@ objc_library(
+         "//mediapipe/framework:timestamp",
+         "//mediapipe/framework/formats:image",
+         "//mediapipe/framework/formats:rect_cc_proto",
++        "//mediapipe/gpu:gpu_buffer_format",
+         "//mediapipe/tasks/cc/vision/interactive_segmenter_legacy/proto:region_of_interest_cc_proto",
+         "//mediapipe/tasks/ios/components/containers:MPPRegionOfInterest",
+         "//mediapipe/tasks/ios/components/containers/utils:MPPRegionOfInterestHelpers",
+         "//mediapipe/tasks/ios/vision/core/utils:MPPImageUtils",
++        "//third_party/apple_frameworks:CoreMedia",
++        "//third_party/apple_frameworks:CoreVideo",
+         "//third_party/apple_frameworks:Foundation",
+     ],
+ )
+diff --git a/mediapipe/tasks/ios/vision/core/sources/MPPVisionPacketCreator.mm b/mediapipe/tasks/ios/vision/core/sources/MPPVisionPacketCreator.mm
+index a5108b0..22cc84e 100644
+--- a/mediapipe/tasks/ios/vision/core/sources/MPPVisionPacketCreator.mm
++++ b/mediapipe/tasks/ios/vision/core/sources/MPPVisionPacketCreator.mm
+@@ -16,10 +16,15 @@
+ #import "mediapipe/tasks/ios/components/containers/utils/sources/MPPRegionOfInterest+Helpers.h"
+ #import "mediapipe/tasks/ios/vision/core/utils/sources/MPPImage+Utils.h"
+ 
++#import <CoreMedia/CoreMedia.h>
++#import <CoreVideo/CoreVideo.h>
++
+ #include <cstdint>
++#include <optional>
+ 
+ #include "mediapipe/framework/formats/image.h"
+ #include "mediapipe/framework/timestamp.h"
++#include "mediapipe/gpu/gpu_buffer_format.h"
+ #include "mediapipe/tasks/cc/vision/interactive_segmenter_legacy/proto/region_of_interest.pb.h"
+ 
+ static const NSUInteger kMicrosecondsPerMillisecond = 1000;
+@@ -33,30 +38,64 @@
+ using ::mediapipe::Packet;
+ using ::mediapipe::Timestamp;
+ using ::mediapipe::tasks::vision::interactive_segmenter_legacy::proto::RegionOfInterest;
++
++// VCam: a BGRA `CVPixelBuffer` goes into the graph as a `GpuBuffer` wrapping the
++// buffer itself instead of being copied into an `ImageFrame`. The copy permutes
++// the channels and unpremultiplies the alpha on the CPU, and the graph's
++// `ImageCloneCalculator` then copies it back into a fresh `CVPixelBuffer` to
++// upload it; for an opaque camera frame that is ~40% of the task's CPU time
++// spent on a round trip that changes nothing (unpremultiplying alpha 255 is the
++// identity). The pixel buffer must be IOSurface-backed, as camera frames and
++// pool buffers created with `kCVPixelBufferIOSurfacePropertiesKey` are. Other
++// pixel formats keep the `ImageFrame` path.
++std::optional<Image> ImageFromMPPImage(MPPImage *image, NSError **error) {
++#if !MEDIAPIPE_DISABLE_GPU && MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
++  CVPixelBufferRef pixelBuffer = nullptr;
++  switch (image.imageSourceType) {
++    case MPPImageSourceTypePixelBuffer:
++      pixelBuffer = image.pixelBuffer;
++      break;
++    case MPPImageSourceTypeSampleBuffer:
++      pixelBuffer = CMSampleBufferGetImageBuffer(image.sampleBuffer);
++      break;
++    default:
++      break;
++  }
++  if (pixelBuffer && CVPixelBufferGetPixelFormatType(pixelBuffer) == kCVPixelFormatType_32BGRA &&
++      CVPixelBufferGetIOSurface(pixelBuffer)) {
++    return Image(pixelBuffer);
++  }
++#endif  // !MEDIAPIPE_DISABLE_GPU && MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
++  std::unique_ptr<ImageFrame> imageFrame = [image imageFrameWithError:error];
++  if (!imageFrame) {
++    return std::nullopt;
++  }
++  return Image(std::move(imageFrame));
++}
+ }  // namespace
+ 
+ @implementation MPPVisionPacketCreator
+ 
+ + (Packet)createPacketWithMPPImage:(MPPImage *)image error:(NSError **)error {
+-  std::unique_ptr<ImageFrame> imageFrame = [image imageFrameWithError:error];
++  std::optional<Image> mpImage = ImageFromMPPImage(image, error);
+ 
+-  if (!imageFrame) {
++  if (!mpImage.has_value()) {
+     return Packet();
+   }
+ 
+-  return MakePacket<Image>(std::move(imageFrame));
++  return MakePacket<Image>(std::move(*mpImage));
+ }
+ 
+ + (Packet)createPacketWithMPPImage:(MPPImage *)image
+            timestampInMilliseconds:(NSInteger)timestampInMilliseconds
+                              error:(NSError **)error {
+-  std::unique_ptr<ImageFrame> imageFrame = [image imageFrameWithError:error];
++  std::optional<Image> mpImage = ImageFromMPPImage(image, error);
+ 
+-  if (!imageFrame) {
++  if (!mpImage.has_value()) {
+     return Packet();
+   }
+ 
+-  return MakePacket<Image>(std::move(imageFrame))
++  return MakePacket<Image>(std::move(*mpImage))
+       .At(Timestamp(int64_t(timestampInMilliseconds * kMicrosecondsPerMillisecond)));
+ }
+ 
