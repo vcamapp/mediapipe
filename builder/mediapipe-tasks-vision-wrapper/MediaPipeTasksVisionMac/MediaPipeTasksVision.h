@@ -48,6 +48,7 @@
 #import <MediaPipeTasksVision/MPPRegionOfInterest.h>
 #import <MediaPipeTasksVision/MPPRunningMode.h>
 #import <MediaPipeTasksVision/MPPTaskOptions.h>
+#import <MediaPipeTasksVision/MPPTaskPart.h>
 #import <MediaPipeTasksVision/MPPTaskResult.h>
 
 FOUNDATION_EXPORT double MediaPipeTasksVisionVersionNumber;

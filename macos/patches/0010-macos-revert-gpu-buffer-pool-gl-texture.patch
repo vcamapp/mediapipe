@@ -1,0 +1,304 @@
+diff --git a/mediapipe/calculators/tensor/tensors_to_segmentation_calculator.cc b/mediapipe/calculators/tensor/tensors_to_segmentation_calculator.cc
+index 23ccc9d..4e67b94 100644
+--- a/mediapipe/calculators/tensor/tensors_to_segmentation_calculator.cc
++++ b/mediapipe/calculators/tensor/tensors_to_segmentation_calculator.cc
+@@ -34,9 +34,6 @@
+ 
+ #if !MEDIAPIPE_DISABLE_GPU
+ #include "mediapipe/gpu/gl_calculator_helper.h"
+-// IWYU pragma: begin_keep (MEDIAPIPE_GPU_BUFFER_POOL_USE_CV_PIXEL_BUFFER)
+-#include "mediapipe/gpu/gpu_buffer_format.h"
+-// IWYU pragma: end_keep
+ 
+ #if MEDIAPIPE_OPENGL_ES_VERSION >= MEDIAPIPE_OPENGL_ES_31
+ #include "mediapipe/calculators/tensor/tensors_to_segmentation_converter_gl_buffer.h"
+@@ -152,28 +149,8 @@ absl::Status TensorsToSegmentationCalculator::Process(
+ 
+   bool use_gpu = false;
+   if (CanUseGpu()) {
+-#if MEDIAPIPE_METAL_ENABLED && !MEDIAPIPE_GPU_BUFFER_POOL_USE_CV_PIXEL_BUFFER
+-    // The Metal converter writes the mask into a Metal view of a GpuBuffer and
+-    // then reads it back through a GL view of that same GpuBuffer. Those are
+-    // only the same memory while GpuBuffers are CVPixelBuffer-backed, where
+-    // both views wrap one IOSurface.
+-    //
+-    // Where the pool vends GlTextureBuffer instead (macOS, which needs
+-    // GL_TEXTURE_2D rather than the GL_TEXTURE_RECTANGLE_ARB that CoreVideo
+-    // hands out), asking for a Metal texture finds no CVPixelBuffer storage and
+-    // allocates a detached copy. The Metal kernel writes the mask into that
+-    // copy, but the GL view still reads the original GpuBuffer, which was never
+-    // written to, so the output mask is all zeros.
+-    //
+-    // The CPU converter has no such split. On Apple it is also behaviorally
+-    // identical: IsGpuOriginAtBottom() is always false there, so the Metal
+-    // converter's optional Y flip is never active and neither converter flips.
+-    use_gpu = false;
+-#else
+     // Use GPU processing only if at least one input tensor is already on GPU.
+     use_gpu = input_tensor->ready_on_gpu();
+-#endif  // MEDIAPIPE_METAL_ENABLED &&
+-        // !MEDIAPIPE_GPU_BUFFER_POOL_USE_CV_PIXEL_BUFFER
+   }
+ 
+   // Validate tensor channels and activation type.
+diff --git a/mediapipe/gpu/BUILD b/mediapipe/gpu/BUILD
+index a6f03a8..6b5b494 100644
+--- a/mediapipe/gpu/BUILD
++++ b/mediapipe/gpu/BUILD
+@@ -469,7 +469,6 @@ cc_library(
+         ":gl_base",
+         ":gl_context",
+         ":gl_texture_view",
+-        ":gpu_buffer_format",
+         ":gpu_buffer_storage",
+         ":gpu_buffer_storage_image_frame",
+         ":image_frame_view",
+@@ -817,7 +816,6 @@ cc_library(
+         ":gl_base",
+         ":gl_context",
+         ":gl_context_options_cc_proto",
+-        ":gpu_buffer_format",
+         ":gpu_buffer_multi_pool",
+         ":gpu_shared_data_header",
+         ":graph_support",
+@@ -843,7 +841,6 @@ cc_library(
+         "//conditions:default": [],
+         "//mediapipe:apple": [
+             ":cv_texture_cache_manager",
+-            ":gpu_buffer_storage_cv_pixel_buffer",
+             ":metal_shared_resources",
+         ],
+     }),
+diff --git a/mediapipe/gpu/gl_simple_shaders.h b/mediapipe/gpu/gl_simple_shaders.h
+index cf629b3..e77a753 100644
+--- a/mediapipe/gpu/gl_simple_shaders.h
++++ b/mediapipe/gpu/gl_simple_shaders.h
+@@ -123,18 +123,10 @@ static const GLfloat kBasicTextureVerticesFlipY[] = {
+ #undef V4
+ #undef V
+ 
+-#if defined(__APPLE__)
+-#include <TargetConditionals.h>
+-#endif
+-
+ // Used in shaders to differentiate desktop OpenGL vs OpenGL ES.
+ // The newer spec requires this to be the first line of a shader.
+ // Desktop OpenGL 3.3+ = #version 330
+-#if defined(__APPLE__) && TARGET_OS_OSX && !defined(OSX_ENABLE_3_2_CORE)
+-// Without OSX_ENABLE_3_2_CORE, gl_context_nsgl.cc creates a legacy 2.1 context
+-// (GLSL 1.20), which rejects #version 330.
+-#define GLES_VERSION_COMPAT "\n"
+-#elif !defined(GL_ES_VERSION_2_0)
++#ifndef GL_ES_VERSION_2_0
+ #define GLES_VERSION_COMPAT "#version 330 \n"
+ #else
+ #define GLES_VERSION_COMPAT "\n"
+diff --git a/mediapipe/gpu/gl_texture_buffer.h b/mediapipe/gpu/gl_texture_buffer.h
+index 8699ffe..3784244 100644
+--- a/mediapipe/gpu/gl_texture_buffer.h
++++ b/mediapipe/gpu/gl_texture_buffer.h
+@@ -145,13 +145,9 @@ class GlTextureBuffer
+     return producer_context_;
+   }
+ 
+-#if MEDIAPIPE_GPU_BUFFER_POOL_USE_CV_PIXEL_BUFFER
+-  // Where the pool vends CVPixelBuffer-backed storage, GlTextureBuffer must not
+-  // register a competing factory. On macOS the pool vends GlTextureBuffer, so
+-  // it stays registered there; see gpu_shared_data_internal.cc for how its
+-  // factory is ordered after GpuBufferStorageCvPixelBuffer's.
++#if MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
+   static constexpr bool kDisableGpuBufferRegistration = true;
+-#endif  // MEDIAPIPE_GPU_BUFFER_POOL_USE_CV_PIXEL_BUFFER
++#endif  // MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
+ 
+  private:
+   // Creates a texture of dimensions width x height and allocates space for it.
+diff --git a/mediapipe/gpu/gpu_buffer_format.h b/mediapipe/gpu/gpu_buffer_format.h
+index eeeff6d..93f25e8 100644
+--- a/mediapipe/gpu/gpu_buffer_format.h
++++ b/mediapipe/gpu/gpu_buffer_format.h
+@@ -21,33 +21,7 @@
+ 
+ #ifdef __APPLE__
+ #include <CoreVideo/CoreVideo.h>
+-#include <TargetConditionals.h>
+ #define MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER 1
+-
+-// Whether the GPU buffer *pool* vends CVPixelBuffer-backed storage.
+-//
+-// This is deliberately narrower than MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER,
+-// which says only that CVPixelBuffer support is compiled in. On macOS (CGL),
+-// CVPixelBuffer-backed buffers are vended as GL_TEXTURE_RECTANGLE_ARB, which
+-// cannot be read through sampler2D uniforms, and
+-// CreateCVPixelBufferForImageFrame has no representation for 3-channel SRGB
+-// frames. The pool therefore allocates GlTextureBuffer on macOS instead.
+-//
+-// Only the allocation path and the storage converters consult this macro. Other
+-// call sites (ImageMultiPool, GlCalculatorHelper::GpuBufferCopyingImageFrame,
+-// the ImageFrame<->GpuBuffer calculators, Image's CVPixelBuffer accessors)
+-// still key off MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER and so remain
+-// CVPixelBuffer-only on macOS. Those entry points are not exercised by the
+-// macOS GPU graphs today and were already unsupported there; converting them is
+-// intentionally left out of scope rather than overlooked.
+-#if !TARGET_OS_OSX
+-#define MEDIAPIPE_GPU_BUFFER_POOL_USE_CV_PIXEL_BUFFER 1
+-#else
+-#define MEDIAPIPE_GPU_BUFFER_POOL_USE_CV_PIXEL_BUFFER 0
+-#endif
+-
+-#else
+-#define MEDIAPIPE_GPU_BUFFER_POOL_USE_CV_PIXEL_BUFFER 0
+ #endif  // defined(__APPLE__)
+ 
+ #include "mediapipe/framework/formats/image_format.pb.h"
+diff --git a/mediapipe/gpu/gpu_buffer_multi_pool.h b/mediapipe/gpu/gpu_buffer_multi_pool.h
+index cbccfda..ea18761 100644
+--- a/mediapipe/gpu/gpu_buffer_multi_pool.h
++++ b/mediapipe/gpu/gpu_buffer_multi_pool.h
+@@ -27,22 +27,22 @@
+ #include "mediapipe/gpu/gpu_buffer_format.h"
+ #include "mediapipe/gpu/multi_pool.h"
+ 
+-#if MEDIAPIPE_GPU_BUFFER_POOL_USE_CV_PIXEL_BUFFER
++#if MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
+ #include "mediapipe/gpu/cv_pixel_buffer_pool_wrapper.h"
+ #else
+ #include "mediapipe/gpu/gl_texture_buffer_pool.h"
+-#endif  // MEDIAPIPE_GPU_BUFFER_POOL_USE_CV_PIXEL_BUFFER
++#endif  // MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
+ 
+ namespace mediapipe {
+ 
+ class CvPixelBufferPoolWrapper;
+ 
+ class GpuBufferMultiPool : public MultiPool<
+-#if MEDIAPIPE_GPU_BUFFER_POOL_USE_CV_PIXEL_BUFFER
++#if MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
+                                CvPixelBufferPoolWrapper,
+ #else
+                                GlTextureBufferPool,
+-#endif  // MEDIAPIPE_GPU_BUFFER_POOL_USE_CV_PIXEL_BUFFER
++#endif  // MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
+                                internal::GpuBufferSpec, GpuBuffer> {
+  public:
+   using MultiPool::MultiPool;
+diff --git a/mediapipe/gpu/gpu_buffer_storage_cv_pixel_buffer.cc b/mediapipe/gpu/gpu_buffer_storage_cv_pixel_buffer.cc
+index 3c7b9ab..d43d07c 100644
+--- a/mediapipe/gpu/gpu_buffer_storage_cv_pixel_buffer.cc
++++ b/mediapipe/gpu/gpu_buffer_storage_cv_pixel_buffer.cc
+@@ -5,7 +5,6 @@
+ #include "absl/log/absl_check.h"
+ #include "absl/log/absl_log.h"
+ #include "mediapipe/gpu/gl_context.h"
+-#include "mediapipe/gpu/gpu_buffer_format.h"  // IWYU pragma: keep (MEDIAPIPE_GPU_BUFFER_POOL_USE_CV_PIXEL_BUFFER)
+ #include "mediapipe/gpu/gpu_buffer_storage_image_frame.h"
+ #include "mediapipe/objc/util.h"
+ 
+@@ -157,11 +156,6 @@ std::shared_ptr<ImageFrame> GpuBufferStorageCvPixelBuffer::GetWriteView(
+   return CreateImageFrameForCVPixelBuffer(**this);
+ }
+ 
+-#if MEDIAPIPE_GPU_BUFFER_POOL_USE_CV_PIXEL_BUFFER
+-// Only register this converter where the GPU buffer pool actually vends
+-// CVPixelBuffer-backed storage. On macOS the pool vends GlTextureBuffer, and
+-// registering this converter would hijack ImageFrame -> GpuBuffer conversions
+-// and abort on formats CVPixelBuffer cannot represent (e.g. 3-channel SRGB).
+ static std::shared_ptr<GpuBufferStorageCvPixelBuffer> ConvertFromImageFrame(
+     std::shared_ptr<GpuBufferStorageImageFrame> frame) {
+   auto status_or_buffer =
+@@ -176,7 +170,6 @@ static auto kConverterFromImageFrameRegistration =
+         .RegisterConverter<GpuBufferStorageImageFrame,
+                            GpuBufferStorageCvPixelBuffer>(
+             ConvertFromImageFrame);
+-#endif  // MEDIAPIPE_GPU_BUFFER_POOL_USE_CV_PIXEL_BUFFER
+ 
+ namespace internal {
+ std::shared_ptr<internal::GpuBufferStorage> AsGpuBufferStorage(
+diff --git a/mediapipe/gpu/gpu_shared_data_internal.cc b/mediapipe/gpu/gpu_shared_data_internal.cc
+index 9c50a26..d46aacd 100644
+--- a/mediapipe/gpu/gpu_shared_data_internal.cc
++++ b/mediapipe/gpu/gpu_shared_data_internal.cc
+@@ -38,17 +38,12 @@
+ #include "mediapipe/framework/port/status_macros.h"
+ #include "mediapipe/gpu/gl_context.h"
+ #include "mediapipe/gpu/gl_context_options.pb.h"
+-#include "mediapipe/gpu/gpu_buffer_format.h"
+ #include "mediapipe/gpu/multi_pool.h"
+ 
+ #if MEDIAPIPE_METAL_ENABLED
+ #include "mediapipe/gpu/metal_shared_resources.h"
+ #endif  // MEDIAPIPE_METAL_ENABLED
+ 
+-#if MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
+-#include "mediapipe/gpu/gpu_buffer_storage_cv_pixel_buffer.h"
+-#endif  // MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
+-
+ namespace mediapipe {
+ 
+ namespace {
+@@ -160,8 +155,6 @@ GpuResources::GpuResources(std::shared_ptr<GlContext> gl_context,
+                       }),
+ #if MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
+       texture_caches_(std::make_shared<CvTextureCacheManager>()),
+-#endif  // MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
+-#if MEDIAPIPE_GPU_BUFFER_POOL_USE_CV_PIXEL_BUFFER
+       gpu_buffer_pool_(
+           [tc = texture_caches_](const internal::GpuBufferSpec& spec,
+                                  const MultiPoolOptions& options) {
+@@ -169,10 +162,10 @@ GpuResources::GpuResources(std::shared_ptr<GlContext> gl_context,
+           },
+           gpu_buffer_pool_options ? *gpu_buffer_pool_options
+                                   : kDefaultMultiPoolOptions)
+-#else   // MEDIAPIPE_GPU_BUFFER_POOL_USE_CV_PIXEL_BUFFER
+-      gpu_buffer_pool_(gpu_buffer_pool_options ? *gpu_buffer_pool_options
+-                                               : kDefaultMultiPoolOptions)
+-#endif  // MEDIAPIPE_GPU_BUFFER_POOL_USE_CV_PIXEL_BUFFER
++#else   // MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
++          gpu_buffer_pool_(gpu_buffer_pool_options ? *gpu_buffer_pool_options
++                                            : kDefaultMultiPoolOptions)
++#endif  // MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
+ {
+   gl_key_context_->insert({SharedContextKey(), shared_gl_context_});
+   const std::string executor_name =
+@@ -314,7 +307,7 @@ GlContext::StatusOrGlContext GpuResources::GetOrCreateGlContext(
+ 
+ GpuSharedData::GpuSharedData() : GpuSharedData(kPlatformGlContextNone) {}
+ 
+-#if !MEDIAPIPE_GPU_BUFFER_POOL_USE_CV_PIXEL_BUFFER
++#if !MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
+ static std::shared_ptr<GlTextureBuffer> GetGlTextureBufferFromPool(
+     int width, int height, GpuBufferFormat format) {
+   std::shared_ptr<GlTextureBuffer> texture_buffer;
+@@ -323,9 +316,8 @@ static std::shared_ptr<GlTextureBuffer> GetGlTextureBufferFromPool(
+   if (cc && cc->Service(kGpuService).IsAvailable()) {
+     GpuBufferMultiPool* pool =
+         &cc->Service(kGpuService).GetObject().gpu_buffer_pool();
+-    // Note that the "gpu_buffer_pool" serves GlTextureBuffers wherever
+-    // MEDIAPIPE_GPU_BUFFER_POOL_USE_CV_PIXEL_BUFFER is 0 (non-Apple platforms
+-    // and macOS). TODO: refactor into storage pools.
++    // Note that the "gpu_buffer_pool" serves GlTextureBuffers on non-Apple
++    // platforms. TODO: refactor into storage pools.
+     auto texture_buffer_from_pool = pool->GetBuffer(width, height, format);
+     ABSL_CHECK_OK(texture_buffer_from_pool);
+     texture_buffer =
+@@ -337,19 +329,12 @@ static std::shared_ptr<GlTextureBuffer> GetGlTextureBufferFromPool(
+ }
+ 
+ static auto kGlTextureBufferPoolRegistration = [] {
+-#if MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
+-  // On macOS GpuBufferStorageCvPixelBuffer is compiled in and also registers a
+-  // factory for GlTextureView. The registry is last-wins, so register it first
+-  // to make the pool-backed GlTextureBuffer factory below win deterministically
+-  // rather than by static initialization order across translation units.
+-  GpuBufferStorageCvPixelBuffer::RegisterOnce();
+-#endif  // MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
+   // Ensure that the GlTextureBuffer's own factory is already registered, so we
+   // can override it.
+   GlTextureBuffer::RegisterOnce();
+   return internal::GpuBufferStorageRegistry::Get()
+       .RegisterFactory<GlTextureBuffer>(GetGlTextureBufferFromPool);
+ }();
+-#endif  // !MEDIAPIPE_GPU_BUFFER_POOL_USE_CV_PIXEL_BUFFER
++#endif  // !MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
+ 
+ }  // namespace mediapipe

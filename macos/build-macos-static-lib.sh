@@ -4,7 +4,7 @@
 # google-ai-edge/mediapipe checkout at the pinned MACOS_MEDIAPIPE_VERSION.
 #
 # Prerequisites:
-#   - bazelisk (Bazel 7.4.1 is picked via .bazelversion)
+#   - bazelisk (it picks the Bazel version from upstream's .bazelversion)
 #   - Xcode
 #   - Statically built OpenCV referenced by the WORKSPACE macos_opencv repo
 #     (build it first with build-macos-opencv.sh <work-dir> <prefix>)

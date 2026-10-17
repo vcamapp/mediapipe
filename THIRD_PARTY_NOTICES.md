@@ -12,7 +12,7 @@ text distributed with the locked build.
 
 ## macOS slice
 
-The `macos-arm64` slice is built from upstream MediaPipe 1.0.0 sources with
+The `macos-arm64` slice is built from upstream MediaPipe 1.1.1 sources with
 the patches in `macos/patches/` (see `macos/README.md`) rather than from the
 official binaries. It statically links the same dependency set — MediaPipe,
 TensorFlow Lite (XNNPACK), Abseil, Protobuf, glog, gflags, zlib and related

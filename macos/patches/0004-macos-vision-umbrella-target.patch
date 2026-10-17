@@ -1,8 +1,8 @@
 diff --git a/mediapipe/tasks/ios/BUILD b/mediapipe/tasks/ios/BUILD
-index 1bf779f..9d7b324 100644
+index 87de2d1..179df11 100644
 --- a/mediapipe/tasks/ios/BUILD
 +++ b/mediapipe/tasks/ios/BUILD
-@@ -388,3 +388,102 @@ mediapipe_static_xcframework(
+@@ -454,3 +454,103 @@ mediapipe_static_xcframework(
      # built as static libraries and force loaded.
      deps = MEDIAPIPE_TASKS_COMMON_DEPS,
  )
@@ -54,6 +54,7 @@ index 1bf779f..9d7b324 100644
 +        ":MPPConnection.h",
 +        ":MPPCommon.h",
 +        ":MPPTaskOptions.h",
++        ":MPPTaskPart.h",
 +        ":MPPTaskResult.h",
 +        ":MPPImage.h",
 +        ":MPPMask.h",

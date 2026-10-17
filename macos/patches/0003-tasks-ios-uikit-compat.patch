@@ -273,8 +273,28 @@ index b7b425f..eed039b 100644
      [MPPCommonUtils createCustomError:error
                               withCode:MPPTasksErrorCodeInvalidArgumentError
                            description:@"Unsupported UIImageOrientation. This task only supports "
+diff --git a/mediapipe/tasks/ios/vision/core/utils/sources/MPPImage+Utils.h b/mediapipe/tasks/ios/vision/core/utils/sources/MPPImage+Utils.h
+index d20510d..ce717e0 100644
+--- a/mediapipe/tasks/ios/vision/core/utils/sources/MPPImage+Utils.h
++++ b/mediapipe/tasks/ios/vision/core/utils/sources/MPPImage+Utils.h
+@@ -64,6 +64,7 @@ NS_ASSUME_NONNULL_BEGIN
+                       shouldCopyPixelData:(BOOL)shouldCopyPixelData
+                                     error:(NSError **)error;
+ 
++#if __has_include(<UIKit/UIKit.h>)
+ /**
+  * Returns a `UIImage` representation of the `MPPImage`, converting the underlying
+  * buffer if it is a pixel buffer or sample buffer.
+@@ -72,6 +73,7 @@ NS_ASSUME_NONNULL_BEGIN
+  * @return A `UIImage` or `nil` in case of errors.
+  */
+ - (nullable UIImage *)toUIImageWithError:(NSError **)error;
++#endif  // __has_include(<UIKit/UIKit.h>)
+ 
+ @end
+ 
 diff --git a/mediapipe/tasks/ios/vision/core/utils/sources/MPPImage+Utils.mm b/mediapipe/tasks/ios/vision/core/utils/sources/MPPImage+Utils.mm
-index cbd2e88..772bd6f 100644
+index 8e76787..bcb137e 100644
 --- a/mediapipe/tasks/ios/vision/core/utils/sources/MPPImage+Utils.mm
 +++ b/mediapipe/tasks/ios/vision/core/utils/sources/MPPImage+Utils.mm
 @@ -111,11 +111,13 @@ + (CGImageRef)cgImageFromImageFrame:(std::shared_ptr<ImageFrame>)imageFrame
@@ -344,3 +364,41 @@ index cbd2e88..772bd6f 100644
      default:
        [MPPCommonUtils createCustomError:error
                                 withCode:MPPTasksErrorCodeInvalidArgumentError
+@@ -713,6 +730,7 @@ - (nullable instancetype)initWithCppImage:(const mediapipe::Image &)image
+   return nullptr;
+ }
+ 
++#if __has_include(<UIKit/UIKit.h>)
+ - (nullable UIImage *)toUIImageWithError:(NSError **)error {
+   if (self.imageSourceType == MPPImageSourceTypeImage) {
+     return self.image;
+@@ -760,5 +778,6 @@ - (nullable UIImage *)toUIImageWithError:(NSError **)error {
+ 
+   return uiImage;
+ }
++#endif  // __has_include(<UIKit/UIKit.h>)
+ 
+ @end
+diff --git a/mediapipe/tasks/ios/vision/image_embedder/sources/MPPImageEmbedder.mm b/mediapipe/tasks/ios/vision/image_embedder/sources/MPPImageEmbedder.mm
+index 73eca79..8ae400f 100644
+--- a/mediapipe/tasks/ios/vision/image_embedder/sources/MPPImageEmbedder.mm
++++ b/mediapipe/tasks/ios/vision/image_embedder/sources/MPPImageEmbedder.mm
+@@ -250,7 +250,9 @@ - (nullable MPPEmbeddingResult *)embedContent:(NSArray<id> *)content error:(NSEr
+         return nil;
+       }
+       return result.embeddingResult;
+-    } else if ([part isKindOfClass:[MPPImagePart class]]) {
++    }
++#if __has_include(<UIKit/UIKit.h>)
++    else if ([part isKindOfClass:[MPPImagePart class]]) {
+       NSString *filePath = ((MPPImagePart *)part).filePath;
+       NSData *imageBytes = [NSData dataWithContentsOfFile:filePath];
+       if (!imageBytes) {
+@@ -280,6 +282,7 @@ - (nullable MPPEmbeddingResult *)embedContent:(NSArray<id> *)content error:(NSEr
+       }
+       return result.embeddingResult;
+     }
++#endif  // __has_include(<UIKit/UIKit.h>)
+   }
+   [MPPCommonUtils
+       createCustomError:error
