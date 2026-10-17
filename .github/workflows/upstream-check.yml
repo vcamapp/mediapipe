@@ -17,6 +17,8 @@ jobs:
           bundler-cache: true
       - id: check
         continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           set +e
           ./scripts/upstream-check.sh
@@ -28,7 +30,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           if [ "$(gh issue list --state open --search 'in:title MediaPipeTasksVision upstream update available' --json number --jq 'length')" -eq 0 ]; then
-            gh issue create --title "MediaPipeTasksVision upstream update available" --body "The CocoaPods upstream version is newer than the bundled version. Run scripts/upstream-check.sh and update the pinned artifact after reviewing headers, symbols, and both architectures."
+            gh issue create --title "MediaPipeTasksVision upstream update available" --body "A newer google-ai-edge/mediapipe GitHub release than the bundled version is available. Run scripts/upstream-check.sh (it also reports whether the release is on CocoaPods) and update the pinned artifact after reviewing headers, symbols, and both architectures."
           fi
       - if: steps.check.outputs.exit_code != '0' && steps.check.outputs.exit_code != '10'
         run: exit 1

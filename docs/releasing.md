@@ -82,5 +82,6 @@ All versions live in `config/versions.env`:
 
 `scripts/validate-versions.sh` cross-checks these against `Package.swift`,
 `Podfile.lock`, the built frameworks, and the release notes;
-`scripts/upstream-check.sh` additionally detects new upstream releases and
-verifies that `macos/patches/` still apply to the pinned tag.
+`scripts/upstream-check.sh` additionally detects new upstream GitHub releases
+(and reports when one is missing from CocoaPods) and verifies that
+`macos/patches/` still apply to the pinned tag.
