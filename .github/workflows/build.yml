@@ -1,7 +1,7 @@
 name: Build
 on: [push, pull_request]
 env:
-  DEVELOPER_DIR: "/Applications/Xcode_26.6.app/Contents/Developer"
+  DEVELOPER_DIR: "/Applications/Xcode_27.1.app/Contents/Developer"
 jobs:
   # The macOS static library normally comes from the pinned release asset.
   # When that asset does not exist yet (fresh fork, bumped MACOS_MEDIAPIPE_VERSION),
@@ -12,7 +12,7 @@ jobs:
       available: ${{ steps.check.outputs.available }}
       sha256: ${{ steps.check.outputs.sha256 }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - id: check
         run: |
           source config/versions.env
@@ -34,24 +34,24 @@ jobs:
   build:
     needs: [check-macos-artifact, build-macos-artifact]
     if: always() && needs.check-macos-artifact.result == 'success' && (needs.build-macos-artifact.result == 'success' || needs.build-macos-artifact.result == 'skipped')
-    runs-on: macos-26
+    runs-on: xcode-27
     # A hung simulator test would otherwise hold the runner for the 6 hour
     # job limit; the whole build takes well under 30 minutes.
     timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.3'
+          ruby-version: '4.0'
           bundler-cache: true
       # The macOS static-library zip is immutable per pin; cache it across runs.
       # Only the zip is cached — fetch.sh re-extracts it either way.
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         if: needs.check-macos-artifact.outputs.available == 'true'
         with:
           path: .build-artifacts/macos/*.zip
           key: macos-artifact-${{ needs.check-macos-artifact.outputs.sha256 }}
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         if: needs.check-macos-artifact.outputs.available != 'true'
         with:
           name: MediaPipeTasksVision-macos-arm64

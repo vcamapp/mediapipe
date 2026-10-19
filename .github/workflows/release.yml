@@ -13,22 +13,22 @@ on:
         description: "Package version to release (e.g. 0.1.0)"
         required: true
 env:
-  DEVELOPER_DIR: "/Applications/Xcode_26.6.app/Contents/Developer"
+  DEVELOPER_DIR: "/Applications/Xcode_27.1.app/Contents/Developer"
 jobs:
   release:
     # macos-* tags are the static-library artifact releases handled by
     # macos-artifact.yml, not package releases.
     if: ${{ github.event_name == 'push' && !startsWith(github.ref_name, 'macos-') }}
-    runs-on: macos-26
+    runs-on: xcode-27
     timeout-minutes: 60
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ruby/setup-ruby@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          ruby-version: '3.3'
+          ruby-version: '4.0'
           bundler-cache: true
       - run: test "$GITHUB_REF_NAME" = "$(sed -n 's/^PACKAGE_VERSION="\(.*\)"/\1/p' config/versions.env)"
         if: startsWith(github.ref, 'refs/tags/')
@@ -42,7 +42,7 @@ jobs:
           test "$(sed -n 's/.*checksum: "\([0-9a-f]*\)".*/\1/p' Package.swift)"
           = "$(head -1 .build-artifacts/checksums.txt)"
         if: startsWith(github.ref, 'refs/tags/')
-      - uses: softprops/action-gh-release@v2
+      - uses: softprops/action-gh-release@v3
         if: startsWith(github.ref, 'refs/tags/')
         with:
           name: "MediaPipe Tasks Vision ${{ github.ref_name }}"
@@ -54,18 +54,18 @@ jobs:
           fail_on_unmatched_files: true
   auto-release:
     if: ${{ github.event_name == 'workflow_dispatch' }}
-    runs-on: macos-26
+    runs-on: xcode-27
     timeout-minutes: 60
     permissions:
       contents: write
     concurrency: release
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.3'
+          ruby-version: '4.0'
           bundler-cache: true
       - name: Guard against duplicates
         env:
@@ -94,7 +94,7 @@ jobs:
           git commit -am "Release ${{ inputs.version }}"
           git tag "${{ inputs.version }}"
           git push origin "HEAD:$GITHUB_REF_NAME" "refs/tags/${{ inputs.version }}"
-      - uses: softprops/action-gh-release@v2
+      - uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ inputs.version }}
           name: "MediaPipe Tasks Vision ${{ inputs.version }}"

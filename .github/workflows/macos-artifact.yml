@@ -25,16 +25,16 @@ on:
         type: boolean
         default: false
 env:
-  DEVELOPER_DIR: "/Applications/Xcode_26.6.app/Contents/Developer"
+  DEVELOPER_DIR: "/Applications/Xcode_27.1.app/Contents/Developer"
 jobs:
   build:
-    runs-on: macos-26
+    runs-on: xcode-27
     # A cold bazel build (no cache) takes about an hour.
     timeout-minutes: 180
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - id: versions
         run: |
           source config/versions.env
@@ -42,7 +42,7 @@ jobs:
             echo "mediapipe=$MACOS_MEDIAPIPE_VERSION"
             echo "opencv=$OPENCV_VERSION"
           } >> "$GITHUB_OUTPUT"
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           repository: google-ai-edge/mediapipe
           ref: v${{ steps.versions.outputs.mediapipe }}
@@ -52,7 +52,7 @@ jobs:
           cd upstream
           git apply --stat ../macos/patches/*.patch
           git apply ../macos/patches/*.patch
-      - uses: actions/cache/restore@v4
+      - uses: actions/cache/restore@v6
         id: opencv-cache
         with:
           path: ~/opencv-static
@@ -62,13 +62,13 @@ jobs:
         if: steps.opencv-cache.outputs.cache-hit != 'true'
         run: ./macos/build-macos-opencv.sh "$RUNNER_TEMP/opencv-work" "$HOME/opencv-static"
       # Save even if later steps fail, but never a partially installed prefix.
-      - uses: actions/cache/save@v4
+      - uses: actions/cache/save@v6
         if: always() && steps.build-opencv.outcome == 'success'
         with:
           path: ~/opencv-static
           key: ${{ steps.opencv-cache.outputs.cache-primary-key }}
       - run: ln -s "$HOME/opencv-static" upstream/third_party/opencv_static
-      - uses: actions/cache/restore@v4
+      - uses: actions/cache/restore@v6
         id: bazel-cache
         with:
           path: |
@@ -86,7 +86,7 @@ jobs:
           } >> upstream/.user.bazelrc
       - name: Build static library
         run: ./macos/build-macos-static-lib.sh "$PWD/upstream" "$PWD/out"
-      - uses: actions/cache/save@v4
+      - uses: actions/cache/save@v6
         if: always() && steps.bazel-cache.outputs.cache-hit != 'true'
         with:
           path: |
@@ -112,7 +112,7 @@ jobs:
             echo "MACOS_ARTIFACT_SHA256=\"$sha\""
             echo '~~~'
           } >> "$GITHUB_STEP_SUMMARY"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: MediaPipeTasksVision-macos-arm64
           path: |
