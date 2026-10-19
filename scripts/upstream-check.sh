@@ -22,11 +22,15 @@ case "$comparison" in
     ;;
 esac
 
-# Verify the patches in source/patches still apply cleanly to the pinned
-# upstream tag. Catches drift when MEDIAPIPE_VERSION is bumped without
-# rebasing the patches. Uses a sparse blobless clone so only the touched
-# paths are downloaded, and any fetch failure is loud instead of surfacing
-# as a bogus "patch does not apply".
+# Verify the patches in source/patches still apply to the pinned upstream tag
+# for every platform. Catches drift when MEDIAPIPE_VERSION is bumped without
+# rebasing the patches. Later patches edit files earlier ones changed, and
+# git apply --check judges every patch against the untouched tree, so each
+# platform's set is really applied as the build does and the tree is reset.
+# Uses a sparse blobless clone so only the touched paths are downloaded, and
+# any fetch failure is loud instead of surfacing as a bogus "patch does not
+# apply". Root-level files are always in a cone-mode sparse checkout, and "."
+# as a pattern would turn cone mode off.
 patch_dir="$root_dir/source/patches"
 [[ -d "$patch_dir" ]] || { echo "source/patches is missing" >&2; exit 1; }
 tmp_tree=$(mktemp -d)
@@ -36,13 +40,15 @@ git clone --quiet --depth 1 --branch "v$MEDIAPIPE_VERSION" --filter=blob:none --
 patch_dirs=()
 while IFS= read -r dir; do patch_dirs+=("$dir"); done < <(
   cat "$patch_dir"/*.patch | sed -n 's|^--- a/||p; s|^+++ b/||p' \
-    | grep -v '^/dev/null' | xargs -n1 dirname | sort -u
+    | grep -v '^/dev/null' | xargs -n1 dirname | grep -vx '\.' | sort -u
 )
-(cd "$tmp_tree" && git sparse-checkout set "${patch_dirs[@]}")
-for patch in "$patch_dir"/*.patch; do
-  if ! (cd "$tmp_tree" && git apply --check "$patch"); then
-    echo "Patch no longer applies to upstream v$MEDIAPIPE_VERSION: $(basename "$patch")" >&2
+git -C "$tmp_tree" sparse-checkout set "${patch_dirs[@]}"
+for platform in macos ios; do
+  if ! "$root_dir/source/apply-patches.sh" "$platform" "$tmp_tree" >/dev/null; then
+    echo "The $platform patches no longer apply to upstream v$MEDIAPIPE_VERSION" >&2
     exit 12
   fi
+  git -C "$tmp_tree" checkout --quiet -- .
+  git -C "$tmp_tree" clean --quiet --force -d
 done
 echo "Patches apply cleanly to upstream v$MEDIAPIPE_VERSION"
