@@ -3,37 +3,40 @@ on: [push, pull_request]
 env:
   DEVELOPER_DIR: "/Applications/Xcode_27.1.app/Contents/Developer"
 jobs:
-  # The macOS static library normally comes from the pinned release asset.
-  # When that asset does not exist yet (fresh fork, bumped MACOS_MEDIAPIPE_VERSION),
-  # build it in this run instead so CI never depends on a manual upload.
-  check-macos-artifact:
+  # The static libraries normally come from the pinned release assets. When
+  # they do not exist yet (fresh fork, bumped MEDIAPIPE_VERSION), build them
+  # in this run instead so CI never depends on a manual upload.
+  check-static-artifacts:
     runs-on: ubuntu-latest
     outputs:
       available: ${{ steps.check.outputs.available }}
-      sha256: ${{ steps.check.outputs.sha256 }}
+      pins: ${{ steps.check.outputs.pins }}
     steps:
       - uses: actions/checkout@v7
       - id: check
         run: |
           source config/versions.env
-          echo "sha256=$MACOS_ARTIFACT_SHA256" >> "$GITHUB_OUTPUT"
-          # Existence only; scripts/fetch.sh verifies the checksum when the
-          # build job downloads the asset.
-          if curl -sfIL -o /dev/null --retry 3 "$MACOS_ARTIFACT_URL"; then
-            echo "available=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "::notice::Pinned macOS artifact is not published; building it in this run."
-            echo "available=false" >> "$GITHUB_OUTPUT"
-          fi
-  build-macos-artifact:
-    needs: check-macos-artifact
-    if: needs.check-macos-artifact.outputs.available != 'true'
-    uses: ./.github/workflows/macos-artifact.yml
+          source scripts/lib/static-artifacts.sh
+          echo "pins=$MACOS_ARTIFACT_SHA256-$IOS_ARTIFACT_SHA256-$IOS_SIMULATOR_ARTIFACT_SHA256" >> "$GITHUB_OUTPUT"
+          # Existence only; scripts/fetch.sh verifies the checksums when the
+          # build job downloads the assets.
+          available=true
+          for platform in "${STATIC_PLATFORMS[@]}"; do
+            if ! curl -sfIL -o /dev/null --retry 3 "$STATIC_ARTIFACT_URL/$(static_artifact_name "$platform")"; then
+              echo "::notice::Pinned $platform static library is not published; building the static libraries in this run."
+              available=false
+            fi
+          done
+          echo "available=$available" >> "$GITHUB_OUTPUT"
+  build-static-artifacts:
+    needs: check-static-artifacts
+    if: needs.check-static-artifacts.outputs.available != 'true'
+    uses: ./.github/workflows/static-artifacts.yml
     permissions:
       contents: write
   build:
-    needs: [check-macos-artifact, build-macos-artifact]
-    if: always() && needs.check-macos-artifact.result == 'success' && (needs.build-macos-artifact.result == 'success' || needs.build-macos-artifact.result == 'skipped')
+    needs: [check-static-artifacts, build-static-artifacts]
+    if: always() && needs.check-static-artifacts.result == 'success' && (needs.build-static-artifacts.result == 'success' || needs.build-static-artifacts.result == 'skipped')
     runs-on: xcode-27
     # A hung simulator test would otherwise hold the runner for the 6 hour
     # job limit; the whole build takes well under 30 minutes.
@@ -44,21 +47,20 @@ jobs:
         with:
           ruby-version: '4.0'
           bundler-cache: true
-      # The macOS static-library zip is immutable per pin; cache it across runs.
-      # Only the zip is cached — fetch.sh re-extracts it either way.
+      # The static-library zips are immutable per pin; cache them across runs.
+      # Only the zips are cached — fetch.sh re-extracts them either way.
       - uses: actions/cache@v6
-        if: needs.check-macos-artifact.outputs.available == 'true'
+        if: needs.check-static-artifacts.outputs.available == 'true'
         with:
-          path: .build-artifacts/macos/*.zip
-          key: macos-artifact-${{ needs.check-macos-artifact.outputs.sha256 }}
+          path: .build-artifacts/static/*.zip
+          key: static-artifacts-${{ needs.check-static-artifacts.outputs.pins }}
       - uses: actions/download-artifact@v8
-        if: needs.check-macos-artifact.outputs.available != 'true'
+        if: needs.check-static-artifacts.outputs.available != 'true'
         with:
-          name: MediaPipeTasksVision-macos-arm64
-          path: macos-artifact-dl
-      - name: Use the artifact built in this run
-        if: needs.check-macos-artifact.outputs.available != 'true'
-        run: |
-          zip=$(ls macos-artifact-dl/MediaPipeTasksVision-macos-arm64-*.zip)
-          echo "MACOS_ARTIFACT_PATH=$PWD/$zip" >> "$GITHUB_ENV"
+          pattern: MediaPipeTasksVision-*-arm64
+          merge-multiple: true
+          path: static-artifacts-dl
+      - name: Use the artifacts built in this run
+        if: needs.check-static-artifacts.outputs.available != 'true'
+        run: echo "STATIC_ARTIFACT_DIR=$PWD/static-artifacts-dl" >> "$GITHUB_ENV"
       - run: make all

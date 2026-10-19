@@ -7,5 +7,5 @@ and launch; MediaPipe inference is intentionally unavailable in x86_64
 processes (Intel Macs and Rosetta).
 
 The stub does not depend on MediaPipe sources or headers: the class list is
-generated from `macos/Headers` at build time, so upstream updates normally
+generated from `source/Headers` at build time, so upstream updates normally
 require no changes here.

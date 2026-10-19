@@ -29,8 +29,8 @@ private func testImageURL(_ name: String) throws -> URL {
 
 // CVPixelBuffer is the platform-independent input path (and the only one on
 // macOS, which has no UIImage). This mirrors how camera frames are consumed:
-// IOSurface-backed, which is what lets the macOS slice hand the buffer to the
-// graph without a CPU copy (macos/patches/0009).
+// IOSurface-backed, which is what lets every slice hand the buffer to the
+// graph without a CPU copy (source/patches/0009).
 private func makeBGRAPixelBuffer(contentsOf url: URL) throws -> CVPixelBuffer {
     let source = try #require(CGImageSourceCreateWithURL(url as CFURL, nil))
     let cgImage = try #require(CGImageSourceCreateImageAtIndex(source, 0, nil))

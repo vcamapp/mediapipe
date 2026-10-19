@@ -34,11 +34,9 @@
 #import <MediaPipeTasksVision/MPPImageSegmenter.h>
 #import <MediaPipeTasksVision/MPPImageSegmenterOptions.h>
 #import <MediaPipeTasksVision/MPPImageSegmenterResult.h>
-#import <MediaPipeTasksVision/MPPInteractiveSegmenter.h>
 #import <MediaPipeTasksVision/MPPInteractiveSegmenterLegacy.h>
 #import <MediaPipeTasksVision/MPPInteractiveSegmenterLegacyOptions.h>
 #import <MediaPipeTasksVision/MPPInteractiveSegmenterLegacyResult.h>
-#import <MediaPipeTasksVision/MPPInteractiveSegmenterOptions.h>
 #import <MediaPipeTasksVision/MPPLandmark.h>
 #import <MediaPipeTasksVision/MPPMask.h>
 #import <MediaPipeTasksVision/MPPObjectDetector.h>
@@ -49,7 +47,6 @@
 #import <MediaPipeTasksVision/MPPPoseLandmarkerResult.h>
 #import <MediaPipeTasksVision/MPPRegionOfInterest.h>
 #import <MediaPipeTasksVision/MPPRunningMode.h>
-#import <MediaPipeTasksVision/MPPStroke.h>
 #import <MediaPipeTasksVision/MPPTaskOptions.h>
 #import <MediaPipeTasksVision/MPPTaskPart.h>
 #import <MediaPipeTasksVision/MPPTaskResult.h>

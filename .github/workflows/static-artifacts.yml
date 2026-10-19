@@ -1,0 +1,172 @@
+name: Static libraries
+# Builds MediaPipeTasksVision_static.a for macOS, iOS and the iOS simulator
+# (arm64) from upstream MediaPipe plus source/patches — no separate fork
+# checkout is needed — and uploads one zip per platform to the
+# static-<MEDIAPIPE_VERSION> release. That release is an internal build
+# dependency, not a package release: users consume the versioned package
+# releases, which bundle every slice in one XCFramework. An uploading run
+# commits the pins (config/versions.env) itself.
+on:
+  workflow_dispatch:
+    inputs:
+      upload_release:
+        description: "Upload the zips to the static-<version> GitHub release"
+        type: boolean
+        default: true
+      overwrite:
+        description: "Replace assets even if already published (invalidates the pinned SHA-256)"
+        type: boolean
+        default: false
+  # Called by build.yml as a fallback when the pinned release assets do not
+  # exist yet; the zips are passed on as workflow artifacts instead.
+  workflow_call:
+    inputs:
+      upload_release:
+        type: boolean
+        default: false
+env:
+  DEVELOPER_DIR: "/Applications/Xcode_27.1.app/Contents/Developer"
+jobs:
+  build:
+    runs-on: xcode-27
+    # A cold bazel build (no cache) takes about an hour.
+    timeout-minutes: 180
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [macos, ios, ios-simulator]
+    steps:
+      - uses: actions/checkout@v7
+      - id: versions
+        run: |
+          source config/versions.env
+          source scripts/lib/static-artifacts.sh
+          {
+            echo "mediapipe=$MEDIAPIPE_VERSION"
+            echo "opencv=$OPENCV_VERSION"
+            echo "zip=$(static_artifact_name ${{ matrix.platform }})"
+          } >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v7
+        with:
+          repository: google-ai-edge/mediapipe
+          ref: v${{ steps.versions.outputs.mediapipe }}
+          path: upstream
+      - name: Apply patches
+        run: ./source/apply-patches.sh ${{ matrix.platform }} upstream
+      - uses: actions/cache/restore@v6
+        id: opencv-cache
+        with:
+          path: ~/opencv-static
+          key: opencv-static-${{ matrix.platform }}-${{ runner.arch }}-${{ steps.versions.outputs.opencv }}-${{ hashFiles('source/build-opencv.sh', 'config/versions.env') }}
+      - name: Build static OpenCV
+        id: build-opencv
+        if: steps.opencv-cache.outputs.cache-hit != 'true'
+        run: ./source/build-opencv.sh ${{ matrix.platform }} "$RUNNER_TEMP/opencv-work" "$HOME/opencv-static"
+      # Save even if later steps fail, but never a partially installed prefix.
+      - uses: actions/cache/save@v6
+        if: always() && steps.build-opencv.outcome == 'success'
+        with:
+          path: ~/opencv-static
+          key: ${{ steps.opencv-cache.outputs.cache-primary-key }}
+      - uses: actions/cache/restore@v6
+        id: bazel-cache
+        with:
+          path: |
+            ~/bazel-disk-cache
+            ~/bazel-repo-cache
+          key: bazel-${{ matrix.platform }}-${{ runner.arch }}-${{ steps.versions.outputs.mediapipe }}-${{ hashFiles('source/patches/**') }}
+          restore-keys: |
+            bazel-${{ matrix.platform }}-${{ runner.arch }}-${{ steps.versions.outputs.mediapipe }}-
+      # The three platforms share the repository's 10 GB cache quota.
+      - name: Configure Bazel caches
+        run: |
+          {
+            echo "build --disk_cache=$HOME/bazel-disk-cache"
+            echo "build --experimental_disk_cache_gc_max_size=2G"
+            echo "common --repository_cache=$HOME/bazel-repo-cache"
+          } >> upstream/.user.bazelrc
+      - name: Build static library
+        run: ./source/build-static-lib.sh ${{ matrix.platform }} "$PWD/upstream" "$HOME/opencv-static" "$PWD/out"
+      - uses: actions/cache/save@v6
+        if: always() && steps.bazel-cache.outputs.cache-hit != 'true'
+        with:
+          path: |
+            ~/bazel-disk-cache
+            ~/bazel-repo-cache
+          key: ${{ steps.bazel-cache.outputs.cache-primary-key }}
+      - name: Check public headers drift
+        run: |
+          if ! diff -rq source/Headers out/Headers; then
+            echo "::warning::Generated public headers (${{ matrix.platform }}) differ from source/Headers; update the repo copy."
+          fi
+      - name: Package
+        id: package
+        run: |
+          zipname="${{ steps.versions.outputs.zip }}"
+          (cd out && zip -X "../$zipname" MediaPipeTasksVision_static.a)
+          sha=$(shasum -a 256 "$zipname" | awk '{print $1}')
+          echo "### ${{ matrix.platform }} static library" >> "$GITHUB_STEP_SUMMARY"
+          echo "\`$zipname\`: \`$sha\`" >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: MediaPipeTasksVision-${{ matrix.platform }}-arm64
+          path: |
+            ${{ steps.versions.outputs.zip }}
+            out/Headers
+      - name: Upload to release
+        if: inputs.upload_release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="static-${{ steps.versions.outputs.mediapipe }}"
+          zip="${{ steps.versions.outputs.zip }}"
+          # Every build has a different SHA-256 (timestamps); the pin in
+          # config/versions.env refers to the published asset. Never replace a
+          # published asset silently — that would invalidate the pin.
+          if gh release view "$tag" --json assets -q '.assets[].name' 2>/dev/null | grep -qx "$zip" \
+             && [[ "${{ inputs.overwrite }}" != "true" ]]; then
+            echo "::notice::$zip is already published on $tag; keeping it (and the pinned SHA-256). Re-run with overwrite=true to replace."
+            exit 0
+          fi
+          # The matrix jobs race to create the release; losing the race is fine.
+          gh release view "$tag" >/dev/null 2>&1 || gh release create "$tag" \
+            --target "$GITHUB_SHA" \
+            --prerelease \
+            --title "Build dependency: static libraries ($tag)" \
+            --notes "Internal build input, not a package release — use the versioned releases, which bundle every slice in a single XCFramework. These assets are the arm64 static libraries for macOS, iOS and the iOS simulator built from patched MediaPipe sources (see source/README.md); scripts/fetch.sh downloads them and verifies the SHA-256 values pinned in config/versions.env." \
+            || gh release view "$tag" >/dev/null
+          gh release upload "$tag" "$zip" --clobber
+  # Pins whatever is published once every platform has finished, so a kept
+  # asset and a re-uploaded one are pinned alike.
+  pin:
+    needs: build
+    if: inputs.upload_release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+      - name: Commit the pinned SHA-256 values
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          source config/versions.env
+          source scripts/lib/static-artifacts.sh
+          tag="static-$MEDIAPIPE_VERSION"
+          mkdir -p assets
+          for platform in "${STATIC_PLATFORMS[@]}"; do
+            zip=$(static_artifact_name "$platform")
+            gh release download "$tag" --pattern "$zip" --dir assets
+            sha=$(sha256sum "assets/$zip" | awk '{print $1}')
+            sed -i "s/^$(static_artifact_sha256_key "$platform")=.*/$(static_artifact_sha256_key "$platform")=\"$sha\"/" config/versions.env
+          done
+          if git diff --quiet config/versions.env; then
+            echo "Pins already up to date."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Pin static libraries for MediaPipe $MEDIAPIPE_VERSION" config/versions.env
+          git push origin "HEAD:$GITHUB_REF_NAME"

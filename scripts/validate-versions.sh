@@ -25,12 +25,8 @@ grep -Fq ".macOS(.v${MINIMUM_MACOS_VERSION%%.*})" "$root_dir/Package.swift" || {
   exit 1
 }
 
-grep -Fq "MediaPipe Tasks Vision $MEDIAPIPE_VERSION" "$root_dir/THIRD_PARTY_NOTICES.md" || {
+grep -Fq "MediaPipe $MEDIAPIPE_VERSION sources" "$root_dir/THIRD_PARTY_NOTICES.md" || {
   echo "THIRD_PARTY_NOTICES.md MediaPipe version mismatch" >&2
-  exit 1
-}
-grep -Fq "MediaPipe $MACOS_MEDIAPIPE_VERSION sources" "$root_dir/THIRD_PARTY_NOTICES.md" || {
-  echo "THIRD_PARTY_NOTICES.md macOS MediaPipe version mismatch" >&2
   exit 1
 }
 
@@ -41,7 +37,7 @@ grep -Fq "OpenCV $OPENCV_VERSION" "$root_dir/THIRD_PARTY_NOTICES.md" || {
 
 notes="$root_dir/.build-artifacts/release-notes.md"
 metadata="$root_dir/.build-artifacts/metadata/build-metadata.json"
-grep -Fq "MediaPipe Tasks Vision: $MEDIAPIPE_VERSION (iOS), $MACOS_MEDIAPIPE_VERSION (macOS)" "$notes" || {
+grep -Fq "MediaPipe Tasks Vision: $MEDIAPIPE_VERSION (built from source" "$notes" || {
   echo "Release notes MediaPipe version mismatch" >&2
   exit 1
 }
@@ -53,7 +49,7 @@ grep -Fq "\"packageVersion\":\"$PACKAGE_VERSION\"" "$metadata" || {
   echo "Build metadata package version mismatch" >&2
   exit 1
 }
-grep -Fq "\"mediaPipeVersion\":\"$MEDIAPIPE_VERSION\",\"macOSMediaPipeVersion\":\"$MACOS_MEDIAPIPE_VERSION\"" "$metadata" || {
+grep -Fq "\"mediaPipeVersion\":\"$MEDIAPIPE_VERSION\"" "$metadata" || {
   echo "Build metadata MediaPipe version mismatch" >&2
   exit 1
 }
@@ -68,4 +64,4 @@ for plist in "$xcframework"/ios-*/MediaPipeTasksVision.framework/Info.plist \
   }
 done
 
-echo "Version consistency checks passed for package $PACKAGE_VERSION and MediaPipe $MEDIAPIPE_VERSION (macOS $MACOS_MEDIAPIPE_VERSION)."
+echo "Version consistency checks passed for package $PACKAGE_VERSION and MediaPipe $MEDIAPIPE_VERSION."

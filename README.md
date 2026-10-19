@@ -281,10 +281,15 @@ for hand in result.hands {
 }
 ```
 
-## macOS notes
+## How the binaries are built
 
-The macOS slice is built from upstream MediaPipe sources plus the patches in
-[`macos/`](macos/README.md) (Google does not ship macOS binaries):
+Every slice (iOS device, iOS simulator, macOS) is built from upstream
+MediaPipe sources plus the patches in [`source/`](source/README.md), with
+OpenCV statically linked. Google ships no macOS binaries, and building iOS
+from the same sources lets camera frames (BGRA `CVPixelBuffer`s) enter the
+graph without the CPU copies of the official binaries.
+
+## macOS notes
 
 - Inference runs on the CPU (XNNPACK) by default; the Metal GPU delegate is
   opt-in per tracker.

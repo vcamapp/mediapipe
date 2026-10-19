@@ -55,6 +55,14 @@ check_dsym() {
   [[ -n "$binary_uuids" && "$binary_uuids" == "$dsym_uuids" ]] || { echo "dSYM UUID mismatch: $slice" >&2; exit 1; }
 }
 
+# OpenCV must be statically linked; an external dylib dependency would force
+# consumers to ship or install OpenCV themselves.
+check_static_opencv() {
+  local opencv_deps
+  opencv_deps=$(otool -L "$1" | grep -i opencv || true)
+  [[ -z "$opencv_deps" ]] || { echo "$1 must not depend on external OpenCV dylibs:" >&2; echo "$opencv_deps" >&2; exit 1; }
+}
+
 # --- iOS slices (shallow framework bundles) ----------------------------------
 for slice in ios-arm64 ios-arm64-simulator; do
   framework="$binary/$slice/MediaPipeTasksVision.framework"
@@ -65,6 +73,7 @@ for slice in ios-arm64 ios-arm64-simulator; do
   [[ "$install_name" == '@rpath/MediaPipeTasksVision.framework/MediaPipeTasksVision' ]] || { echo "Invalid install name: $install_name" >&2; exit 1; }
   check_dsym "$slice" "$framework/MediaPipeTasksVision"
   check_no_listed_sdk_classes "$framework/MediaPipeTasksVision"
+  check_static_opencv "$framework/MediaPipeTasksVision"
 done
 check_symbols "$binary/ios-arm64/MediaPipeTasksVision.framework/MediaPipeTasksVision" arm64
 
@@ -84,14 +93,7 @@ check_dsym macos-arm64_x86_64 "$framework/MediaPipeTasksVision"
 check_symbols "$framework/MediaPipeTasksVision" arm64
 check_symbols "$framework/MediaPipeTasksVision" x86_64
 otool -l -arch x86_64 "$framework/MediaPipeTasksVision" | grep -A3 'LC_BUILD_VERSION' | grep -q "minos ${MINIMUM_MACOS_VERSION%%.*}\." || { echo "Invalid x86_64 minimum macOS version" >&2; exit 1; }
-# OpenCV must be statically linked; an external dylib dependency would force
-# consumers to install Homebrew opencv@4.
-opencv_deps=$(otool -L "$framework/MediaPipeTasksVision" | grep -i opencv || true)
-if [[ -n "$opencv_deps" ]]; then
-  echo "macOS slice must not depend on external OpenCV dylibs:" >&2
-  echo "$opencv_deps" >&2
-  exit 1
-fi
+check_static_opencv "$framework/MediaPipeTasksVision"
 # The x86_64 slice must stay a link-only stub: no MediaPipe or OpenCV
 # implementation may leak in, and it must depend on system libraries only.
 if nm -arch x86_64 "$framework/MediaPipeTasksVision" | grep -Eq '__ZN9mediapipe|__ZN2cv'; then

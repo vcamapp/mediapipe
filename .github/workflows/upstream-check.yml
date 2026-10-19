@@ -30,7 +30,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           if [ "$(gh issue list --state open --search 'in:title MediaPipeTasksVision upstream update available' --json number --jq 'length')" -eq 0 ]; then
-            gh issue create --title "MediaPipeTasksVision upstream update available" --body "A newer google-ai-edge/mediapipe GitHub release than the bundled version is available. Run scripts/upstream-check.sh and update MEDIAPIPE_VERSION (and MACOS_MEDIAPIPE_VERSION once the macOS patches are rebased) after reviewing headers, symbols, and both architectures."
+            gh issue create --title "MediaPipeTasksVision upstream update available" --body "A newer google-ai-edge/mediapipe GitHub release than the bundled version is available. Run scripts/upstream-check.sh, rebase source/patches and update MEDIAPIPE_VERSION after reviewing headers, symbols, and every slice."
           fi
       - if: steps.check.outputs.exit_code != '0' && steps.check.outputs.exit_code != '10'
         run: exit 1

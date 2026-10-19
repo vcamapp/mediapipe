@@ -2,22 +2,23 @@ diff --git a/mediapipe/tasks/ios/BUILD b/mediapipe/tasks/ios/BUILD
 index 87de2d1..179df11 100644
 --- a/mediapipe/tasks/ios/BUILD
 +++ b/mediapipe/tasks/ios/BUILD
-@@ -454,3 +454,103 @@ mediapipe_static_xcframework(
+@@ -454,3 +454,104 @@ mediapipe_static_xcframework(
      # built as static libraries and force loaded.
      deps = MEDIAPIPE_TASKS_COMMON_DEPS,
  )
 +
 +
 +# Umbrella library with the complete MediaPipe Tasks Vision Objective-C API for
-+# CPU-only macOS builds. Task graphs, calculators and TFLite (XNNPACK) are
-+# included transitively. A distributable single static archive is produced by
-+# combining the transitive static libraries of this target with libtool
-+# (see build script). GPU stays enabled: since MediaPipe 1.0.0 GpuBuffer is
-+# CVPixelBuffer-backed on macOS, so the Metal inference delegate works.
++# the static builds (macOS, iOS device and iOS simulator). Task graphs,
++# calculators and TFLite (XNNPACK + Metal delegate) are included transitively.
++# A distributable single static archive is produced by combining the
++# transitive static libraries of this target with libtool (see build script).
++# Since MediaPipe 1.0.0 GpuBuffer is CVPixelBuffer-backed on every Apple
++# platform, so the GPU path works on macOS too.
 +#   bazel build -c opt --config=darwin_arm64 --apple_generate_dsym=false \
-+#     //mediapipe/tasks/ios:MediaPipeTasksVision_macos
++#     //mediapipe/tasks/ios:MediaPipeTasksVision_static
 +objc_library(
-+    name = "MediaPipeTasksVision_macos",
++    name = "MediaPipeTasksVision_static",
 +    tags = ["manual"],
 +    deps = [
 +        ":OpenCV",
@@ -36,11 +37,11 @@ index 87de2d1..179df11 100644
 +)
 +
 +
-+# Public headers of the Vision framework as a plain filegroup, so macOS
++# Public headers of the Vision framework as a plain filegroup, so the static
 +# packaging can locate them with `bazel cquery --output=files` instead of
 +# parsing this file.
 +filegroup(
-+    name = "MediaPipeTasksVision_macos_hdrs",
++    name = "MediaPipeTasksVision_static_hdrs",
 +    srcs = [
 +        ":MPPBaseOptions.h",
 +        ":MPPCategory.h",
@@ -98,11 +99,11 @@ index 87de2d1..179df11 100644
 +
 +# Linking this throwaway dylib forces Bazel to materialize every transitive
 +# static archive of the umbrella on disk (they are all link inputs), and
-+# fails fast on missing or unresolved symbols. macOS packaging builds it
++# fails fast on missing or unresolved symbols. The static packaging builds it
 +# before combining the archives with libtool.
 +cc_binary(
-+    name = "MediaPipeTasksVision_macos_link_check",
++    name = "MediaPipeTasksVision_static_link_check",
 +    linkshared = True,
 +    tags = ["manual"],
-+    deps = [":MediaPipeTasksVision_macos"],
++    deps = [":MediaPipeTasksVision_static"],
 +)

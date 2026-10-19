@@ -1,0 +1,90 @@
+diff --git a/.bazelrc b/.bazelrc
+index 0c92712..718be48 100644
+--- a/.bazelrc
++++ b/.bazelrc
+@@ -114,6 +114,10 @@ build:ios_fat --watchos_cpus=armv7k
+ build:ios_sim_fat --config=ios
+ build:ios_sim_fat --ios_multi_cpus=x86_64,sim_arm64
+ 
++build:ios_sim_arm64 --config=ios
++build:ios_sim_arm64 --cpu=ios_sim_arm64
++build:ios_sim_arm64 --platforms=@build_bazel_apple_support//platforms:ios_sim_arm64
++
+ build:ios_sim_device_fat --config=ios
+ build:ios_sim_device_fat --ios_multi_cpus=x86_64,sim_arm64,arm64
+ 
+diff --git a/WORKSPACE b/WORKSPACE
+index 4aed6ce..335a488 100644
+--- a/WORKSPACE
++++ b/WORKSPACE
+@@ -551,6 +551,22 @@ new_local_repository(
+     path = "third_party/opencv_static",
+ )
+ 
++# VCam: statically built OpenCV install prefixes for the iOS device and
++# simulator builds (source/build-opencv.sh in the distribution repository).
++# They replace @ios_opencv_source, whose OpenCV 4.5.3 framework build no longer
++# configures with current Xcode and CMake.
++new_local_repository(
++    name = "ios_opencv_static",
++    build_file = "@//third_party:opencv_ios_static.BUILD",
++    path = "third_party/opencv_ios_static",
++)
++
++new_local_repository(
++    name = "ios_simulator_opencv_static",
++    build_file = "@//third_party:opencv_ios_static.BUILD",
++    path = "third_party/opencv_ios_simulator_static",
++)
++
+ new_local_repository(
+     name = "macos_ffmpeg",
+     build_file = "@//third_party:ffmpeg_macos.BUILD",
+diff --git a/third_party/BUILD b/third_party/BUILD
+index 5660a8e..a9a9497 100644
+--- a/third_party/BUILD
++++ b/third_party/BUILD
+@@ -125,8 +125,8 @@ alias(
+     name = "opencv",
+     actual = select({
+         ":opencv_source_build": ":opencv_cmake",
+-        ":opencv_ios_sim_arm64_source_build": "@ios_opencv_source//:opencv",
+-        ":opencv_ios_arm64_source_build": "@ios_opencv_source//:opencv",
++        ":opencv_ios_sim_arm64_source_build": "@ios_simulator_opencv_static//:opencv",
++        ":opencv_ios_arm64_source_build": "@ios_opencv_static//:opencv",
+         ":opencv_ios_x86_64_source_build": "@ios_opencv_source//:opencv",
+         "//conditions:default": ":opencv_binary",
+     }),
+diff --git a/third_party/opencv_ios_static.BUILD b/third_party/opencv_ios_static.BUILD
+new file mode 100644
+index 0000000..db626c2
+--- /dev/null
++++ b/third_party/opencv_ios_static.BUILD
+@@ -0,0 +1,27 @@
++# Description:
++#   Statically linked OpenCV libraries for iOS (device or simulator, whichever
++#   the referencing repository points at). Built like the macOS prefix
++#   (opencv_macos.BUILD) with BUILD_SHARED_LIBS=OFF,
++#   BUILD_LIST=core,imgcodecs,imgproc and BUILD_ZLIB=OFF.
++
++licenses(["notice"])  # Apache 2.0
++
++exports_files(["LICENSE"])
++
++cc_library(
++    name = "opencv",
++    srcs = glob([
++        "lib/libopencv_core.a",
++        "lib/libopencv_imgproc.a",
++        "lib/libopencv_imgcodecs.a",
++        "lib/opencv4/3rdparty/*.a",
++    ]),
++    hdrs = glob(["include/opencv4/opencv2/**/*.h*"]),
++    includes = ["include/opencv4/"],
++    linkopts = [
++        "-framework Accelerate",
++        "-lz",
++    ],
++    linkstatic = 1,
++    visibility = ["//visibility:public"],
++)

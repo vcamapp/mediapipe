@@ -6,7 +6,7 @@ index 5b61124..0c92712 100644
  build:darwin_arm64 --macos_minimum_os=10.16
  build:darwin_arm64 --cpu=darwin_arm64
  
-+# Required for the macOS static library build (see macos/README.md in the
++# Required for the macOS static library build (see source/README.md in the
 +# distribution repository):
 +# - TensorFlow's hermetic Python needs a version with a requirements lock;
 +#   the interpreter is downloaded, so the host Python version is irrelevant.
@@ -46,7 +46,7 @@ index d89119a..0c80444 100644
 -    path = "/usr/local",  # e.g. /usr/local/Cellar for HomeBrew
 +    # Statically built OpenCV (core/imgproc/imgcodecs) install prefix.
 +    # Place (or symlink) the prefix at third_party/opencv_static; see
-+    # macos/README.md in the distribution repository for the build recipe.
++    # source/README.md in the distribution repository for the build recipe.
 +    path = "third_party/opencv_static",
  )
  
@@ -60,7 +60,7 @@ index 4139f18..c268903 100644
 -#   OpenCV libraries for video/image processing on MacOS
 +#   Statically linked OpenCV libraries for macOS. The referenced install
 +#   prefix is produced by a cmake build with BUILD_SHARED_LIBS=OFF and
-+#   BUILD_LIST=core,imgcodecs,imgproc (see macos/README.md). zlib is
++#   BUILD_LIST=core,imgcodecs,imgproc (see source/README.md). zlib is
 +#   deliberately NOT bundled (BUILD_ZLIB=OFF) to avoid duplicate symbols with
 +#   MediaPipe's own zlib; consumers link the system libz instead.
  

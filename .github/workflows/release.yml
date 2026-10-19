@@ -5,8 +5,8 @@ on:
       - "*"
   # Fully CI-driven release: builds, writes the version and checksum pins,
   # commits, tags that commit, and publishes the same artifacts — no local
-  # build needed. The pinned macOS asset must already be published
-  # (run the "macOS build dependency" workflow first when it changed).
+  # build needed. The pinned static libraries must already be published
+  # (run the "Static libraries" workflow first when they changed).
   workflow_dispatch:
     inputs:
       version:
@@ -16,9 +16,9 @@ env:
   DEVELOPER_DIR: "/Applications/Xcode_27.1.app/Contents/Developer"
 jobs:
   release:
-    # macos-* tags are the static-library artifact releases handled by
-    # macos-artifact.yml, not package releases.
-    if: ${{ github.event_name == 'push' && !startsWith(github.ref_name, 'macos-') }}
+    # static-* tags are the static-library artifact releases handled by
+    # static-artifacts.yml, not package releases.
+    if: ${{ github.event_name == 'push' && !startsWith(github.ref_name, 'static-') }}
     runs-on: xcode-27
     timeout-minutes: 60
     permissions:

@@ -9,7 +9,7 @@ binary="$out_dir/MediaPipeTasksVision"
 rm -rf "$out_dir"
 mkdir -p "$obj_dir"
 
-ruby "$stub_dir/generate-stub-classes.rb" "$root_dir/macos/Headers" "$out_dir/MPPStubClasses.m"
+ruby "$stub_dir/generate-stub-classes.rb" "$root_dir/source/Headers" "$out_dir/MPPStubClasses.m"
 
 target="x86_64-apple-macos${MINIMUM_MACOS_VERSION}"
 for source in "$stub_dir/MPPStub.m" "$out_dir/MPPStubClasses.m"; do

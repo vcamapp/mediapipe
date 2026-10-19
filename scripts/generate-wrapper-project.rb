@@ -8,15 +8,12 @@ project_dir = File.join(root, 'builder/mediapipe-tasks-vision-wrapper')
 project_path = File.join(project_dir, 'MediaPipeTasksVisionWrapper.xcodeproj')
 FileUtils.mkdir_p(project_dir) unless Dir.exist?(project_dir)
 
-# iOS public headers come from the official binaries (scripts/fetch.sh); macOS
-# headers are versioned in-repo (macos/Headers, generated from the patched fork).
-ios_headers_dir = File.join(root, '.build-artifacts/ios/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers')
-ios_headers_dir_relative = '../../.build-artifacts/ios/MediaPipeTasksVision.xcframework/ios-arm64/MediaPipeTasksVision.framework/Headers'
-macos_headers_dir = File.join(root, 'macos/Headers')
-macos_headers_dir_relative = '../../macos/Headers'
+# The public headers are versioned in-repo (source/Headers, generated from the
+# patched sources) and shared by every slice.
+headers_dir = File.join(root, 'source/Headers')
+headers_dir_relative = '../../source/Headers'
 
 def write_umbrella_header(path, headers_dir)
-  return unless Dir.exist?(headers_dir)
   imports = Dir[File.join(headers_dir, '*.h')].map { |p| File.basename(p) }.sort
   File.write(path, <<~HEADER)
     #import <Foundation/Foundation.h>
@@ -27,10 +24,10 @@ def write_umbrella_header(path, headers_dir)
   HEADER
 end
 
-write_umbrella_header(File.join(project_dir, 'MediaPipeTasksVision/MediaPipeTasksVision.h'), ios_headers_dir)
-abort('macos/Headers is missing; the macOS public headers are versioned in-repo.') unless Dir.exist?(macos_headers_dir)
+abort('source/Headers is missing; the public headers are versioned in-repo.') unless Dir.exist?(headers_dir)
+write_umbrella_header(File.join(project_dir, 'MediaPipeTasksVision/MediaPipeTasksVision.h'), headers_dir)
 FileUtils.mkdir_p(File.join(project_dir, 'MediaPipeTasksVisionMac'))
-write_umbrella_header(File.join(project_dir, 'MediaPipeTasksVisionMac/MediaPipeTasksVision.h'), macos_headers_dir)
+write_umbrella_header(File.join(project_dir, 'MediaPipeTasksVisionMac/MediaPipeTasksVision.h'), headers_dir)
 
 project = Xcodeproj::Project.new(project_path)
 
@@ -76,25 +73,25 @@ ios_target = project.new_target(:framework, 'MediaPipeTasksVision', :ios, versio
 ios_target.source_build_phase.add_file_reference(project.main_group.new_file('MediaPipeTasksVision/MPPForceLink.mm'))
 ios_umbrella = project.main_group.new_file('MediaPipeTasksVision/MediaPipeTasksVision.h')
 ios_target.headers_build_phase.add_file_reference(ios_umbrella, :public)
-Dir[File.join(ios_headers_dir, '*.h')].each do |header|
-  ref = project.main_group.new_file(File.join(ios_headers_dir_relative, File.basename(header)))
+Dir[File.join(headers_dir, '*.h')].each do |header|
+  ref = project.main_group.new_file(File.join(headers_dir_relative, File.basename(header)))
   ios_target.headers_build_phase.add_file_reference(ref, :public)
 end
 configure_target(ios_target, versions, 'MediaPipeTasksVision/Info.plist')
 link_frameworks(project, ios_target, %w[AVFoundation Accelerate CoreGraphics CoreImage CoreMedia CoreVideo Foundation ImageIO Metal MetalKit OpenGLES QuartzCore Security UIKit])
 
-# --- macOS target (CPU-only, headers from the patched fork) -----------------
+# --- macOS target -----------------------------------------------------------
 macos_target = project.new_target(:framework, 'MediaPipeTasksVisionMac', :osx, versions.fetch('MINIMUM_MACOS_VERSION'))
 macos_target.source_build_phase.add_file_reference(project.main_group.new_file('MediaPipeTasksVision/MPPForceLink.mm'))
 macos_umbrella = project.main_group.new_file('MediaPipeTasksVisionMac/MediaPipeTasksVision.h')
 macos_target.headers_build_phase.add_file_reference(macos_umbrella, :public)
-Dir[File.join(macos_headers_dir, '*.h')].each do |header|
-  ref = project.main_group.new_file(File.join(macos_headers_dir_relative, File.basename(header)))
+Dir[File.join(headers_dir, '*.h')].each do |header|
+  ref = project.main_group.new_file(File.join(headers_dir_relative, File.basename(header)))
   macos_target.headers_build_phase.add_file_reference(ref, :public)
 end
 configure_target(macos_target, versions, 'MediaPipeTasksVision/Info-macOS.plist')
-# No UIKit / OpenGLES / Metal on the CPU-only macOS build. AppKit is required
-# by the statically linked OpenCV imgcodecs.
+# No UIKit / OpenGLES on macOS (scripts/build.sh adds Metal and OpenGL). AppKit
+# is required by the statically linked OpenCV imgcodecs.
 link_frameworks(project, macos_target, %w[AVFoundation Accelerate AppKit CoreGraphics CoreImage CoreMedia CoreVideo Foundation ImageIO QuartzCore Security])
 
 project.save

@@ -22,16 +22,16 @@ case "$comparison" in
     ;;
 esac
 
-# Verify the macOS patches in macos/patches still apply cleanly to the pinned
-# upstream tag. Catches drift when MACOS_MEDIAPIPE_VERSION is bumped without
+# Verify the patches in source/patches still apply cleanly to the pinned
+# upstream tag. Catches drift when MEDIAPIPE_VERSION is bumped without
 # rebasing the patches. Uses a sparse blobless clone so only the touched
 # paths are downloaded, and any fetch failure is loud instead of surfacing
 # as a bogus "patch does not apply".
-patch_dir="$root_dir/macos/patches"
-[[ -d "$patch_dir" ]] || { echo "macos/patches is missing" >&2; exit 1; }
+patch_dir="$root_dir/source/patches"
+[[ -d "$patch_dir" ]] || { echo "source/patches is missing" >&2; exit 1; }
 tmp_tree=$(mktemp -d)
 trap 'rm -rf "$tmp_tree"' EXIT
-git clone --quiet --depth 1 --branch "v$MACOS_MEDIAPIPE_VERSION" --filter=blob:none --sparse \
+git clone --quiet --depth 1 --branch "v$MEDIAPIPE_VERSION" --filter=blob:none --sparse \
   https://github.com/google-ai-edge/mediapipe.git "$tmp_tree"
 patch_dirs=()
 while IFS= read -r dir; do patch_dirs+=("$dir"); done < <(
@@ -41,8 +41,8 @@ while IFS= read -r dir; do patch_dirs+=("$dir"); done < <(
 (cd "$tmp_tree" && git sparse-checkout set "${patch_dirs[@]}")
 for patch in "$patch_dir"/*.patch; do
   if ! (cd "$tmp_tree" && git apply --check "$patch"); then
-    echo "macOS patch no longer applies to upstream v$MACOS_MEDIAPIPE_VERSION: $(basename "$patch")" >&2
+    echo "Patch no longer applies to upstream v$MEDIAPIPE_VERSION: $(basename "$patch")" >&2
     exit 12
   fi
 done
-echo "macOS patches apply cleanly to upstream v$MACOS_MEDIAPIPE_VERSION"
+echo "Patches apply cleanly to upstream v$MEDIAPIPE_VERSION"
