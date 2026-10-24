@@ -1,7 +1,7 @@
 name: Build
 on: [push, pull_request]
 env:
-  DEVELOPER_DIR: "/Applications/Xcode_27.1.app/Contents/Developer"
+  DEVELOPER_DIR: "/Applications/Xcode_27.2.app/Contents/Developer"
 jobs:
   # The static libraries normally come from the pinned release assets. When
   # they do not exist yet (fresh fork, bumped MEDIAPIPE_VERSION), build them
