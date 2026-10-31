@@ -1,0 +1,17 @@
+diff --git a/mediapipe/calculators/tensor/inference_calculator_metal.cc b/mediapipe/calculators/tensor/inference_calculator_metal.cc
+index 0f773e5..8a531d0 100644
+--- a/mediapipe/calculators/tensor/inference_calculator_metal.cc
++++ b/mediapipe/calculators/tensor/inference_calculator_metal.cc
+@@ -105,8 +105,11 @@ class InferenceCalculatorMetalImpl
+ 
+   // TfLite requires us to keep the model alive as long as the interpreter is.
+   Packet<TfLiteModelPtr> model_packet_;
+-  std::unique_ptr<tflite::Interpreter> interpreter_;
+   TfLiteDelegatePtr delegate_;
++  // The interpreter frees its buffer handles through the delegate, so it is
++  // declared after the delegate to be destroyed first when the graph is torn
++  // down without Close().
++  std::unique_ptr<tflite::Interpreter> interpreter_;
+   bool allow_precision_loss_ = false;
+ 
+ #if MEDIAPIPE_TFLITE_METAL_INFERENCE
