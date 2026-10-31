@@ -87,10 +87,10 @@ index 0000000..c3d5cfa
 +  return ok ? 0 : 1;
 +}
 diff --git a/mediapipe/tasks/ios/vision/hand_landmarker/BUILD b/mediapipe/tasks/ios/vision/hand_landmarker/BUILD
-index 290b7af..e618a6a 100644
+index 2a9e585..bfed6ad 100644
 --- a/mediapipe/tasks/ios/vision/hand_landmarker/BUILD
 +++ b/mediapipe/tasks/ios/vision/hand_landmarker/BUILD
-@@ -82,3 +82,31 @@ objc_library(
+@@ -81,3 +81,31 @@ objc_library(
          "//third_party/apple_frameworks:Foundation",
      ],
  )

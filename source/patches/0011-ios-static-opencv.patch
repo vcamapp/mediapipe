@@ -1,8 +1,8 @@
 diff --git a/.bazelrc b/.bazelrc
-index 0c92712..718be48 100644
+index 6630a50..9a57a9e 100644
 --- a/.bazelrc
 +++ b/.bazelrc
-@@ -114,6 +114,10 @@ build:ios_fat --watchos_cpus=armv7k
+@@ -121,6 +121,10 @@ build:ios_fat --watchos_cpus=armv7k
  build:ios_sim_fat --config=ios
  build:ios_sim_fat --ios_multi_cpus=x86_64,sim_arm64
  
@@ -14,7 +14,7 @@ index 0c92712..718be48 100644
  build:ios_sim_device_fat --ios_multi_cpus=x86_64,sim_arm64,arm64
  
 diff --git a/WORKSPACE b/WORKSPACE
-index 4aed6ce..335a488 100644
+index e54bf4e..e1ae3c8 100644
 --- a/WORKSPACE
 +++ b/WORKSPACE
 @@ -551,6 +551,22 @@ new_local_repository(
@@ -41,7 +41,7 @@ index 4aed6ce..335a488 100644
      name = "macos_ffmpeg",
      build_file = "@//third_party:ffmpeg_macos.BUILD",
 diff --git a/third_party/BUILD b/third_party/BUILD
-index 5660a8e..a9a9497 100644
+index 4b035dc..a5ea550 100644
 --- a/third_party/BUILD
 +++ b/third_party/BUILD
 @@ -125,8 +125,8 @@ alias(

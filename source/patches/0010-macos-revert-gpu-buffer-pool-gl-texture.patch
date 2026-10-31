@@ -1,5 +1,5 @@
 diff --git a/mediapipe/calculators/tensor/tensors_to_segmentation_calculator.cc b/mediapipe/calculators/tensor/tensors_to_segmentation_calculator.cc
-index 23ccc9d..4e67b94 100644
+index 669d3ca..5c4970c 100644
 --- a/mediapipe/calculators/tensor/tensors_to_segmentation_calculator.cc
 +++ b/mediapipe/calculators/tensor/tensors_to_segmentation_calculator.cc
 @@ -34,9 +34,6 @@

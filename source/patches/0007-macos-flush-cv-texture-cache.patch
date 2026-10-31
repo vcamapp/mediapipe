@@ -1,8 +1,8 @@
 diff --git a/mediapipe/gpu/gpu_buffer_storage_cv_pixel_buffer.cc b/mediapipe/gpu/gpu_buffer_storage_cv_pixel_buffer.cc
-index 5983758..d43d07c 100644
+index fe27105..3c7b9ab 100644
 --- a/mediapipe/gpu/gpu_buffer_storage_cv_pixel_buffer.cc
 +++ b/mediapipe/gpu/gpu_buffer_storage_cv_pixel_buffer.cc
-@@ -33,6 +33,15 @@ GlTextureView GpuBufferStorageCvPixelBuffer::GetTexture(
+@@ -34,6 +34,15 @@ GlTextureView GpuBufferStorageCvPixelBuffer::GetTexture(
    auto gl_context = GlContext::GetCurrent();
    ABSL_CHECK(gl_context);
  #if TARGET_OS_OSX

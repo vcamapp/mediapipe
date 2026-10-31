@@ -1,8 +1,8 @@
 diff --git a/.bazelrc b/.bazelrc
-index 5b61124..0c92712 100644
+index d8e4709..6630a50 100644
 --- a/.bazelrc
 +++ b/.bazelrc
-@@ -125,6 +125,17 @@ build:darwin_arm64 --apple_platform_type=macos
+@@ -132,6 +132,17 @@ build:darwin_arm64 --apple_platform_type=macos
  build:darwin_arm64 --macos_minimum_os=10.16
  build:darwin_arm64 --cpu=darwin_arm64
  
@@ -33,14 +33,14 @@ index a0111fe..8e3accb 100644
 +apple_cc_configure = use_extension("@build_bazel_apple_support//crosstool:setup.bzl", "apple_cc_configure_extension")
 +use_repo(apple_cc_configure, "local_config_apple_cc")
 diff --git a/WORKSPACE b/WORKSPACE
-index d89119a..0c80444 100644
+index cc35309..5e57069 100644
 --- a/WORKSPACE
 +++ b/WORKSPACE
 @@ -543,10 +543,10 @@ new_local_repository(
  new_local_repository(
      name = "macos_opencv",
      build_file = "@//third_party:opencv_macos.BUILD",
--    # For local MacOS builds, the path should point to an opencv@3 installation.
+-    # For local MacOS builds, the path should point to an opencv@4 installation.
 -    # If you edit the path here, you will also need to update the corresponding
 -    # prefix in "opencv_macos.BUILD".
 -    path = "/usr/local",  # e.g. /usr/local/Cellar for HomeBrew
@@ -51,11 +51,35 @@ index d89119a..0c80444 100644
  )
  
  new_local_repository(
+diff --git a/mediapipe/calculators/tensor/BUILD b/mediapipe/calculators/tensor/BUILD
+index 21fdfc2..8544152 100644
+--- a/mediapipe/calculators/tensor/BUILD
++++ b/mediapipe/calculators/tensor/BUILD
+@@ -877,6 +877,7 @@ cc_library(
+         "@com_google_absl//absl/algorithm:container",
+         "@com_google_absl//absl/base:core_headers",
+         "@com_google_absl//absl/base:nullability",
++        "@com_google_absl//absl/cleanup",
+         "@com_google_absl//absl/container:flat_hash_map",
+         "@com_google_absl//absl/log",
+         "@com_google_absl//absl/log:absl_log",
+diff --git a/mediapipe/calculators/tensor/inference_runner_litert.cc b/mediapipe/calculators/tensor/inference_runner_litert.cc
+index c7374b3..3386df4 100644
+--- a/mediapipe/calculators/tensor/inference_runner_litert.cc
++++ b/mediapipe/calculators/tensor/inference_runner_litert.cc
+@@ -22,6 +22,7 @@
+ 
+ #include "absl/algorithm/container.h"
+ #include "absl/base/nullability.h"
++#include "absl/cleanup/cleanup.h"
+ #include "absl/log/absl_log.h"
+ #include "absl/log/log.h"
+ #include "absl/status/status.h"
 diff --git a/third_party/opencv_macos.BUILD b/third_party/opencv_macos.BUILD
-index 4139f18..c268903 100644
+index 81a0de7..dda6bb5 100644
 --- a/third_party/opencv_macos.BUILD
 +++ b/third_party/opencv_macos.BUILD
-@@ -1,58 +1,29 @@
+@@ -1,59 +1,29 @@
  # Description:
 -#   OpenCV libraries for video/image processing on MacOS
 +#   Statically linked OpenCV libraries for macOS. The referenced install
@@ -99,7 +123,7 @@ index 4139f18..c268903 100644
 -# "include/opencv4/opencv2/**/*.h*" and the include prefix needs to be set to
 -# "include/opencv4".
 -
--PREFIX = "opt/opencv@3"
+-PREFIX = "opt/opencv"
 -
  cc_library(
      name = "opencv",
@@ -111,12 +135,13 @@ index 4139f18..c268903 100644
 -            paths.join(PREFIX, "lib/libopencv_highgui.dylib"),
 -            paths.join(PREFIX, "lib/libopencv_imgcodecs.dylib"),
 -            paths.join(PREFIX, "lib/libopencv_imgproc.dylib"),
+-            paths.join(PREFIX, "lib/libopencv_optflow.dylib"),
 -            paths.join(PREFIX, "lib/libopencv_video.dylib"),
 -            paths.join(PREFIX, "lib/libopencv_videoio.dylib"),
 -        ],
 -    ),
--    hdrs = glob([paths.join(PREFIX, "include/opencv2/**/*.h*")]),
--    includes = [paths.join(PREFIX, "include/")],
+-    hdrs = glob([paths.join(PREFIX, "include/opencv4/opencv2/**/*.h*")]),
+-    includes = [paths.join(PREFIX, "include/opencv4/")],
 +    srcs = glob([
 +        "lib/libopencv_core.a",
 +        "lib/libopencv_imgproc.a",
@@ -133,27 +158,3 @@ index 4139f18..c268903 100644
      linkstatic = 1,
      visibility = ["//visibility:public"],
  )
-diff --git a/mediapipe/calculators/tensor/BUILD b/mediapipe/calculators/tensor/BUILD
-index cf7cbd5..7b76a08 100644
---- a/mediapipe/calculators/tensor/BUILD
-+++ b/mediapipe/calculators/tensor/BUILD
-@@ -867,6 +867,7 @@ cc_library(
-         "@com_google_absl//absl/algorithm:container",
-         "@com_google_absl//absl/base:core_headers",
-         "@com_google_absl//absl/base:nullability",
-+        "@com_google_absl//absl/cleanup",
-         "@com_google_absl//absl/container:flat_hash_map",
-         "@com_google_absl//absl/log",
-         "@com_google_absl//absl/log:absl_log",
-diff --git a/mediapipe/calculators/tensor/inference_runner_litert.cc b/mediapipe/calculators/tensor/inference_runner_litert.cc
-index 3120131..d95740a 100644
---- a/mediapipe/calculators/tensor/inference_runner_litert.cc
-+++ b/mediapipe/calculators/tensor/inference_runner_litert.cc
-@@ -21,6 +21,7 @@
- 
- #include "absl/algorithm/container.h"
- #include "absl/base/nullability.h"
-+#include "absl/cleanup/cleanup.h"
- #include "absl/log/absl_log.h"
- #include "absl/log/log.h"
- #include "absl/status/status.h"

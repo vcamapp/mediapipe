@@ -1,7 +1,7 @@
 # Third-party notices
 
 Every slice (iOS device, iOS simulator, macOS) is built from upstream
-MediaPipe 1.1.1 sources with the patches in `source/patches/` (see
+MediaPipe 1.2.0 sources with the patches in `source/patches/` (see
 `source/README.md`). The MediaPipe license from the same upstream tag is
 copied into each release's `THIRD_PARTY_NOTICES.txt`.
 

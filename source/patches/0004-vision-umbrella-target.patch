@@ -1,8 +1,8 @@
 diff --git a/mediapipe/tasks/ios/BUILD b/mediapipe/tasks/ios/BUILD
-index 87de2d1..179df11 100644
+index 00f1cee..06d26f8 100644
 --- a/mediapipe/tasks/ios/BUILD
 +++ b/mediapipe/tasks/ios/BUILD
-@@ -454,3 +454,104 @@ mediapipe_static_xcframework(
+@@ -459,3 +459,104 @@ mediapipe_static_xcframework(
      # built as static libraries and force loaded.
      deps = MEDIAPIPE_TASKS_COMMON_DEPS,
  )
