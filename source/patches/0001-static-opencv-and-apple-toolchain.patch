@@ -21,10 +21,10 @@ index d8e4709..6630a50 100644
  build --experimental_ui_max_stdouterr_bytes=-1
  
 diff --git a/MODULE.bazel b/MODULE.bazel
-index a0111fe..8e3accb 100644
+index 5055a7f..3582b9a 100644
 --- a/MODULE.bazel
 +++ b/MODULE.bazel
-@@ -94,3 +94,7 @@ node.toolchain(node_version = "20.14.0")
+@@ -95,3 +95,7 @@ node.toolchain(node_version = "20.14.0")
  use_repo(node, "nodejs_toolchains")
  
  register_toolchains("@nodejs_toolchains//:all")
@@ -33,10 +33,10 @@ index a0111fe..8e3accb 100644
 +apple_cc_configure = use_extension("@build_bazel_apple_support//crosstool:setup.bzl", "apple_cc_configure_extension")
 +use_repo(apple_cc_configure, "local_config_apple_cc")
 diff --git a/WORKSPACE b/WORKSPACE
-index cc35309..5e57069 100644
+index ce5c5c9..9706ad0 100644
 --- a/WORKSPACE
 +++ b/WORKSPACE
-@@ -543,10 +543,10 @@ new_local_repository(
+@@ -546,10 +546,10 @@ new_local_repository(
  new_local_repository(
      name = "macos_opencv",
      build_file = "@//third_party:opencv_macos.BUILD",
@@ -52,10 +52,10 @@ index cc35309..5e57069 100644
  
  new_local_repository(
 diff --git a/mediapipe/calculators/tensor/BUILD b/mediapipe/calculators/tensor/BUILD
-index 21fdfc2..8544152 100644
+index cb77417..f831cd8 100644
 --- a/mediapipe/calculators/tensor/BUILD
 +++ b/mediapipe/calculators/tensor/BUILD
-@@ -877,6 +877,7 @@ cc_library(
+@@ -876,6 +876,7 @@ cc_library(
          "@com_google_absl//absl/algorithm:container",
          "@com_google_absl//absl/base:core_headers",
          "@com_google_absl//absl/base:nullability",
@@ -64,17 +64,17 @@ index 21fdfc2..8544152 100644
          "@com_google_absl//absl/log",
          "@com_google_absl//absl/log:absl_log",
 diff --git a/mediapipe/calculators/tensor/inference_runner_litert.cc b/mediapipe/calculators/tensor/inference_runner_litert.cc
-index c7374b3..3386df4 100644
+index f55aeb7..fa2f99f 100644
 --- a/mediapipe/calculators/tensor/inference_runner_litert.cc
 +++ b/mediapipe/calculators/tensor/inference_runner_litert.cc
 @@ -22,6 +22,7 @@
  
- #include "absl/algorithm/container.h"
- #include "absl/base/nullability.h"
-+#include "absl/cleanup/cleanup.h"
- #include "absl/log/absl_log.h"
- #include "absl/log/log.h"
- #include "absl/status/status.h"
+ #include "absl/algorithm/container.h"   // from @com_google_absl
+ #include "absl/base/nullability.h"      // from @com_google_absl
++#include "absl/cleanup/cleanup.h"       // from @com_google_absl
+ #include "absl/log/absl_log.h"          // from @com_google_absl
+ #include "absl/log/log.h"               // from @com_google_absl
+ #include "absl/status/status.h"         // from @com_google_absl
 diff --git a/third_party/opencv_macos.BUILD b/third_party/opencv_macos.BUILD
 index 81a0de7..dda6bb5 100644
 --- a/third_party/opencv_macos.BUILD

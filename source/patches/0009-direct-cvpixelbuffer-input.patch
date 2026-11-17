@@ -1,46 +1,140 @@
-diff --git a/mediapipe/tasks/ios/vision/core/BUILD b/mediapipe/tasks/ios/vision/core/BUILD
-index ffd61af..08e9ecc 100644
---- a/mediapipe/tasks/ios/vision/core/BUILD
-+++ b/mediapipe/tasks/ios/vision/core/BUILD
-@@ -67,10 +67,13 @@ objc_library(
-         "//mediapipe/framework:timestamp",
+diff --git a/mediapipe/tasks/cc/vision/hand_landmarker/hand_landmarker.cc b/mediapipe/tasks/cc/vision/hand_landmarker/hand_landmarker.cc
+index 8c5aa21..67fc68a 100644
+--- a/mediapipe/tasks/cc/vision/hand_landmarker/hand_landmarker.cc
++++ b/mediapipe/tasks/cc/vision/hand_landmarker/hand_landmarker.cc
+@@ -49,6 +49,15 @@ namespace hand_landmarker {
+ 
+ namespace {
+ 
++// VCam: on Apple platforms a GPU image wraps an IOSurface-backed CVPixelBuffer
++// (see `-[MPPImage mpImageWithError:]`), which the graph reads on the CPU or
++// uploads to the GPU itself, so the task accepts it on either delegate.
++#if !MEDIAPIPE_DISABLE_GPU && MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
++constexpr bool kAcceptsGpuImages = true;
++#else
++constexpr bool kAcceptsGpuImages = false;
++#endif  // !MEDIAPIPE_DISABLE_GPU && MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
++
+ using HandLandmarkerGraphOptionsProto = ::mediapipe::tasks::vision::
+     hand_landmarker::proto::HandLandmarkerGraphOptions;
+ 
+@@ -196,7 +205,7 @@ absl::StatusOr<std::unique_ptr<HandLandmarker>> HandLandmarker::Create(
+ absl::StatusOr<HandLandmarkerResult> HandLandmarker::Detect(
+     mediapipe::Image image,
+     std::optional<core::ImageProcessingOptions> image_processing_options) {
+-  if (image.UsesGpu()) {
++  if (image.UsesGpu() && !kAcceptsGpuImages) {
+     return CreateStatusWithPayload(
+         absl::StatusCode::kInvalidArgument,
+         "GPU input images are currently not supported.",
+@@ -234,7 +243,7 @@ absl::StatusOr<HandLandmarkerResult> HandLandmarker::Detect(
+ absl::StatusOr<HandLandmarkerResult> HandLandmarker::DetectForVideo(
+     mediapipe::Image image, int64_t timestamp_ms,
+     std::optional<core::ImageProcessingOptions> image_processing_options) {
+-  if (image.UsesGpu()) {
++  if (image.UsesGpu() && !kAcceptsGpuImages) {
+     return CreateStatusWithPayload(
+         absl::StatusCode::kInvalidArgument,
+         absl::StrCat("GPU input images are currently not supported."),
+@@ -275,7 +284,7 @@ absl::StatusOr<HandLandmarkerResult> HandLandmarker::DetectForVideo(
+ absl::Status HandLandmarker::DetectAsync(
+     mediapipe::Image image, int64_t timestamp_ms,
+     std::optional<core::ImageProcessingOptions> image_processing_options) {
+-  if (image.UsesGpu()) {
++  if (image.UsesGpu() && !kAcceptsGpuImages) {
+     return CreateStatusWithPayload(
+         absl::StatusCode::kInvalidArgument,
+         absl::StrCat("GPU input images are currently not supported."),
+diff --git a/mediapipe/tasks/cc/vision/pose_landmarker/pose_landmarker.cc b/mediapipe/tasks/cc/vision/pose_landmarker/pose_landmarker.cc
+index e5866fd..d85e7c4 100644
+--- a/mediapipe/tasks/cc/vision/pose_landmarker/pose_landmarker.cc
++++ b/mediapipe/tasks/cc/vision/pose_landmarker/pose_landmarker.cc
+@@ -49,6 +49,15 @@ namespace pose_landmarker {
+ 
+ namespace {
+ 
++// VCam: on Apple platforms a GPU image wraps an IOSurface-backed CVPixelBuffer
++// (see `-[MPPImage mpImageWithError:]`), which the graph reads on the CPU or
++// uploads to the GPU itself, so the task accepts it on either delegate.
++#if !MEDIAPIPE_DISABLE_GPU && MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
++constexpr bool kAcceptsGpuImages = true;
++#else
++constexpr bool kAcceptsGpuImages = false;
++#endif  // !MEDIAPIPE_DISABLE_GPU && MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
++
+ using PoseLandmarkerGraphOptionsProto = ::mediapipe::tasks::vision::
+     pose_landmarker::proto::PoseLandmarkerGraphOptions;
+ 
+@@ -211,7 +220,7 @@ absl::StatusOr<std::unique_ptr<PoseLandmarker>> PoseLandmarker::Create(
+ absl::StatusOr<PoseLandmarkerResult> PoseLandmarker::Detect(
+     mediapipe::Image image,
+     std::optional<core::ImageProcessingOptions> image_processing_options) {
+-  if (image.UsesGpu()) {
++  if (image.UsesGpu() && !kAcceptsGpuImages) {
+     return CreateStatusWithPayload(
+         absl::StatusCode::kInvalidArgument,
+         "GPU input images are currently not supported.",
+@@ -248,7 +257,7 @@ absl::StatusOr<PoseLandmarkerResult> PoseLandmarker::Detect(
+ absl::StatusOr<PoseLandmarkerResult> PoseLandmarker::DetectForVideo(
+     mediapipe::Image image, int64_t timestamp_ms,
+     std::optional<core::ImageProcessingOptions> image_processing_options) {
+-  if (image.UsesGpu()) {
++  if (image.UsesGpu() && !kAcceptsGpuImages) {
+     return CreateStatusWithPayload(
+         absl::StatusCode::kInvalidArgument,
+         absl::StrCat("GPU input images are currently not supported."),
+@@ -288,7 +297,7 @@ absl::StatusOr<PoseLandmarkerResult> PoseLandmarker::DetectForVideo(
+ absl::Status PoseLandmarker::DetectAsync(
+     mediapipe::Image image, int64_t timestamp_ms,
+     std::optional<core::ImageProcessingOptions> image_processing_options) {
+-  if (image.UsesGpu()) {
++  if (image.UsesGpu() && !kAcceptsGpuImages) {
+     return CreateStatusWithPayload(
+         absl::StatusCode::kInvalidArgument,
+         absl::StrCat("GPU input images are currently not supported."),
+diff --git a/mediapipe/tasks/ios/vision/core/utils/BUILD b/mediapipe/tasks/ios/vision/core/utils/BUILD
+index cb979df..d1323d3 100644
+--- a/mediapipe/tasks/ios/vision/core/utils/BUILD
++++ b/mediapipe/tasks/ios/vision/core/utils/BUILD
+@@ -18,6 +18,7 @@ objc_library(
          "//mediapipe/framework/formats:image",
-         "//mediapipe/framework/formats:rect_cc_proto",
+         "//mediapipe/framework/formats:image_format_cc_proto",
+         "//mediapipe/framework/formats:image_frame",
 +        "//mediapipe/gpu:gpu_buffer_format",
-         "//mediapipe/tasks/cc/vision/interactive_segmenter_legacy/proto:region_of_interest_cc_proto",
-         "//mediapipe/tasks/ios/components/containers:MPPRegionOfInterest",
-         "//mediapipe/tasks/ios/components/containers/utils:MPPRegionOfInterestHelpers",
-         "//mediapipe/tasks/ios/vision/core/utils:MPPImageUtils",
+         "//mediapipe/tasks/c/vision/core:image",
+         "//mediapipe/tasks/c/vision/core:image_frame_util",
+         "//mediapipe/tasks/ios/common:MPPCommon",
+@@ -26,6 +27,7 @@ objc_library(
+         "//third_party/apple_frameworks:Accelerate",
+         "//third_party/apple_frameworks:CoreGraphics",
+         "//third_party/apple_frameworks:CoreImage",
 +        "//third_party/apple_frameworks:CoreMedia",
-+        "//third_party/apple_frameworks:CoreVideo",
+         "//third_party/apple_frameworks:CoreVideo",
          "//third_party/apple_frameworks:Foundation",
      ],
- )
-diff --git a/mediapipe/tasks/ios/vision/core/sources/MPPVisionPacketCreator.mm b/mediapipe/tasks/ios/vision/core/sources/MPPVisionPacketCreator.mm
-index a5108b0..22cc84e 100644
---- a/mediapipe/tasks/ios/vision/core/sources/MPPVisionPacketCreator.mm
-+++ b/mediapipe/tasks/ios/vision/core/sources/MPPVisionPacketCreator.mm
-@@ -16,10 +16,15 @@
- #import "mediapipe/tasks/ios/components/containers/utils/sources/MPPRegionOfInterest+Helpers.h"
- #import "mediapipe/tasks/ios/vision/core/utils/sources/MPPImage+Utils.h"
- 
+diff --git a/mediapipe/tasks/ios/vision/core/utils/sources/MPPImage+Utils.mm b/mediapipe/tasks/ios/vision/core/utils/sources/MPPImage+Utils.mm
+index 8ba6f74..b44e724 100644
+--- a/mediapipe/tasks/ios/vision/core/utils/sources/MPPImage+Utils.mm
++++ b/mediapipe/tasks/ios/vision/core/utils/sources/MPPImage+Utils.mm
+@@ -20,12 +20,14 @@
+ #import <Accelerate/Accelerate.h>
+ #import <CoreGraphics/CoreGraphics.h>
+ #import <CoreImage/CoreImage.h>
 +#import <CoreMedia/CoreMedia.h>
-+#import <CoreVideo/CoreVideo.h>
-+
+ #import <CoreVideo/CoreVideo.h>
+ 
  #include <cstdint>
-+#include <optional>
+ #include <memory>
  
- #include "mediapipe/framework/formats/image.h"
- #include "mediapipe/framework/timestamp.h"
+ #include "mediapipe/framework/formats/image_format.pb.h"
 +#include "mediapipe/gpu/gpu_buffer_format.h"
- #include "mediapipe/tasks/cc/vision/interactive_segmenter_legacy/proto/region_of_interest.pb.h"
+ #include "mediapipe/tasks/c/vision/core/image.h"
+ #include "mediapipe/tasks/c/vision/core/image_frame_util.h"
  
- static const NSUInteger kMicrosecondsPerMillisecond = 1000;
-@@ -33,30 +38,64 @@
- using ::mediapipe::Packet;
- using ::mediapipe::Timestamp;
- using ::mediapipe::tasks::vision::interactive_segmenter_legacy::proto::RegionOfInterest;
-+
+@@ -782,7 +784,33 @@ - (nullable UIImage *)toUIImageWithError:(NSError **)error {
+ }
+ #endif  // __has_include(<UIKit/UIKit.h>)
+ 
 +// VCam: a BGRA `CVPixelBuffer` goes into the graph as a `GpuBuffer` wrapping the
 +// buffer itself instead of being copied into an `ImageFrame`. The copy permutes
 +// the channels and unpremultiplies the alpha on the CPU, and the graph's
@@ -50,60 +144,24 @@ index a5108b0..22cc84e 100644
 +// identity). The pixel buffer must be IOSurface-backed, as camera frames and
 +// pool buffers created with `kCVPixelBufferIOSurfacePropertiesKey` are. Other
 +// pixel formats keep the `ImageFrame` path.
-+std::optional<Image> ImageFromMPPImage(MPPImage *image, NSError **error) {
+ - (nullable MpImagePtr)mpImageWithError:(NSError **)error {
 +#if !MEDIAPIPE_DISABLE_GPU && MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
 +  CVPixelBufferRef pixelBuffer = nullptr;
-+  switch (image.imageSourceType) {
++  switch (self.imageSourceType) {
 +    case MPPImageSourceTypePixelBuffer:
-+      pixelBuffer = image.pixelBuffer;
++      pixelBuffer = self.pixelBuffer;
 +      break;
 +    case MPPImageSourceTypeSampleBuffer:
-+      pixelBuffer = CMSampleBufferGetImageBuffer(image.sampleBuffer);
++      pixelBuffer = CMSampleBufferGetImageBuffer(self.sampleBuffer);
 +      break;
 +    default:
 +      break;
 +  }
 +  if (pixelBuffer && CVPixelBufferGetPixelFormatType(pixelBuffer) == kCVPixelFormatType_32BGRA &&
 +      CVPixelBufferGetIOSurface(pixelBuffer)) {
-+    return Image(pixelBuffer);
++    return new MpImageInternal{.image = mediapipe::Image(pixelBuffer)};
 +  }
 +#endif  // !MEDIAPIPE_DISABLE_GPU && MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
-+  std::unique_ptr<ImageFrame> imageFrame = [image imageFrameWithError:error];
-+  if (!imageFrame) {
-+    return std::nullopt;
-+  }
-+  return Image(std::move(imageFrame));
-+}
- }  // namespace
- 
- @implementation MPPVisionPacketCreator
- 
- + (Packet)createPacketWithMPPImage:(MPPImage *)image error:(NSError **)error {
--  std::unique_ptr<ImageFrame> imageFrame = [image imageFrameWithError:error];
-+  std::optional<Image> mpImage = ImageFromMPPImage(image, error);
- 
--  if (!imageFrame) {
-+  if (!mpImage.has_value()) {
-     return Packet();
-   }
- 
--  return MakePacket<Image>(std::move(imageFrame));
-+  return MakePacket<Image>(std::move(*mpImage));
- }
- 
- + (Packet)createPacketWithMPPImage:(MPPImage *)image
-            timestampInMilliseconds:(NSInteger)timestampInMilliseconds
-                              error:(NSError **)error {
--  std::unique_ptr<ImageFrame> imageFrame = [image imageFrameWithError:error];
-+  std::optional<Image> mpImage = ImageFromMPPImage(image, error);
- 
--  if (!imageFrame) {
-+  if (!mpImage.has_value()) {
-     return Packet();
-   }
- 
--  return MakePacket<Image>(std::move(imageFrame))
-+  return MakePacket<Image>(std::move(*mpImage))
-       .At(Timestamp(int64_t(timestampInMilliseconds * kMicrosecondsPerMillisecond)));
- }
- 
+   std::unique_ptr<ImageFrame> imageFrame = [self imageFrameWithError:error];
+   if (!imageFrame) {
+     return nullptr;

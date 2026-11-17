@@ -23,7 +23,7 @@ final class MediaPipePoseLandmarkTracker: PoseLandmarkTracking, @unchecked Senda
         options.baseOptions.delegate = configuration.inferenceBackend == .gpu ? .GPU : .CPU
         // Segmentation masks stay off: the graph then skips its mask branch,
         // whose calculators cannot run on the macOS OpenGL context.
-        options.shouldOutputSegmentationMasks = false
+        options.outputSegmentationMasks = false
         // The pose detector finds nothing at all when the CPU delegate runs in
         // FP16, so this task keeps full precision.
         landmarker = try XNNPackInference.makeTask(forcingFP16: false) {

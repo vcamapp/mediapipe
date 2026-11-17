@@ -14,10 +14,10 @@ index 6630a50..9a57a9e 100644
  build:ios_sim_device_fat --ios_multi_cpus=x86_64,sim_arm64,arm64
  
 diff --git a/WORKSPACE b/WORKSPACE
-index e54bf4e..e1ae3c8 100644
+index 7ede45c..3b8e678 100644
 --- a/WORKSPACE
 +++ b/WORKSPACE
-@@ -551,6 +551,22 @@ new_local_repository(
+@@ -554,6 +554,22 @@ new_local_repository(
      path = "third_party/opencv_static",
  )
  

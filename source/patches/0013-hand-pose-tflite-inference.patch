@@ -1,0 +1,38 @@
+diff --git a/mediapipe/tasks/cc/vision/hand_landmarker/hand_landmarker.cc b/mediapipe/tasks/cc/vision/hand_landmarker/hand_landmarker.cc
+index 67fc68a..277be8c 100644
+--- a/mediapipe/tasks/cc/vision/hand_landmarker/hand_landmarker.cc
++++ b/mediapipe/tasks/cc/vision/hand_landmarker/hand_landmarker.cc
+@@ -113,9 +113,13 @@ CalculatorGraphConfig CreateGraphConfig(
+ std::unique_ptr<HandLandmarkerGraphOptionsProto>
+ ConvertHandLandmarkerGraphOptionsProto(HandLandmarkerOptions* options) {
+   auto options_proto = std::make_unique<HandLandmarkerGraphOptionsProto>();
++  // VCam: TFLite (XNNPACK on the CPU, the Metal delegate on the GPU) as the
++  // face task uses. LiteRT's GPU accelerator on Apple platforms leaves ops of
++  // the pose model undelegated and then refuses to compile it, and the opt-in
++  // FP16 of the XNNPACK delegate only applies to TFLite.
+   auto base_options_proto = std::make_unique<tasks::core::proto::BaseOptions>(
+       tasks::core::ConvertBaseOptionsToProto(&(options->base_options),
+-                                             /*use_litert=*/true));
++                                             /*use_litert=*/false));
+   options_proto->mutable_base_options()->Swap(base_options_proto.get());
+   options_proto->mutable_base_options()->set_use_stream_mode(
+       options->running_mode != core::RunningMode::IMAGE);
+diff --git a/mediapipe/tasks/cc/vision/pose_landmarker/pose_landmarker.cc b/mediapipe/tasks/cc/vision/pose_landmarker/pose_landmarker.cc
+index d85e7c4..b4eb22d 100644
+--- a/mediapipe/tasks/cc/vision/pose_landmarker/pose_landmarker.cc
++++ b/mediapipe/tasks/cc/vision/pose_landmarker/pose_landmarker.cc
+@@ -115,9 +115,13 @@ CalculatorGraphConfig CreateGraphConfig(
+ std::unique_ptr<PoseLandmarkerGraphOptionsProto>
+ ConvertPoseLandmarkerGraphOptionsProto(PoseLandmarkerOptions* options) {
+   auto options_proto = std::make_unique<PoseLandmarkerGraphOptionsProto>();
++  // VCam: TFLite (XNNPACK on the CPU, the Metal delegate on the GPU) as the
++  // face task uses. LiteRT's GPU accelerator on Apple platforms leaves ops of
++  // the pose model undelegated and then refuses to compile it, and the opt-in
++  // FP16 of the XNNPACK delegate only applies to TFLite.
+   auto base_options_proto = std::make_unique<tasks::core::proto::BaseOptions>(
+       tasks::core::ConvertBaseOptionsToProto(&(options->base_options),
+-                                             /*use_litert=*/true));
++                                             /*use_litert=*/false));
+   options_proto->mutable_base_options()->Swap(base_options_proto.get());
+   options_proto->mutable_base_options()->set_use_stream_mode(
+       options->running_mode != core::RunningMode::IMAGE);
